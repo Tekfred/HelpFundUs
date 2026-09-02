@@ -4,7 +4,12 @@ import '../widgets/category_grid_illustration.dart';
 import '../widgets/onboarding_slide_scaffold.dart';
 
 class DiscoverCausesScreen extends StatelessWidget {
-  const DiscoverCausesScreen({super.key, required this.onNext, required this.onBack, required this.onSkip});
+  const DiscoverCausesScreen({
+    super.key,
+    required this.onNext,
+    required this.onBack,
+    required this.onSkip,
+  });
   final VoidCallback onNext;
   final VoidCallback onBack;
   final VoidCallback onSkip;
@@ -16,10 +21,16 @@ class DiscoverCausesScreen extends StatelessWidget {
       onSkip: onSkip,
       dotIndex: 0,
       illustration: const CategoryGridIllustration(),
+      contentRevealCount: kCategoryGridRevealCount,
       headline: 'Discover causes\nthat matter',
-      body: 'Browse thousands of verified campaigns across medical, education, '
+      body:
+          'Browse thousands of verified campaigns across medical, education, '
           'environment, community and more — sorted by what your community cares about.',
-      cta: PrimaryButton(label: 'Next', icon: Icons.arrow_forward, onPressed: onNext),
+      cta: PrimaryButton(
+        label: 'Next',
+        icon: Icons.arrow_forward,
+        onPressed: onNext,
+      ),
     );
   }
 }

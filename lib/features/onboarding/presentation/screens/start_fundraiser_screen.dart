@@ -4,7 +4,12 @@ import '../widgets/fundraiser_timeline_illustration.dart';
 import '../widgets/onboarding_slide_scaffold.dart';
 
 class StartFundraiserScreen extends StatelessWidget {
-  const StartFundraiserScreen({super.key, required this.onCreateAccount, required this.onBack, required this.onSkip});
+  const StartFundraiserScreen({
+    super.key,
+    required this.onCreateAccount,
+    required this.onBack,
+    required this.onSkip,
+  });
   final VoidCallback onCreateAccount;
   final VoidCallback onBack;
   final VoidCallback onSkip;
@@ -16,8 +21,10 @@ class StartFundraiserScreen extends StatelessWidget {
       onSkip: onSkip,
       dotIndex: 2,
       illustration: const FundraiserTimelineIllustration(),
+      contentRevealCount: FundraiserTimelineIllustration.revealCount,
       headline: 'Start making\na difference',
-      body: 'Create your campaign story, complete a quick identity check, and our team '
+      body:
+          'Create your campaign story, complete a quick identity check, and our team '
           'reviews it within 24 hours. Then go live and receive funds directly.',
       cta: PrimaryButton(label: 'Create Account', onPressed: onCreateAccount),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/animation/reveal_on_enter.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -10,8 +11,15 @@ class FundraiserTimelineIllustration extends StatelessWidget {
     ('Create your story', 'Write your campaign and set a fundraising goal'),
     ('Verify your identity', 'Quick ID check to build trust with donors'),
     ('24 h review process', 'Our team reviews your campaign for approval'),
-    ('Launch and receive funds', 'Go live and receive donations directly to you'),
+    (
+      'Launch and receive funds',
+      'Go live and receive donations directly to you',
+    ),
   ];
+
+  /// One reveal step per timeline row — used by the slide scaffold to
+  /// queue the dot indicator/headline/body right after this finishes.
+  static final revealCount = _steps.length;
 
   @override
   Widget build(BuildContext context) {
@@ -21,20 +29,20 @@ class FundraiserTimelineIllustration extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 16, offset: const Offset(0, 8))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         children: List.generate(_steps.length, (i) {
           final (title, desc) = _steps[i];
           final isLast = i == _steps.length - 1;
-          return TweenAnimationBuilder<double>(
-            tween: Tween(begin: 0, end: 1),
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOutCubic,
-            builder: (context, raw, child) {
-              final t = ((raw * 4) - i * 0.7).clamp(0.0, 1.0);
-              return Opacity(opacity: t, child: Transform.translate(offset: Offset((1 - t) * 20, 0), child: child));
-            },
+          return RevealOnEnter(
+            index: 1 + i,
             child: IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,8 +53,16 @@ class FundraiserTimelineIllustration extends StatelessWidget {
                         width: 28,
                         height: 28,
                         alignment: Alignment.center,
-                        decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-                        child: Text('${i + 1}', style: AppTextStyles.buttonMd.copyWith(color: AppColors.surface)),
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '${i + 1}',
+                          style: AppTextStyles.buttonMd.copyWith(
+                            color: AppColors.surface,
+                          ),
+                        ),
                       ),
                       if (!isLast)
                         Expanded(
@@ -61,7 +77,9 @@ class FundraiserTimelineIllustration extends StatelessWidget {
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacing.md),
+                      padding: EdgeInsets.only(
+                        bottom: isLast ? 0 : AppSpacing.md,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
