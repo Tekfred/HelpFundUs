@@ -7,25 +7,27 @@ import 'package:flutter/widgets.dart';
 /// reference recording — turned out to be a fade, not a slide.
 enum SlideDirection { forward, backward }
 
-/// Screen-to-screen transition: the outgoing screen fades out quickly,
-/// there's a brief blank beat, then the incoming screen's container fades
-/// in — at which point its own contents take over via [RevealOnEnter],
-/// staggering in element-by-element. This split is deliberate: the
-/// container transition here is intentionally understated so it doesn't
-/// compete with the per-element cascade happening inside the new screen.
+/// Screen-to-screen transition. Slide mode keeps pages travelling
+/// continuously with no blank interval, while each new screen's contents
+/// still run their own [RevealOnEnter] cascade. Fade remains available as an
+/// explicit opt-in for a flow that needs the previous behavior.
 ///
-/// Usage unchanged: wrap the screen you're currently showing in this
-/// switcher and change `child`'s key whenever you navigate.
+/// Wrap the screen you're currently showing in this switcher and change
+/// `child`'s key whenever you navigate.
+enum PageTransitionStyle { fade, slide }
+
 class SpringPageSwitcher extends StatefulWidget {
   const SpringPageSwitcher({
     super.key,
     required this.child,
     required this.direction,
+    this.transitionStyle = PageTransitionStyle.slide,
   });
 
   /// Must have a unique [Key] per screen so the switcher can detect changes.
   final Widget child;
   final SlideDirection direction;
+  final PageTransitionStyle transitionStyle;
 
   @override
   State<SpringPageSwitcher> createState() => _SpringPageSwitcherState();
@@ -38,6 +40,7 @@ class _SpringPageSwitcherState extends State<SpringPageSwitcher>
   static const _exitDuration = Duration(milliseconds: 150);
   static const _blankGap = Duration(milliseconds: 70);
   static const _enterDuration = Duration(milliseconds: 180);
+  static const _slideDuration = Duration(milliseconds: 320);
 
   @override
   void initState() {
@@ -52,29 +55,38 @@ class _SpringPageSwitcherState extends State<SpringPageSwitcher>
       final entry = _Entry(widget.child, this, startVisible: false);
       _entries.add(entry);
 
-      // Old screen(s): fade out fast, no movement.
+      // Old screen(s) leave in the opposite direction to the incoming page.
       for (final old in _entries.where((e) => e != entry)) {
         old.exiting = true;
-        old.controller.duration = _exitDuration;
+        old.controller.duration =
+            widget.transitionStyle == PageTransitionStyle.slide
+            ? _slideDuration
+            : _exitDuration;
         old.controller.reverse(from: 1);
       }
 
-      // Brief blank beat, then the new screen's container fades in — its
-      // own children run their staggered reveal independently of this.
-      entry.controller.duration = _enterDuration;
-      Future.delayed(_blankGap, () {
-        if (mounted) {
-          entry.controller.forward().whenComplete(() {
-            if (mounted) {
-              setState(
-                () => _entries.removeWhere(
-                  (e) => e != entry && e.controller.value == 0,
-                ),
-              );
-            }
-          });
-        }
-      });
+      entry.controller.duration =
+          widget.transitionStyle == PageTransitionStyle.slide
+          ? _slideDuration
+          : _enterDuration;
+      void enter() {
+        if (!mounted) return;
+        entry.controller.forward().whenComplete(() {
+          if (mounted) {
+            setState(
+              () => _entries.removeWhere(
+                (e) => e != entry && e.controller.value == 0,
+              ),
+            );
+          }
+        });
+      }
+
+      if (widget.transitionStyle == PageTransitionStyle.slide) {
+        enter();
+      } else {
+        Future.delayed(_blankGap, enter);
+      }
     }
   }
 
@@ -88,17 +100,31 @@ class _SpringPageSwitcherState extends State<SpringPageSwitcher>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: _entries.map((entry) {
-        return Positioned.fill(
-          child: AnimatedBuilder(
-            animation: entry.controller,
-            builder: (context, child) =>
-                Opacity(opacity: entry.controller.value, child: child),
-            child: entry.widget,
-          ),
-        );
-      }).toList(),
+    return LayoutBuilder(
+      builder: (context, constraints) => Stack(
+        children: _entries.map((entry) {
+          return Positioned.fill(
+            child: AnimatedBuilder(
+              animation: entry.controller,
+              builder: (context, child) {
+                final value = entry.controller.value;
+                if (widget.transitionStyle == PageTransitionStyle.slide) {
+                  final distance = constraints.maxWidth * (1 - value);
+                  final sign = entry.exiting
+                      ? (widget.direction == SlideDirection.forward ? -1 : 1)
+                      : (widget.direction == SlideDirection.forward ? 1 : -1);
+                  return Transform.translate(
+                    offset: Offset(sign * distance, 0),
+                    child: child,
+                  );
+                }
+                return Opacity(opacity: value, child: child);
+              },
+              child: entry.widget,
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 }

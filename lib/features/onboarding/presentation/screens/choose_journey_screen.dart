@@ -133,6 +133,7 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
                 ),
               ),
               Center(
+                
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
