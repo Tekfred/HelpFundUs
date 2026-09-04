@@ -3,6 +3,23 @@
 HelpFundUs is a Flutter crowdfunding application for discovering verified
 causes, donating securely, and starting fundraisers.
 
+## App shell
+
+The authenticated UI is implemented in `lib/features/app_shell/` with the
+requested feature-first structure. It includes five role-aware tabs:
+
+- Donor: Home, Explore, Activity, Inbox, Account.
+- Fundraiser: Home, Campaigns, Activity, Inbox, Account.
+
+The Account tab switches between both roles on the same account. The shell
+also provides the animated 84px bottom navigation, unread badges, first-entry
+loading treatment, browser online/offline banner, and URI deep-link handling
+through `AppShellController.handleDeepLink`.
+
+The Donation-flow brief from the current product specification is recorded as
+the next implementation scope; donation screens have not been created in this
+app-shell change.
+
 ## Animation architecture
 
 Page navigation is handled by

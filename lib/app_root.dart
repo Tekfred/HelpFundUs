@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'core/animation/spring_page_switcher.dart';
 import 'core/widgets/dev_screen_nav.dart';
-import 'features/app_shell/app_shell_screen.dart';
+import 'features/app_shell/presentation/app_shell.dart';
 import 'features/auth/presentation/auth_flow.dart';
 import 'features/auth/state/auth_controller.dart';
 import 'features/onboarding/presentation/onboarding_flow.dart';
@@ -63,17 +63,17 @@ class _AppRootState extends State<AppRoot> {
             key: ValueKey(_mode),
             child: switch (_mode) {
               _AppMode.onboarding => OnboardingFlow(
-                  controller: _onboardingController,
-                  onSignIn: () => _jumpToAuth(AuthStep.signIn),
-                  onCreateAccount: () => _jumpToAuth(AuthStep.createAccount),
-                ),
+                controller: _onboardingController,
+                onSignIn: () => _jumpToAuth(AuthStep.signIn),
+                onCreateAccount: () => _jumpToAuth(AuthStep.createAccount),
+              ),
               _AppMode.auth => AuthFlow(
-                  controller: _authController,
-                  onFinished: _jumpToAppShell,
-                ),
-              _AppMode.appShell => AppShellScreen(
-                  onSignOut: () => setState(() => _mode = _AppMode.onboarding),
-                ),
+                controller: _authController,
+                onFinished: _jumpToAppShell,
+              ),
+              _AppMode.appShell => AppShell(
+                onSignOut: () => setState(() => _mode = _AppMode.onboarding),
+              ),
             },
           ),
         ),
