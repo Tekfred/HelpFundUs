@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../models/campaign_catalog.dart';
 import '../widgets/campaign_card.dart';
+import 'campaign_detail_screen.dart';
 
 class ExploreScreen extends StatefulWidget {
-  const ExploreScreen({super.key});
+  const ExploreScreen({super.key, this.onGuestDonate});
+  final VoidCallback? onGuestDonate;
   @override
   State<ExploreScreen> createState() => _ExploreScreenState();
 }
@@ -27,9 +30,15 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final cards = _category == 'All'
-        ? _cards
-        : _cards.where((card) => card.category == _category).toList();
+    final campaigns = _category == 'All'
+        ? CampaignCatalog.all
+        : CampaignCatalog.all
+              .where(
+                (campaign) =>
+                    campaign.category == _category ||
+                    campaign.categoryKey == _category,
+              )
+              .toList();
     return ListView(
       padding: const EdgeInsets.fromLTRB(24, 30, 24, 112),
       children: [
@@ -126,78 +135,29 @@ class _ExploreScreenState extends State<ExploreScreen> {
         ),
         const SizedBox(height: 20),
         Text(
-          '${cards.length + 5} campaigns',
+          '${campaigns.length} campaigns',
           style: AppTextStyles.bodyLg.copyWith(color: const Color(0xFF9AA4B5)),
         ),
         const SizedBox(height: 18),
-        ...cards.expand((card) => [card, const SizedBox(height: 20)]),
+        ...campaigns.expand(
+          (campaign) => [
+            CampaignCard.fromCampaign(
+              campaign: campaign,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => CampaignDetailScreen(
+                    campaign: campaign,
+                    onGuestDonate: widget.onGuestDonate,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ],
     );
   }
-
-  static const _cards = [
-    CampaignCard(
-      title: 'Help rebuild our community centre',
-      category: 'Community Dev.',
-      amount: '\$14,400',
-      progress: .72,
-      location: 'Lagos, Nigeria',
-    ),
-    CampaignCard(
-      title: "Medical expenses for Leah's treatment",
-      category: 'Health',
-      amount: '\$8,700',
-      progress: .58,
-      location: 'Accra, Ghana',
-      icon: '🏥',
-      gradient: LinearGradient(colors: [Color(0xFFFF4545), Color(0xFFFF791E)]),
-    ),
-    CampaignCard(
-      title: 'School supplies for rural Kenya',
-      category: 'Education',
-      amount: '\$3,200',
-      progress: .64,
-      location: 'Kisumu, Kenya',
-      icon: '📚',
-      gradient: LinearGradient(colors: [Color(0xFF3495F4), Color(0xFF12B5D7)]),
-    ),
-    CampaignCard(
-      title: 'Clean water wells for Turkana County',
-      category: 'Water',
-      amount: '\$19,200',
-      progress: .77,
-      location: 'Turkana, Kenya',
-      icon: '💧',
-      gradient: LinearGradient(colors: [Color(0xFF12B5D7), Color(0xFF2B57A5)]),
-    ),
-    CampaignCard(
-      title: 'Disaster relief — Morocco earthquake',
-      category: 'Crisis Support',
-      amount: '\$31,000',
-      progress: .78,
-      location: 'Marrakech, Morocco',
-      icon: '🌊',
-      gradient: LinearGradient(colors: [Color(0xFFF12E23), Color(0xFFAB3A11)]),
-    ),
-    CampaignCard(
-      title: 'Emergency food parcels',
-      category: 'Food Security',
-      amount: '\$6,100',
-      progress: .76,
-      location: 'Tema, Ghana',
-      icon: '🍚',
-      gradient: LinearGradient(colors: [Color(0xFFE97B09), Color(0xFFC63928)]),
-    ),
-    CampaignCard(
-      title: 'Plant trees across urban schools',
-      category: 'Environment',
-      amount: '\$9,400',
-      progress: .61,
-      location: 'Kampala, Uganda',
-      icon: '🌱',
-      gradient: LinearGradient(colors: [Color(0xFF54C86B), Color(0xFF189F86)]),
-    ),
-  ];
 }
 
 class _ExploreSearchOverlay extends StatefulWidget {

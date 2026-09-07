@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import 'category_campaigns_screen.dart';
+import 'campaign_detail_screen.dart';
+import '../models/campaign_catalog.dart';
 import '../widgets/campaign_card.dart';
 
 class DonorHomeScreen extends StatefulWidget {
@@ -10,9 +13,11 @@ class DonorHomeScreen extends StatefulWidget {
     super.key,
     required this.onExplore,
     this.onStartFundraiser,
+    this.onDonate,
   });
   final VoidCallback onExplore;
   final VoidCallback? onStartFundraiser;
+  final VoidCallback? onDonate;
 
   @override
   State<DonorHomeScreen> createState() => _DonorHomeScreenState();
@@ -111,11 +116,11 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
       const SizedBox(height: 28),
       _section('🔥 Trending now'),
       const SizedBox(height: 12),
-      ..._feedCards.take(4),
+      ..._campaignCards(CampaignCatalog.trending),
       const SizedBox(height: 28),
       _section('🕐 Recently added'),
       const SizedBox(height: 12),
-      ..._feedCards.skip(4),
+      ..._campaignCards(CampaignCatalog.recent),
       const SizedBox(height: 24),
       _fundraiserCta(),
     ],
@@ -421,40 +426,55 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
     height: 91,
     child: ListView.separated(
       scrollDirection: Axis.horizontal,
-      itemCount: 6,
+      itemCount: CampaignCatalog.categories.length,
       separatorBuilder: (_, __) => const SizedBox(width: 13),
       itemBuilder: (_, i) {
-        const data = [
-          ('🏥', 'Health', Color(0xFFF47E7E)),
-          ('🆘', 'Crisis', Color(0xFFF9BA56)),
-          ('🌾', 'Agriculture', Color(0xFF9BD95A)),
-          ('🌱', 'Environment', Color(0xFF67CE86)),
-          ('🏘️', 'Community', Color(0xFF9A77F0)),
-          ('💧', 'Water', Color(0xFF52C4DA)),
-        ];
-        final item = data[i];
+        final category = CampaignCatalog.categories[i];
         return SizedBox(
           width: 64,
-          child: Column(
-            children: [
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: item.$3,
-                  borderRadius: BorderRadius.circular(16),
+          child: InkWell(
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => CategoryCampaignsScreen(
+                  category: category,
+                  onGuestDonate: widget.onDonate,
                 ),
-                alignment: Alignment.center,
-                child: Text(item.$1, style: const TextStyle(fontSize: 28)),
               ),
-              const SizedBox(height: 4),
-              Text(
-                item.$2,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.caption,
-              ),
-            ],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            child: Column(
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: category.color,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    category.emoji,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      shadows: [
+                        Shadow(
+                          color: Color(0x330A1B3D),
+                          offset: Offset(0, 2),
+                          blurRadius: 3,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  category.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.caption,
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -464,100 +484,36 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
     height: 220,
     child: ListView.separated(
       scrollDirection: Axis.horizontal,
-      itemCount: 3,
+      itemCount: CampaignCatalog.featured.length,
       separatorBuilder: (_, __) => const SizedBox(width: 14),
-      itemBuilder: (_, i) => SizedBox(width: 232, child: _featuredCards[i]),
+      itemBuilder: (_, i) => SizedBox(
+        width: 232,
+        child: CampaignCard.fromCampaign(
+          campaign: CampaignCatalog.featured[i],
+          variant: CampaignCardVariant.featured,
+          onTap: () => _openDetail(CampaignCatalog.featured[i]),
+        ),
+      ),
     ),
   );
-  static const _featuredCards = [
-    CampaignCard(
-      title: 'Help rebuild our community centre',
-      category: 'Community Dev.',
-      amount: '\$14,400',
-      progress: .72,
-      location: '',
-      variant: CampaignCardVariant.featured,
-    ),
-    CampaignCard(
-      title: "Medical expenses for Leah's treatment",
-      category: 'Health',
-      amount: '\$8,700',
-      progress: .58,
-      location: '',
-      icon: '🏥',
-      variant: CampaignCardVariant.featured,
-      gradient: LinearGradient(colors: [Color(0xFFFF4545), Color(0xFFFF791E)]),
-    ),
-    CampaignCard(
-      title: 'Clean water wells',
-      category: 'Water',
-      amount: '\$19,200',
-      progress: .77,
-      location: '',
-      icon: '💧',
-      variant: CampaignCardVariant.featured,
-      gradient: LinearGradient(colors: [Color(0xFF12B5D7), Color(0xFF2B57A5)]),
-    ),
+  List<Widget> _campaignCards(List<CampaignData> campaigns) => [
+    for (final campaign in campaigns) ...[
+      CampaignCard.fromCampaign(
+        campaign: campaign,
+        onTap: () => _openDetail(campaign),
+      ),
+      const SizedBox(height: 16),
+    ],
   ];
-  static const _feedCards = [
-    CampaignCard(
-      title: 'Help rebuild our community centre',
-      category: 'Community Dev.',
-      amount: '\$14,400',
-      progress: .72,
-      location: 'Lagos, Nigeria',
+
+  void _openDetail(CampaignData campaign) => Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      builder: (_) => CampaignDetailScreen(
+        campaign: campaign,
+        onGuestDonate: widget.onDonate,
+      ),
     ),
-    SizedBox(height: 16),
-    CampaignCard(
-      title: 'School supplies for rural Kenya',
-      category: 'Education',
-      amount: '\$3,200',
-      progress: .64,
-      location: 'Kisumu, Kenya',
-      icon: '📚',
-      gradient: LinearGradient(colors: [Color(0xFF3495F4), Color(0xFF12B5D7)]),
-    ),
-    SizedBox(height: 16),
-    CampaignCard(
-      title: 'Clean water wells for Turkana County',
-      category: 'Water & Sanitation',
-      amount: '\$19,200',
-      progress: .77,
-      location: 'Turkana, Kenya',
-      icon: '💧',
-      gradient: LinearGradient(colors: [Color(0xFF12B5D7), Color(0xFF2B57A5)]),
-    ),
-    SizedBox(height: 16),
-    CampaignCard(
-      title: 'Disaster relief — Morocco earthquake',
-      category: 'Disaster Relief',
-      amount: '\$31,000',
-      progress: .78,
-      location: 'Marrakech, Morocco',
-      icon: '🌊',
-      gradient: LinearGradient(colors: [Color(0xFFF12E23), Color(0xFFAB3A11)]),
-    ),
-    SizedBox(height: 16),
-    CampaignCard(
-      title: 'Emergency food parcels',
-      category: 'Food Security',
-      amount: '\$6,100',
-      progress: .76,
-      location: 'Tema, Ghana',
-      icon: '🍚',
-      gradient: LinearGradient(colors: [Color(0xFFE97B09), Color(0xFFC63928)]),
-    ),
-    SizedBox(height: 16),
-    CampaignCard(
-      title: 'Plant trees across urban schools',
-      category: 'Environment',
-      amount: '\$9,400',
-      progress: .61,
-      location: 'Kampala, Uganda',
-      icon: '🌱',
-      gradient: LinearGradient(colors: [Color(0xFF54C86B), Color(0xFF189F86)]),
-    ),
-  ];
+  );
   Widget _fundraiserCta() => Semantics(
     button: true,
     label: 'Start a fundraiser',

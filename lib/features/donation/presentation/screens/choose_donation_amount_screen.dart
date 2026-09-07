@@ -5,7 +5,13 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../state/donation_controller.dart';
 
 class ChooseDonationAmountScreen extends StatefulWidget {
-  const ChooseDonationAmountScreen({super.key});
+  const ChooseDonationAmountScreen({
+    super.key,
+    this.campaignTitle = 'Help rebuild our community centre',
+    this.campaignEmoji = '🏘️',
+  });
+  final String campaignTitle;
+  final String campaignEmoji;
   @override
   State<ChooseDonationAmountScreen> createState() =>
       _ChooseDonationAmountScreenState();
@@ -38,14 +44,17 @@ class _ChooseDonationAmountScreenState
             color: Colors.white,
             borderRadius: BorderRadius.circular(18),
           ),
-          child: const Row(
+          child: Row(
             children: [
-              Text('🏘️', style: TextStyle(fontSize: 34)),
-              SizedBox(width: 12),
+              Text(widget.campaignEmoji, style: const TextStyle(fontSize: 34)),
+              const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Help rebuild our community centre',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                  widget.campaignTitle,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ],

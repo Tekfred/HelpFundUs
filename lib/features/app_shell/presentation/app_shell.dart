@@ -92,11 +92,15 @@ class _AppShellState extends State<AppShell> {
         0 => DonorHomeScreen(
           onExplore: () => _controller.setTab(1),
           onStartFundraiser: () => _showGuestGate(LoginGatePurpose.campaign),
+          onDonate: () => _showGuestGate(LoginGatePurpose.donate),
         ),
-        1 => const ExploreScreen(),
+        1 => ExploreScreen(
+          onGuestDonate: () => _showGuestGate(LoginGatePurpose.donate),
+        ),
         _ => DonorHomeScreen(
           onExplore: () => _controller.setTab(1),
           onStartFundraiser: () => _showGuestGate(LoginGatePurpose.campaign),
+          onDonate: () => _showGuestGate(LoginGatePurpose.donate),
         ),
       };
     }
@@ -223,6 +227,7 @@ class _ShellScrollBehavior extends MaterialScrollBehavior {
     ScrollableDetails details,
   ) => Scrollbar(
     controller: details.controller,
+    interactive: false,
     thickness: 3,
     radius: const Radius.circular(99),
     child: child,
