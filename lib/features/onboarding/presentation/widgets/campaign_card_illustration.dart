@@ -24,14 +24,14 @@ class CampaignCardIllustration extends StatelessWidget {
             left: -18,
             child: Transform.rotate(
               angle: -0.09,
-              child: _shadowCard(color: const Color(0xFF7B5CF0).withOpacity(0.55)),
+              child: _shadowCard(color: const Color(0xFF7B5CF0).withValues(alpha: 0.55)),
             ),
           ),
           Positioned(
             right: -14,
             child: Transform.rotate(
               angle: 0.06,
-              child: _shadowCard(color: AppColors.primaryLight.withOpacity(0.7)),
+              child: _shadowCard(color: AppColors.primaryLight.withValues(alpha: 0.7)),
             ),
           ),
           _MainCard(),
@@ -64,7 +64,7 @@ class CampaignCardIllustration extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: Colors.white.withOpacity(0.5), width: 1),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 1),
       ),
     );
   }
@@ -79,7 +79,7 @@ class _MainCard extends StatelessWidget {
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: AppColors.borderStrong, width: 1.2),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.10), blurRadius: 24, offset: const Offset(0, 12))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.10), blurRadius: 24, offset: const Offset(0, 12))],
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(

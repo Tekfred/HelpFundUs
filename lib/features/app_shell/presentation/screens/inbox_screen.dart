@@ -45,9 +45,23 @@ class InboxScreen extends StatelessWidget {
             children: [
               Text('Inbox', style: AppTextStyles.h1),
               const Spacer(),
-              Text(
-                '3 unread',
-                style: AppTextStyles.buttonMd.copyWith(color: AppColors.coral),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 9,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF2F2),
+                  border: Border.all(color: const Color(0xFFFFB9B9)),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  '3 unread',
+                  style: AppTextStyles.buttonMd.copyWith(
+                    color: AppColors.coral,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ],
           ),
@@ -90,14 +104,30 @@ class InboxScreen extends StatelessWidget {
                 ),
               ],
             ),
-            title: Text(t.$2, style: AppTextStyles.h3),
+            title: Text(
+              t.$2,
+              style: AppTextStyles.buttonMd.copyWith(
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
             subtitle: Text(
               t.$3,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.bodyLg,
+              style: AppTextStyles.bodyMd.copyWith(
+                fontSize: 15,
+                color: const Color(0xFF6B7587),
+              ),
             ),
-            trailing: Text(t.$4, style: AppTextStyles.bodySm),
+            trailing: Text(
+              t.$4,
+              style: AppTextStyles.caption.copyWith(
+                fontSize: 13,
+                color: const Color(0xFF9AA4B5),
+              ),
+            ),
           ),
         ),
       ],

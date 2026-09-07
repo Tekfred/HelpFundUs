@@ -83,7 +83,7 @@ class _AccountRestrictedScreenState extends State<AccountRestrictedScreen> {
                 child: Container(
                   width: 96,
                   height: 96,
-                  decoration: BoxDecoration(color: copy.color.withOpacity(0.12), shape: BoxShape.circle),
+                  decoration: BoxDecoration(color: copy.color.withValues(alpha: 0.12), shape: BoxShape.circle),
                   child: Icon(copy.icon, color: copy.color, size: 44),
                 ),
               ),
@@ -112,7 +112,7 @@ class _AccountRestrictedScreenState extends State<AccountRestrictedScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 6),
                         decoration: BoxDecoration(
-                          color: selected ? AppColors.primary.withOpacity(0.12) : AppColors.surface,
+                          color: selected ? AppColors.primary.withValues(alpha: 0.12) : AppColors.surface,
                           borderRadius: BorderRadius.circular(AppRadius.pill),
                           border: Border.all(color: selected ? AppColors.primary : AppColors.border),
                         ),

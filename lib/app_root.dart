@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'core/animation/spring_page_switcher.dart';
-import 'core/widgets/dev_screen_nav.dart';
 import 'features/app_shell/presentation/app_shell.dart';
 import 'features/auth/presentation/auth_flow.dart';
 import 'features/auth/state/auth_controller.dart';
@@ -27,6 +26,7 @@ class AppRoot extends StatefulWidget {
 
 class _AppRootState extends State<AppRoot> {
   _AppMode _mode = _AppMode.onboarding;
+  bool _isGuest = false;
   late final _onboardingController = OnboardingController();
   late final _authController = AuthController();
 
@@ -47,11 +47,20 @@ class _AppRootState extends State<AppRoot> {
   void _jumpToAuth(AuthStep step) {
     setState(() {
       _mode = _AppMode.auth;
+      _isGuest = false;
       _authController.goTo(step);
     });
   }
 
-  void _jumpToAppShell() => setState(() => _mode = _AppMode.appShell);
+  void _jumpToAppShell() => setState(() {
+    _isGuest = false;
+    _mode = _AppMode.appShell;
+  });
+
+  void _enterGuest() => setState(() {
+    _isGuest = true;
+    _mode = _AppMode.appShell;
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -66,13 +75,20 @@ class _AppRootState extends State<AppRoot> {
                 controller: _onboardingController,
                 onSignIn: () => _jumpToAuth(AuthStep.signIn),
                 onCreateAccount: () => _jumpToAuth(AuthStep.createAccount),
+                onBrowseCampaigns: _enterGuest,
               ),
               _AppMode.auth => AuthFlow(
                 controller: _authController,
                 onFinished: _jumpToAppShell,
               ),
               _AppMode.appShell => AppShell(
-                onSignOut: () => setState(() => _mode = _AppMode.onboarding),
+                isGuest: _isGuest,
+                onGuestSignIn: () => _jumpToAuth(AuthStep.signIn),
+                onGuestCreateAccount: () => _jumpToAuth(AuthStep.createAccount),
+                onSignOut: () => setState(() {
+                  _isGuest = false;
+                  _mode = _AppMode.onboarding;
+                }),
               ),
             },
           ),

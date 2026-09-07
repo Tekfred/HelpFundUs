@@ -117,7 +117,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 6),
                   decoration: BoxDecoration(
-                    color: _simulateSuspended ? AppColors.danger.withOpacity(0.1) : AppColors.background,
+                    color: _simulateSuspended ? AppColors.danger.withValues(alpha: 0.1) : AppColors.background,
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                     border: Border.all(color: _simulateSuspended ? AppColors.danger : AppColors.border),
                   ),

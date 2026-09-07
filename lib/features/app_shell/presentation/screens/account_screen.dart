@@ -18,36 +18,59 @@ class AccountScreen extends StatelessWidget {
     children: [
       Row(
         children: [
-          const CircleAvatar(
-            radius: 46,
-            backgroundColor: AppColors.primary,
-            child: Text(
-              'JD',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 34,
-                fontWeight: FontWeight.w700,
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              const CircleAvatar(
+                radius: 36,
+                backgroundColor: AppColors.primary,
+                child: Text(
+                  'JD',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 27,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
-            ),
+              Positioned(
+                right: -2,
+                bottom: -1,
+                child: Container(
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                  ),
+                  child: const Icon(Icons.add, size: 18, color: Colors.white),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Jane Doe', style: AppTextStyles.h1),
-              Text('jane@example.com', style: AppTextStyles.bodyLg),
-              const SizedBox(height: 6),
+              Text('Jane Doe', style: AppTextStyles.h2.copyWith(fontSize: 24)),
+              Text(
+                'jane@example.com',
+                style: AppTextStyles.bodyMd.copyWith(fontSize: 15),
+              ),
+              const SizedBox(height: 4),
               Text(
                 '✓ Verified',
                 style: AppTextStyles.buttonMd.copyWith(
                   color: AppColors.primary,
+                  fontSize: 14,
                 ),
               ),
             ],
           ),
         ],
       ),
-      const SizedBox(height: 38),
+      const SizedBox(height: 30),
       Text(
         'VIEW AS',
         style: AppTextStyles.label.copyWith(
@@ -55,12 +78,12 @@ class AccountScreen extends StatelessWidget {
           fontWeight: FontWeight.w700,
         ),
       ),
-      const SizedBox(height: 12),
+      const SizedBox(height: 9),
       Container(
-        padding: const EdgeInsets.all(6),
+        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: const Color(0xF7FFFFFF),
-          borderRadius: BorderRadius.circular(22),
+          color: const Color.fromARGB(255, 245, 246, 245),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
           children: [
@@ -70,20 +93,30 @@ class AccountScreen extends StatelessWidget {
                   onTap: () => controller.setRole(role),
                   child: AnimatedContainer(
                     duration: AppMotion.fast,
-                    padding: const EdgeInsets.symmetric(vertical: 17),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: controller.role == role
                           ? Colors.white
                           : Colors.transparent,
-                      borderRadius: BorderRadius.circular(17),
+                      borderRadius: BorderRadius.circular(12),
                       border: controller.role == role
-                          ? Border.all(color: const Color(0xFFD1D6DE))
+                          ? Border.all(color: const Color(0xFFCDD5DE))
+                          : null,
+                      boxShadow: controller.role == role
+                          ? const [
+                              BoxShadow(
+                                color: Color(0x12000000),
+                                blurRadius: 5,
+                                offset: Offset(0, 2),
+                              ),
+                            ]
                           : null,
                     ),
                     child: Text(
                       role == ShellRole.donor ? 'Donor' : 'Fundraiser',
                       style: AppTextStyles.buttonLg.copyWith(
+                        fontSize: 15,
                         color: controller.role == role
                             ? AppColors.textPrimary
                             : const Color(0xFF9AA4B5),
@@ -95,11 +128,11 @@ class AccountScreen extends StatelessWidget {
           ],
         ),
       ),
-      const SizedBox(height: 38),
+      const SizedBox(height: 28),
       Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(22),
         ),
         child: Column(
           children: const [
@@ -170,18 +203,31 @@ class _Setting extends StatelessWidget {
           : const Border(bottom: BorderSide(color: Color(0xFFE0E4E8))),
     ),
     child: ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 11),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
       leading: Container(
-        width: 48,
-        height: 48,
+        width: 44,
+        height: 44,
         decoration: BoxDecoration(
           color: const Color(0xFFE6F7ED),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(14),
         ),
         child: Icon(icon, color: AppColors.primary),
       ),
-      title: Text(title, style: AppTextStyles.h3),
-      subtitle: Text(subtitle, style: AppTextStyles.bodyMd),
+      title: Text(
+        title,
+        style: AppTextStyles.buttonMd.copyWith(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: AppColors.textPrimary,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: AppTextStyles.bodyMd.copyWith(
+          fontSize: 14,
+          color: const Color(0xFF6B7587),
+        ),
+      ),
       trailing: const Icon(Icons.chevron_right, color: Color(0xFF9AA4B5)),
     ),
   );

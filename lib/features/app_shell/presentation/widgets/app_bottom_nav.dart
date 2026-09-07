@@ -6,16 +6,23 @@ import '../../state/app_shell_controller.dart';
 import 'notification_badge.dart';
 
 class AppBottomNav extends StatelessWidget {
-  const AppBottomNav({super.key, required this.controller});
+  const AppBottomNav({
+    super.key,
+    required this.controller,
+    this.isGuest = false,
+    this.onSignIn,
+  });
   final AppShellController controller;
-  static const _donor = [
+  final bool isGuest;
+  final VoidCallback? onSignIn;
+  static const _d = [
     Icons.home_rounded,
     Icons.explore_outlined,
     Icons.bar_chart_rounded,
     Icons.notifications_none_rounded,
     Icons.person_outline_rounded,
   ];
-  static const _fundraiser = [
+  static const _f = [
     Icons.home_rounded,
     Icons.campaign_outlined,
     Icons.bar_chart_rounded,
@@ -24,83 +31,84 @@ class AppBottomNav extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    final labels = controller.tabLabels;
-    final icons = controller.role == ShellRole.donor ? _donor : _fundraiser;
+    final icons = controller.role == ShellRole.donor ? _d : _f;
+    final guestIcons = [_d[0], _d[1], _d[4]];
+    final labels = isGuest
+        ? const ['Home', 'Explore', 'Sign In']
+        : controller.tabLabels;
+    final displayedIcons = isGuest ? guestIcons : icons;
     return SafeArea(
       top: false,
       child: Container(
         height: 84,
-        color: Colors.white,
-        child: LayoutBuilder(
-          builder: (context, box) {
-            return Stack(
-              children: [
-                AnimatedAlign(
-                  duration: AppMotion.normal,
-                  curve: Curves.elasticOut,
-                  alignment: Alignment(-1 + controller.tabIndex * .5, -.38),
-                  child: Container(
-                    width: box.maxWidth / 5 - 28,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: .12),
-                      borderRadius: BorderRadius.circular(AppRadius.pill),
-                    ),
-                  ),
-                ),
-                Row(
-                  children: List.generate(
-                    5,
-                    (index) => _item(index, labels[index], icons[index]),
-                  ),
-                ),
-              ],
-            );
-          },
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          border: Border(top: BorderSide(color: AppColors.border)),
+        ),
+        child: Row(
+          children: List.generate(
+            labels.length,
+            (i) => _item(i, labels[i], displayedIcons[i]),
+          ),
         ),
       ),
     );
   }
 
-  Widget _item(int index, String label, IconData icon) {
-    final selected = index == controller.tabIndex;
-    final count = index == 2
+  Widget _item(int i, String label, IconData icon) {
+    final signIn = isGuest && i == 2;
+    final s = signIn || i == controller.tabIndex;
+    final n = isGuest
+        ? 0
+        : i == 2
         ? controller.unreadActivity
-        : index == 3
+        : i == 3
         ? controller.unreadInbox
         : 0;
     return Expanded(
       child: InkWell(
-        onTap: () => controller.setTab(index),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10),
+        onTap: signIn ? onSignIn : () => controller.setTab(i),
+        child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Icon(
-                    icon,
-                    size: 27,
-                    color: selected
-                        ? AppColors.primary
-                        : const Color(0xFF9AA4B5),
+                  AnimatedContainer(
+                    duration: AppMotion.normal,
+                    curve: Curves.elasticOut,
+                    width: 48,
+                    height: 38,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: s
+                          ? AppColors.primary.withValues(alpha: .12)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(AppRadius.pill),
+                    ),
+                    child: Icon(
+                      icon,
+                      size: 24,
+                      color: s ? AppColors.primary : const Color(0xFF9AA4B5),
+                    ),
                   ),
-                  if (count > 0)
+                  if (n > 0)
                     Positioned(
-                      right: -10,
-                      top: -8,
-                      child: NotificationBadge(count: count),
+                      right: -4,
+                      top: -5,
+                      child: NotificationBadge(count: n),
                     ),
                 ],
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 3),
               Text(
                 label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: AppTextStyles.caption.copyWith(
-                  color: selected ? AppColors.primary : const Color(0xFF9AA4B5),
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                  color: s ? AppColors.primary : const Color(0xFF9AA4B5),
+                  fontWeight: s ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),
             ],

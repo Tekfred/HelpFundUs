@@ -46,10 +46,17 @@ abstract class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
-          textStyle: AppTextStyles.buttonLg.copyWith(color: AppColors.textPrimary),
+          textStyle: AppTextStyles.buttonLg.copyWith(
+            color: AppColors.textPrimary,
+          ),
         ),
       ),
       dividerColor: AppColors.border,
+      scrollbarTheme: const ScrollbarThemeData(
+        thickness: WidgetStatePropertyAll(3),
+        radius: Radius.circular(AppRadius.pill),
+        thumbColor: WidgetStatePropertyAll(Color(0x331DB954)),
+      ),
       splashFactory: InkRipple.splashFactory,
     );
   }

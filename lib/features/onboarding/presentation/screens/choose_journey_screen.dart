@@ -28,7 +28,9 @@ class ChooseJourneyScreen extends StatefulWidget {
 }
 
 class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
-  JourneyChoice? _choice = JourneyChoice.donor;
+  // A journey is intentionally not inferred. The Continue CTA becomes
+  // available only after the person has made their own choice.
+  JourneyChoice? _choice;
 
   @override
   Widget build(BuildContext context) {
@@ -127,13 +129,24 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
                 ),
               ),
               Center(
-                child: TextLinkButton(
-                  label: 'Browse campaigns first',
+                child: TextButton(
                   onPressed: widget.onBrowseFirst,
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.sm,
+                    ),
+                    minimumSize: const Size(0, 0),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Text(
+                    'Browse campaigns first',
+                    style: AppTextStyles.buttonMd.copyWith(
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
                 ),
               ),
               Center(
-                
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -150,7 +163,9 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
                       ),
                       child: Text(
                         'Sign in',
-                        style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary),
+                        style: AppTextStyles.buttonMd.copyWith(
+                          color: AppColors.primary,
+                        ),
                       ),
                     ),
                   ],

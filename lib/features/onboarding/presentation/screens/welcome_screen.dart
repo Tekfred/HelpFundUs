@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/animation/reveal_on_enter.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -11,11 +10,9 @@ class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({
     super.key,
     required this.onGetStarted,
-    required this.onExplore,
     required this.onSignIn,
   });
   final VoidCallback onGetStarted;
-  final VoidCallback onExplore;
   final VoidCallback onSignIn;
 
   @override
@@ -94,12 +91,6 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     SecondaryButton(label: 'Sign In', onPressed: onSignIn),
-                    const SizedBox(height: AppSpacing.sm),
-                    // TextLinkButton(
-                    //   label: 'Explore Campaigns',
-                    //   trailingArrow: true,
-                    //   onPressed: onExplore,
-                    // ),
                   ],
                 ),
               ),
@@ -107,10 +98,7 @@ class WelcomeScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.md),
                 child: Text.rich(
-                  TextSpan(
-                    style: AppTextStyles.caption,
-                   
-                  ),
+                  TextSpan(style: AppTextStyles.caption),
                   textAlign: TextAlign.center,
                 ),
               ),

@@ -57,7 +57,7 @@ class SecurityIllustration extends StatelessWidget {
                         width: 32,
                         height: 32,
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.12),
+                          color: AppColors.primary.withValues(alpha: 0.12),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(icon, size: 16, color: AppColors.primary),
@@ -126,7 +126,7 @@ class _ShieldPopState extends State<_ShieldPop>
             width: 110,
             height: 110,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.08),
+              color: AppColors.primary.withValues(alpha: 0.08),
               shape: BoxShape.circle,
             ),
           ),

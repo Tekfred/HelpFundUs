@@ -83,9 +83,9 @@ class PrimaryButton extends StatelessWidget {
         height: 58,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: enabled ? AppColors.primary : AppColors.primary.withOpacity(0.4),
+          color: enabled ? AppColors.primary : AppColors.primary.withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: Border.all(color: AppColors.primaryDark.withOpacity(enabled ? 0.6 : 0.2)),
+          border: Border.all(color: AppColors.primaryDark.withValues(alpha: enabled ? 0.6 : 0.2)),
           boxShadow: enabled
               ? [
                   BoxShadow(

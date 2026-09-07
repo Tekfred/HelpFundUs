@@ -22,11 +22,13 @@ class OnboardingFlow extends StatefulWidget {
     required this.controller,
     required this.onSignIn,
     required this.onCreateAccount,
+    required this.onBrowseCampaigns,
   });
 
   final OnboardingController controller;
   final VoidCallback onSignIn;
   final VoidCallback onCreateAccount;
+  final VoidCallback onBrowseCampaigns;
 
   @override
   State<OnboardingFlow> createState() => _OnboardingFlowState();
@@ -68,9 +70,6 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
         return WelcomeScreen(
           onGetStarted: _controller.next,
           onSignIn: widget.onSignIn,
-          onExplore: () {
-            // TODO: route to the public campaign browser once it exists.
-          },
         );
       case OnboardingStep.discover:
         return DiscoverCausesScreen(
@@ -98,9 +97,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
           // backend to send it to.
           onContinue: (choice) => widget.onCreateAccount(),
           onSignIn: widget.onSignIn,
-          onBrowseFirst: () {
-            // TODO: route to the public campaign browser once it exists.
-          },
+          onBrowseFirst: widget.onBrowseCampaigns,
         );
     }
   }

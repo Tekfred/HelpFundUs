@@ -35,6 +35,17 @@ class AppShellController extends ChangeNotifier {
       ? const ['Home', 'Explore', 'Activity', 'Inbox', 'Account']
       : const ['Home', 'Campaigns', 'Activity', 'Inbox', 'Account'];
 
+  String get routePath {
+    final segment = switch (tabIndex) {
+      0 => 'home',
+      1 => role == ShellRole.donor ? 'explore' : 'campaigns',
+      2 => 'activity',
+      3 => 'inbox',
+      _ => 'account',
+    };
+    return '/app-shell/$segment';
+  }
+
   void setRole(ShellRole r) {
     if (_role == r) return;
     _role = r;

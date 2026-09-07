@@ -58,7 +58,7 @@ class _SessionExpiredScreenState extends State<SessionExpiredScreen> with Single
                 child: Container(
                   width: 96,
                   height: 96,
-                  decoration: BoxDecoration(color: AppColors.warning.withOpacity(0.14), shape: BoxShape.circle),
+                  decoration: BoxDecoration(color: AppColors.warning.withValues(alpha: 0.14), shape: BoxShape.circle),
                   child: const Icon(Icons.access_time_filled_rounded, color: AppColors.warning, size: 44),
                 ),
               ),

@@ -3,6 +3,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
 
+enum CampaignCardVariant { featured, feed }
+
 class CampaignCard extends StatelessWidget {
   const CampaignCard({
     super.key,
@@ -13,101 +15,165 @@ class CampaignCard extends StatelessWidget {
     required this.location,
     this.icon = '🏘️',
     this.gradient = AppColors.cardGradient,
+    this.variant = CampaignCardVariant.feed,
+    this.donors = 248,
   });
   final String title, category, amount, location, icon;
   final double progress;
   final Gradient gradient;
+  final CampaignCardVariant variant;
+  final int donors;
   @override
-  Widget build(BuildContext context) => Container(
-    clipBehavior: Clip.antiAlias,
-    decoration: BoxDecoration(
-      color: AppColors.surface,
-      borderRadius: BorderRadius.circular(28),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          height: 190,
-          decoration: BoxDecoration(gradient: gradient),
-          child: Stack(
-            children: [
-              Center(child: Text(icon, style: const TextStyle(fontSize: 64))),
-              Positioned(
-                top: 16,
-                right: 16,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 9,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xB9273C8F),
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
-                  ),
-                  child: Text(
-                    category,
-                    style: AppTextStyles.buttonMd.copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
-          ),
+  Widget build(BuildContext context) {
+    final featured = variant == CampaignCardVariant.featured;
+    return SizedBox(
+      // ListView gives its children unbounded vertical constraints. The fixed
+      // card height makes the inner Expanded area valid for both feed and
+      // horizontal featured presentations.
+      height: featured ? 220 : 278,
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x120A6038),
+              blurRadius: 12,
+              offset: Offset(0, 5),
+            ),
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(28, 20, 28, 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: AppTextStyles.h3),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.location_on_outlined,
-                    color: Color(0xFF9AA4B5),
-                    size: 19,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    location,
-                    style: AppTextStyles.bodyMd.copyWith(
-                      color: const Color(0xFF9AA4B5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: featured ? 108 : 150,
+              child: DecoratedBox(
+                decoration: BoxDecoration(gradient: gradient),
+                child: Stack(
+                  children: [
+                    const Positioned(
+                      top: 10,
+                      left: 12,
+                      child: Icon(
+                        Icons.verified_outlined,
+                        color: AppColors.primary,
+                        size: 19,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0, end: progress),
-                duration: const Duration(milliseconds: 850),
-                builder: (context, value, _) => ClipRRect(
-                  borderRadius: BorderRadius.circular(99),
-                  child: LinearProgressIndicator(
-                    value: value,
-                    minHeight: 10,
-                    backgroundColor: const Color(0xFFE1E4E9),
-                    valueColor: const AlwaysStoppedAnimation(AppColors.primary),
-                  ),
+                    Center(
+                      child: Text(
+                        icon,
+                        style: TextStyle(fontSize: featured ? 42 : 54),
+                      ),
+                    ),
+                    Positioned(
+                      top: 10,
+                      right: 10,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xB9273C8F),
+                          borderRadius: BorderRadius.circular(AppRadius.pill),
+                        ),
+                        child: Text(
+                          category,
+                          style: AppTextStyles.caption.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Text(
-                    amount,
-                    style: AppTextStyles.h3.copyWith(color: AppColors.primary),
-                  ),
-                  const Spacer(),
-                  Text(
-                    '${(progress * 100).round()}% · 248 donors',
-                    style: AppTextStyles.bodyMd.copyWith(
-                      color: const Color(0xFF9AA4B5),
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  featured ? 14 : 16,
+                  featured ? 11 : 12,
+                  featured ? 14 : 16,
+                  featured ? 12 : 12,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      // Trending/feed typography intentionally matches the
+                      // compact Featured presentation to keep two-line titles
+                      // inside the fixed card height at all phone widths.
+                      style: AppTextStyles.buttonMd.copyWith(height: 1.18),
                     ),
-                  ),
-                ],
+                    if (!featured) _location(),
+                    const Spacer(),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(99),
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        minHeight: 7,
+                        backgroundColor: const Color(0xFFE1E4E9),
+                        valueColor: const AlwaysStoppedAnimation(
+                          AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Text(
+                          amount,
+                          style: AppTextStyles.buttonMd.copyWith(
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          featured
+                              ? '${(progress * 100).round()}%'
+                              : '${(progress * 100).round()}% · $donors donors',
+                          style: AppTextStyles.caption.copyWith(
+                            color: const Color(0xFF8E99AA),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _location() => Padding(
+    padding: const EdgeInsets.only(top: 5),
+    child: Row(
+      children: [
+        const Icon(
+          Icons.location_on_outlined,
+          color: Color(0xFF9AA4B5),
+          size: 16,
+        ),
+        const SizedBox(width: 3),
+        Expanded(
+          child: Text(
+            location,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.caption.copyWith(
+              color: const Color(0xFF9AA4B5),
+            ),
           ),
         ),
       ],

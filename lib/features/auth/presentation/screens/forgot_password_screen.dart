@@ -57,7 +57,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             width: 64,
             height: 64,
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), shape: BoxShape.circle),
+            decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), shape: BoxShape.circle),
             child: const Icon(Icons.mark_email_read_outlined, color: AppColors.primary, size: 28),
           ),
           const SizedBox(height: AppSpacing.md),

@@ -147,7 +147,7 @@ class _OtpBoxState extends State<_OtpBox> {
           width: focused || widget.hasError ? 1.8 : 1.2,
         ),
         boxShadow: focused
-            ? [BoxShadow(color: AppColors.primary.withOpacity(0.15), blurRadius: 10, spreadRadius: 1)]
+            ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.15), blurRadius: 10, spreadRadius: 1)]
             : null,
       ),
       alignment: Alignment.center,

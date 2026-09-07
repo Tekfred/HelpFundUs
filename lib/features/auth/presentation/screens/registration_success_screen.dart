@@ -137,7 +137,7 @@ class _PromptCard extends StatelessWidget {
             Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.12), shape: BoxShape.circle),
+              decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.12), shape: BoxShape.circle),
               child: Icon(icon, color: AppColors.primary, size: 20),
             ),
             const SizedBox(width: AppSpacing.sm),

@@ -13,11 +13,24 @@ import 'screens/explore_screen.dart';
 import 'screens/fundraiser_home_screen.dart';
 import 'screens/inbox_screen.dart';
 import 'widgets/app_bottom_nav.dart';
+import 'widgets/login_gate.dart';
 
 class AppShell extends StatefulWidget {
-  const AppShell({super.key, required this.onSignOut, this.controller});
+  const AppShell({
+    super.key,
+    required this.onSignOut,
+    this.controller,
+    this.initialUri,
+    this.isGuest = false,
+    this.onGuestSignIn,
+    this.onGuestCreateAccount,
+  });
   final VoidCallback onSignOut;
   final AppShellController? controller;
+  final Uri? initialUri;
+  final bool isGuest;
+  final VoidCallback? onGuestSignIn;
+  final VoidCallback? onGuestCreateAccount;
   @override
   State<AppShell> createState() => _AppShellState();
 }
@@ -25,20 +38,35 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   late final AppShellController _controller;
   StreamSubscription<bool>? _onlineSubscription;
-  bool _loading = true;
+  late bool _loading;
   @override
   void initState() {
     super.initState();
+    _loading = !widget.isGuest;
     _controller = widget.controller ?? AppShellController();
+    if (widget.initialUri != null) {
+      _controller.handleDeepLink(widget.initialUri!);
+    }
     _controller.addListener(_refresh);
     _onlineSubscription = onlineStatusChanges().listen(_controller.setOnline);
-    Future<void>.delayed(const Duration(milliseconds: 900), () {
-      if (mounted) setState(() => _loading = false);
-    });
+    if (_loading) {
+      Future<void>.delayed(const Duration(milliseconds: 900), () {
+        if (mounted) setState(() => _loading = false);
+      });
+    }
   }
 
   void _refresh() {
     if (mounted) setState(() {});
+  }
+
+  @override
+  void didUpdateWidget(covariant AppShell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final uri = widget.initialUri;
+    if (uri != null && uri != oldWidget.initialUri) {
+      _controller.handleDeepLink(uri);
+    }
   }
 
   @override
@@ -49,32 +77,60 @@ class _AppShellState extends State<AppShell> {
     super.dispose();
   }
 
-  Widget get _body => switch ((_controller.role, _controller.tabIndex)) {
-    (_, 0) =>
-      _controller.role == ShellRole.donor
-          ? DonorHomeScreen(onExplore: () => _controller.setTab(1))
-          : const FundraiserHomeScreen(),
-    (ShellRole.donor, 1) => const ExploreScreen(),
-    (ShellRole.fundraiser, 1) => const CampaignsScreen(),
-    (_, 2) => const ActivityScreen(),
-    (_, 3) => const InboxScreen(),
-    (_, _) => AccountScreen(
-      controller: _controller,
-      onSignOut: widget.onSignOut,
-    ),
-  };
+  void _showGuestGate(LoginGatePurpose purpose) {
+    showLoginGate(
+      context,
+      purpose: purpose,
+      onSignIn: widget.onGuestSignIn ?? widget.onSignOut,
+      onCreateAccount: widget.onGuestCreateAccount ?? widget.onSignOut,
+    );
+  }
+
+  Widget get _body {
+    if (widget.isGuest) {
+      return switch (_controller.tabIndex) {
+        0 => DonorHomeScreen(
+          onExplore: () => _controller.setTab(1),
+          onStartFundraiser: () => _showGuestGate(LoginGatePurpose.campaign),
+        ),
+        1 => const ExploreScreen(),
+        _ => DonorHomeScreen(
+          onExplore: () => _controller.setTab(1),
+          onStartFundraiser: () => _showGuestGate(LoginGatePurpose.campaign),
+        ),
+      };
+    }
+    return switch ((_controller.role, _controller.tabIndex)) {
+      (_, 0) =>
+        _controller.role == ShellRole.donor
+            ? DonorHomeScreen(onExplore: () => _controller.setTab(1))
+            : const FundraiserHomeScreen(),
+      (ShellRole.donor, 1) => const ExploreScreen(),
+      (ShellRole.fundraiser, 1) => const CampaignsScreen(),
+      (_, 2) => const ActivityScreen(),
+      (_, 3) => const InboxScreen(),
+      (_, _) => AccountScreen(
+        controller: _controller,
+        onSignOut: widget.onSignOut,
+      ),
+    };
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: AppColors.background,
     body: Stack(
       children: [
-        SafeArea(
-          bottom: false,
-          child: AnimatedSwitcher(
-            duration: AppMotion.fast,
-            child: KeyedSubtree(
-              key: ValueKey('${_controller.role}-${_controller.tabIndex}'),
-              child: _body,
+        ScrollConfiguration(
+          behavior: const _ShellScrollBehavior(),
+          child: SafeArea(
+            bottom: false,
+            child: AnimatedSwitcher(
+              duration: AppMotion.fast,
+              child: KeyedSubtree(
+                key: ValueKey('${_controller.role}-${_controller.tabIndex}'),
+                child: _body,
+              ),
             ),
           ),
         ),
@@ -97,10 +153,14 @@ class _AppShellState extends State<AppShell> {
                   children: [
                     const Icon(Icons.wifi_off, color: Colors.white),
                     const SizedBox(width: 10),
-                    Text(
-                      'You’re offline — changes will sync when connected.',
-                      style: AppTextStyles.buttonMd.copyWith(
-                        color: Colors.white,
+                    Expanded(
+                      child: Text(
+                        'You’re offline — changes will sync when connected.',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.buttonMd.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],
@@ -112,7 +172,11 @@ class _AppShellState extends State<AppShell> {
         if (_loading) const _LoadingOverlay(),
       ],
     ),
-    bottomNavigationBar: AppBottomNav(controller: _controller),
+    bottomNavigationBar: AppBottomNav(
+      controller: _controller,
+      isGuest: widget.isGuest,
+      onSignIn: widget.onGuestSignIn,
+    ),
   );
 }
 
@@ -147,5 +211,20 @@ class _LoadingOverlay extends StatelessWidget {
         ],
       ),
     ),
+  );
+}
+
+class _ShellScrollBehavior extends MaterialScrollBehavior {
+  const _ShellScrollBehavior();
+  @override
+  Widget buildScrollbar(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) => Scrollbar(
+    controller: details.controller,
+    thickness: 3,
+    radius: const Radius.circular(99),
+    child: child,
   );
 }
