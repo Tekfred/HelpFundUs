@@ -72,7 +72,10 @@ class _SignInScreenState extends State<SignInScreen> {
           alignment: Alignment.centerRight,
           child: TextButton(
             onPressed: widget.onForgotPassword,
-            child: Text('Forgot password?', style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary)),
+            child: Text(
+              'Forgot password?',
+              style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary),
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -81,7 +84,10 @@ class _SignInScreenState extends State<SignInScreen> {
         Center(
           child: TextButton(
             onPressed: widget.onPasswordless,
-            child: Text('Sign in with a one-time code instead', style: AppTextStyles.bodyMd),
+            child: Text(
+              'Sign in with a one-time code instead',
+              style: AppTextStyles.bodyMd,
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -96,16 +102,27 @@ class _SignInScreenState extends State<SignInScreen> {
               Text('New to HelpFundUs? ', style: AppTextStyles.bodyMd),
               GestureDetector(
                 onTap: widget.onCreateAccount,
-                child: Text('Create account', style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary)),
+                child: Text(
+                  'Create account',
+                  style: AppTextStyles.buttonMd.copyWith(
+                    color: AppColors.primary,
+                  ),
+                ),
               ),
             ],
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.xs,
+          ),
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.borderStrong, style: BorderStyle.solid),
+            border: Border.all(
+              color: AppColors.borderStrong,
+              style: BorderStyle.solid,
+            ),
             borderRadius: BorderRadius.circular(AppRadius.md),
           ),
           child: Row(
@@ -113,17 +130,31 @@ class _SignInScreenState extends State<SignInScreen> {
               Text('Demo:', style: AppTextStyles.bodySm),
               const Spacer(),
               GestureDetector(
-                onTap: () => setState(() => _simulateSuspended = !_simulateSuspended),
+                onTap: () =>
+                    setState(() => _simulateSuspended = !_simulateSuspended),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    color: _simulateSuspended ? AppColors.danger.withValues(alpha: 0.1) : AppColors.background,
+                    color: _simulateSuspended
+                        ? AppColors.danger.withValues(alpha: 0.1)
+                        : AppColors.background,
                     borderRadius: BorderRadius.circular(AppRadius.pill),
-                    border: Border.all(color: _simulateSuspended ? AppColors.danger : AppColors.border),
+                    border: Border.all(
+                      color: _simulateSuspended
+                          ? AppColors.danger
+                          : AppColors.border,
+                    ),
                   ),
                   child: Text(
                     _simulateSuspended ? 'Suspended account' : 'Normal account',
-                    style: AppTextStyles.bodySm.copyWith(color: _simulateSuspended ? AppColors.danger : AppColors.textSecondary),
+                    style: AppTextStyles.bodySm.copyWith(
+                      color: _simulateSuspended
+                          ? AppColors.danger
+                          : AppColors.textSecondary,
+                    ),
                   ),
                 ),
               ),

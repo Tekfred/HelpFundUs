@@ -56,16 +56,26 @@ class _AuthTextFieldState extends State<AuthTextField> {
           style: AppTextStyles.bodyLg,
           decoration: InputDecoration(
             hintText: widget.hint,
-            hintStyle: AppTextStyles.bodyLg.copyWith(color: AppColors.textMuted),
+            hintStyle: AppTextStyles.bodyLg.copyWith(
+              color: AppColors.textMuted,
+            ),
             errorText: widget.errorText,
             prefixIcon: widget.prefix,
             filled: true,
             fillColor: AppColors.surface,
-            contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: 16,
+            ),
             suffixIcon: widget.togglableObscure
                 ? IconButton(
-                    icon: Icon(_obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                        size: 20, color: AppColors.textMuted),
+                    icon: Icon(
+                      _obscure
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      size: 20,
+                      color: AppColors.textMuted,
+                    ),
                     onPressed: () => setState(() => _obscure = !_obscure),
                   )
                 : null,
@@ -79,7 +89,10 @@ class _AuthTextFieldState extends State<AuthTextField> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.md),
-              borderSide: const BorderSide(color: AppColors.primary, width: 1.6),
+              borderSide: const BorderSide(
+                color: AppColors.primary,
+                width: 1.6,
+              ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.md),

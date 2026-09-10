@@ -8,7 +8,11 @@ import '../../../../core/widgets/auth_text_field.dart';
 import '../../../../core/widgets/password_strength_meter.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key, required this.onBack, required this.onReset});
+  const ResetPasswordScreen({
+    super.key,
+    required this.onBack,
+    required this.onReset,
+  });
   final VoidCallback onBack;
   final VoidCallback onReset;
 
@@ -72,13 +76,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             width: 64,
             height: 64,
             alignment: Alignment.center,
-            decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              shape: BoxShape.circle,
+            ),
             child: const Icon(Icons.check, color: AppColors.surface, size: 30),
           ),
           const SizedBox(height: AppSpacing.md),
           Text('Password updated', style: AppTextStyles.h2),
           const SizedBox(height: AppSpacing.sm),
-          Text('Your password has been reset. Sign in with your new password to continue.', style: AppTextStyles.bodyMd),
+          Text(
+            'Your password has been reset. Sign in with your new password to continue.',
+            style: AppTextStyles.bodyMd,
+          ),
           const SizedBox(height: AppSpacing.lg),
           PrimaryButton(label: 'Sign In', onPressed: widget.onReset),
         ],
@@ -109,13 +119,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           onChanged: (_) => setState(() {}),
         ),
         const SizedBox(height: AppSpacing.lg),
-        PrimaryButton(label: 'Reset Password', onPressed: _canSubmit ? () => setState(() => _done = true) : null),
+        PrimaryButton(
+          label: 'Reset Password',
+          onPressed: _canSubmit ? () => setState(() => _done = true) : null,
+        ),
         const SizedBox(height: AppSpacing.lg),
         Center(
           child: GestureDetector(
             // Demo affordance to preview the expired/invalid-token state.
             onTap: () => setState(() => _tokenExpiredDemo = true),
-            child: Text('Demo: preview expired-link state', style: AppTextStyles.bodySm),
+            child: Text(
+              'Demo: preview expired-link state',
+              style: AppTextStyles.bodySm,
+            ),
           ),
         ),
       ],

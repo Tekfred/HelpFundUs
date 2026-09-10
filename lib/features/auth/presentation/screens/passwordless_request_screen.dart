@@ -20,7 +20,8 @@ class PasswordlessRequestScreen extends StatefulWidget {
   final VoidCallback onBackToPassword;
 
   @override
-  State<PasswordlessRequestScreen> createState() => _PasswordlessRequestScreenState();
+  State<PasswordlessRequestScreen> createState() =>
+      _PasswordlessRequestScreenState();
 }
 
 class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
@@ -30,7 +31,9 @@ class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
 
   void _send() {
     if (_identifier.text.trim().isEmpty) {
-      setState(() => _error = 'Enter the email or phone number on your account.');
+      setState(
+        () => _error = 'Enter the email or phone number on your account.',
+      );
       return;
     }
     if (_identifier.text.trim() == 'unknown@example.com') {
@@ -61,8 +64,15 @@ class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
             width: 64,
             height: 64,
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), shape: BoxShape.circle),
-            child: const Icon(Icons.sms_outlined, color: AppColors.primary, size: 28),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.sms_outlined,
+              color: AppColors.primary,
+              size: 28,
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
@@ -89,8 +99,15 @@ class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
             width: 64,
             height: 64,
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), shape: BoxShape.circle),
-            child: const Icon(Icons.mark_email_read_outlined, color: AppColors.primary, size: 28),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.mark_email_read_outlined,
+              color: AppColors.primary,
+              size: 28,
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
           Text('Code sent to', style: AppTextStyles.bodyMd),
@@ -98,13 +115,19 @@ class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
           const SizedBox(height: AppSpacing.lg),
           Center(child: ResendCountdown(seconds: 45, onResend: () {})),
           const SizedBox(height: AppSpacing.lg),
-          PrimaryButton(label: 'Continue', onPressed: () => widget.onCodeSent(_identifier.text)),
+          PrimaryButton(
+            label: 'Continue',
+            onPressed: () => widget.onCodeSent(_identifier.text),
+          ),
         ],
         const SizedBox(height: AppSpacing.md),
         Center(
           child: GestureDetector(
             onTap: widget.onBackToPassword,
-            child: Text('Use password instead', style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary)),
+            child: Text(
+              'Use password instead',
+              style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary),
+            ),
           ),
         ),
       ],

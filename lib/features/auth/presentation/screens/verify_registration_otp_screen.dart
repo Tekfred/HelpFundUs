@@ -22,10 +22,12 @@ class VerifyRegistrationOtpScreen extends StatefulWidget {
   final VoidCallback onChangeDestination;
 
   @override
-  State<VerifyRegistrationOtpScreen> createState() => _VerifyRegistrationOtpScreenState();
+  State<VerifyRegistrationOtpScreen> createState() =>
+      _VerifyRegistrationOtpScreenState();
 }
 
-class _VerifyRegistrationOtpScreenState extends State<VerifyRegistrationOtpScreen> {
+class _VerifyRegistrationOtpScreenState
+    extends State<VerifyRegistrationOtpScreen> {
   final _otpKey = GlobalKey<OtpInputState>();
   String? _error;
   bool _expiredDemo = false;
@@ -54,34 +56,55 @@ class _VerifyRegistrationOtpScreenState extends State<VerifyRegistrationOtpScree
         const SizedBox(height: 2),
         Text(widget.destination, style: AppTextStyles.h3),
         const SizedBox(height: AppSpacing.xl),
-        OtpInput(key: _otpKey, hasError: _error != null, onCompleted: _handleSubmit),
+        OtpInput(
+          key: _otpKey,
+          hasError: _error != null,
+          onCompleted: _handleSubmit,
+        ),
         if (_error != null) ...[
           const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
-              const Icon(Icons.error_outline, size: 16, color: AppColors.danger),
+              const Icon(
+                Icons.error_outline,
+                size: 16,
+                color: AppColors.danger,
+              ),
               const SizedBox(width: 6),
-              Expanded(child: Text(_error!, style: AppTextStyles.bodySm.copyWith(color: AppColors.danger))),
+              Expanded(
+                child: Text(
+                  _error!,
+                  style: AppTextStyles.bodySm.copyWith(color: AppColors.danger),
+                ),
+              ),
             ],
           ),
         ],
         const SizedBox(height: AppSpacing.lg),
-        PrimaryButton(label: 'Verify', onPressed: () => _handleSubmit(_otpKey.currentState?.value ?? '')),
+        PrimaryButton(
+          label: 'Verify',
+          onPressed: () => _handleSubmit(_otpKey.currentState?.value ?? ''),
+        ),
         const SizedBox(height: AppSpacing.lg),
         Center(
-          child: ResendCountdown(onResend: () {
-            _otpKey.currentState?.clear();
-            setState(() {
-              _error = null;
-              _expiredDemo = false;
-            });
-          }),
+          child: ResendCountdown(
+            onResend: () {
+              _otpKey.currentState?.clear();
+              setState(() {
+                _error = null;
+                _expiredDemo = false;
+              });
+            },
+          ),
         ),
         const SizedBox(height: AppSpacing.sm),
         Center(
           child: GestureDetector(
             onTap: widget.onChangeDestination,
-            child: Text('Change email or phone number', style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary)),
+            child: Text(
+              'Change email or phone number',
+              style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary),
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.xl),
@@ -91,7 +114,9 @@ class _VerifyRegistrationOtpScreenState extends State<VerifyRegistrationOtpScree
             // without wiring a real backend yet.
             onTap: () => setState(() => _expiredDemo = !_expiredDemo),
             child: Text(
-              _expiredDemo ? 'Demo: expired-code state ON — enter any code' : 'Need help? Contact support',
+              _expiredDemo
+                  ? 'Demo: expired-code state ON — enter any code'
+                  : 'Need help? Contact support',
               style: AppTextStyles.bodySm,
             ),
           ),

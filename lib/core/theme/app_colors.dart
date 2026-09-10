@@ -24,7 +24,9 @@ abstract class AppColors {
 
   /// Utility
   static const Color border = Color(0x141A1A2E); // ~8% opacity
-  static const Color borderStrong = Color(0x261A1A2E); // ~15% opacity, for visible card/button outlines
+  static const Color borderStrong = Color(
+    0x261A1A2E,
+  ); // ~15% opacity, for visible card/button outlines
   static const Color shadow = Color(0x1A1DB954); // soft green shadow
   static const Color danger = Color(0xFFE5484D);
   static const Color warning = Color(0xFFF5A524);

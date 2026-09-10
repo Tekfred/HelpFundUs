@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'app_root.dart';
+import 'core/scroll/helpfundus_scroll_behavior.dart';
 import 'core/theme/app_theme.dart';
 import 'features/app_shell/presentation/app_shell.dart';
 import 'features/app_shell/state/app_shell_controller.dart';
@@ -17,6 +18,7 @@ class HelpFundUsApp extends StatelessWidget {
       title: 'HelpFundUs',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
+      scrollBehavior: const HelpFundUsScrollBehavior(),
       home: const AppRoot(),
       onGenerateRoute: (settings) {
         final uri = Uri.parse(settings.name ?? '/');

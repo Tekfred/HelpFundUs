@@ -17,11 +17,11 @@ class OnboardingController extends ChangeNotifier {
   /// Index used for the "n of 3" dot indicator — null when the current
   /// screen (Splash, Welcome, Journey) doesn't show one.
   int? get dotIndex => switch (current) {
-        OnboardingStep.discover => 0,
-        OnboardingStep.donate => 1,
-        OnboardingStep.fundraiser => 2,
-        _ => null,
-      };
+    OnboardingStep.discover => 0,
+    OnboardingStep.donate => 1,
+    OnboardingStep.fundraiser => 2,
+    _ => null,
+  };
 
   void goTo(OnboardingStep step) {
     _direction = SlideDirection.forward;

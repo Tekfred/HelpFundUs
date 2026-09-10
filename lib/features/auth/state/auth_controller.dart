@@ -22,7 +22,8 @@ enum RestrictedReason { suspended, deactivated, pendingReview }
 /// owns onboarding — a simple history list plus a slide direction, so the
 /// UI layer never has to think about routing.
 class AuthController extends ChangeNotifier {
-  AuthController({AuthStep start = AuthStep.createAccount}) : _history = [start];
+  AuthController({AuthStep start = AuthStep.createAccount})
+    : _history = [start];
 
   final List<AuthStep> _history;
   SlideDirection _direction = SlideDirection.forward;

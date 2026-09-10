@@ -16,7 +16,11 @@ class CircularBackButton extends StatelessWidget {
         onTap: onPressed,
         child: const Padding(
           padding: EdgeInsets.all(10),
-          child: Icon(Icons.chevron_left, color: AppColors.textPrimary, size: 22),
+          child: Icon(
+            Icons.chevron_left,
+            color: AppColors.textPrimary,
+            size: 22,
+          ),
         ),
       ),
     );

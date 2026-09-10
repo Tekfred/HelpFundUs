@@ -16,7 +16,9 @@ class GoogleAuthButton extends StatelessWidget {
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: AppColors.borderStrong, width: 1.4),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.md),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -24,7 +26,12 @@ class GoogleAuthButton extends StatelessWidget {
             // Simple 'G' glyph in Google's brand colors, no network asset needed.
             const _GoogleGlyph(),
             const SizedBox(width: AppSpacing.sm),
-            Text(label, style: AppTextStyles.buttonLg.copyWith(color: AppColors.textPrimary)),
+            Text(
+              label,
+              style: AppTextStyles.buttonLg.copyWith(
+                color: AppColors.textPrimary,
+              ),
+            ),
           ],
         ),
       ),

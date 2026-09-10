@@ -22,7 +22,11 @@ const kCountries = [
 /// Compact "🇬🇭 +233 ▾" control that opens a bottom sheet list — sits to
 /// the left of the phone number field.
 class CountryCodeSelector extends StatelessWidget {
-  const CountryCodeSelector({super.key, required this.selected, required this.onChanged});
+  const CountryCodeSelector({
+    super.key,
+    required this.selected,
+    required this.onChanged,
+  });
   final Country selected;
   final ValueChanged<Country> onChanged;
 
@@ -30,14 +34,23 @@ class CountryCodeSelector extends StatelessWidget {
     final choice = await showModalBottomSheet<Country>(
       context: context,
       backgroundColor: AppColors.surface,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+      ),
       builder: (context) {
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: AppSpacing.sm),
-              Container(width: 40, height: 4, decoration: BoxDecoration(color: AppColors.border, borderRadius: BorderRadius.circular(99))),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+              ),
               const SizedBox(height: AppSpacing.md),
               for (final c in kCountries)
                 ListTile(
@@ -74,7 +87,11 @@ class CountryCodeSelector extends StatelessWidget {
             const SizedBox(width: 6),
             Text(selected.dialCode, style: AppTextStyles.buttonMd),
             const SizedBox(width: 2),
-            const Icon(Icons.keyboard_arrow_down, size: 18, color: AppColors.textMuted),
+            const Icon(
+              Icons.keyboard_arrow_down,
+              size: 18,
+              color: AppColors.textMuted,
+            ),
           ],
         ),
       ),

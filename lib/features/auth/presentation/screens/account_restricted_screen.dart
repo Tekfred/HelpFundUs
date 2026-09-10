@@ -6,7 +6,14 @@ import '../../../../core/widgets/app_button.dart';
 import '../../state/auth_controller.dart';
 
 class _RestrictedCopy {
-  const _RestrictedCopy(this.icon, this.color, this.title, this.body, this.primaryLabel, {this.showReactivate = false});
+  const _RestrictedCopy(
+    this.icon,
+    this.color,
+    this.title,
+    this.body,
+    this.primaryLabel, {
+    this.showReactivate = false,
+  });
   final IconData icon;
   final Color color;
   final String title;
@@ -59,7 +66,8 @@ class AccountRestrictedScreen extends StatefulWidget {
   final ValueChanged<RestrictedReason>? onChangeReasonDemo;
 
   @override
-  State<AccountRestrictedScreen> createState() => _AccountRestrictedScreenState();
+  State<AccountRestrictedScreen> createState() =>
+      _AccountRestrictedScreenState();
 }
 
 class _AccountRestrictedScreenState extends State<AccountRestrictedScreen> {
@@ -79,26 +87,45 @@ class _AccountRestrictedScreenState extends State<AccountRestrictedScreen> {
                 tween: Tween(begin: 0, end: 1),
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.easeOutBack,
-                builder: (context, v, child) => Transform.scale(scale: v, child: child),
+                builder: (context, v, child) =>
+                    Transform.scale(scale: v, child: child),
                 child: Container(
                   width: 96,
                   height: 96,
-                  decoration: BoxDecoration(color: copy.color.withValues(alpha: 0.12), shape: BoxShape.circle),
+                  decoration: BoxDecoration(
+                    color: copy.color.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                  ),
                   child: Icon(copy.icon, color: copy.color, size: 44),
                 ),
               ),
               const SizedBox(height: AppSpacing.xl),
-              Text(copy.title, style: AppTextStyles.h1, textAlign: TextAlign.center),
+              Text(
+                copy.title,
+                style: AppTextStyles.h1,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: AppSpacing.sm),
-              Text(copy.body, textAlign: TextAlign.center, style: AppTextStyles.bodyMd),
+              Text(
+                copy.body,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.bodyMd,
+              ),
               const Spacer(),
               PrimaryButton(
-                label: copy.showReactivate ? copy.primaryLabel : copy.primaryLabel,
-                onPressed: copy.showReactivate ? widget.onReactivate : widget.onContactSupport,
+                label: copy.showReactivate
+                    ? copy.primaryLabel
+                    : copy.primaryLabel,
+                onPressed: copy.showReactivate
+                    ? widget.onReactivate
+                    : widget.onContactSupport,
               ),
               if (copy.showReactivate) ...[
                 const SizedBox(height: AppSpacing.sm),
-                SecondaryButton(label: 'Contact Support', onPressed: widget.onContactSupport),
+                SecondaryButton(
+                  label: 'Contact Support',
+                  onPressed: widget.onContactSupport,
+                ),
               ],
               const SizedBox(height: AppSpacing.lg),
               if (widget.onChangeReasonDemo != null)
@@ -110,11 +137,20 @@ class _AccountRestrictedScreenState extends State<AccountRestrictedScreen> {
                     return GestureDetector(
                       onTap: () => widget.onChangeReasonDemo!(r),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.sm,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
-                          color: selected ? AppColors.primary.withValues(alpha: 0.12) : AppColors.surface,
+                          color: selected
+                              ? AppColors.primary.withValues(alpha: 0.12)
+                              : AppColors.surface,
                           borderRadius: BorderRadius.circular(AppRadius.pill),
-                          border: Border.all(color: selected ? AppColors.primary : AppColors.border),
+                          border: Border.all(
+                            color: selected
+                                ? AppColors.primary
+                                : AppColors.border,
+                          ),
                         ),
                         child: Text(
                           switch (r) {
@@ -122,7 +158,11 @@ class _AccountRestrictedScreenState extends State<AccountRestrictedScreen> {
                             RestrictedReason.deactivated => 'Deactivated',
                             RestrictedReason.pendingReview => 'Pending review',
                           },
-                          style: AppTextStyles.bodySm.copyWith(color: selected ? AppColors.primary : AppColors.textSecondary),
+                          style: AppTextStyles.bodySm.copyWith(
+                            color: selected
+                                ? AppColors.primary
+                                : AppColors.textSecondary,
+                          ),
                         ),
                       ),
                     );

@@ -24,7 +24,8 @@ class SessionExpiredScreen extends StatefulWidget {
   State<SessionExpiredScreen> createState() => _SessionExpiredScreenState();
 }
 
-class _SessionExpiredScreenState extends State<SessionExpiredScreen> with SingleTickerProviderStateMixin {
+class _SessionExpiredScreenState extends State<SessionExpiredScreen>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 2),
@@ -58,12 +59,23 @@ class _SessionExpiredScreenState extends State<SessionExpiredScreen> with Single
                 child: Container(
                   width: 96,
                   height: 96,
-                  decoration: BoxDecoration(color: AppColors.warning.withValues(alpha: 0.14), shape: BoxShape.circle),
-                  child: const Icon(Icons.access_time_filled_rounded, color: AppColors.warning, size: 44),
+                  decoration: BoxDecoration(
+                    color: AppColors.warning.withValues(alpha: 0.14),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.access_time_filled_rounded,
+                    color: AppColors.warning,
+                    size: 44,
+                  ),
                 ),
               ),
               const SizedBox(height: AppSpacing.xl),
-              Text('Your session has expired', style: AppTextStyles.h1, textAlign: TextAlign.center),
+              Text(
+                'Your session has expired',
+                style: AppTextStyles.h1,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 "For your security, you've been signed out after a period of inactivity. "
@@ -75,21 +87,39 @@ class _SessionExpiredScreenState extends State<SessionExpiredScreen> with Single
                 const SizedBox(height: AppSpacing.md),
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(AppRadius.md)),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                  ),
                   child: Row(
                     children: [
-                      const Icon(Icons.save_outlined, size: 16, color: AppColors.primary),
+                      const Icon(
+                        Icons.save_outlined,
+                        size: 16,
+                        color: AppColors.primary,
+                      ),
                       const SizedBox(width: AppSpacing.sm),
-                      Expanded(child: Text('Your unsaved changes were kept as a draft.', style: AppTextStyles.bodySm)),
+                      Expanded(
+                        child: Text(
+                          'Your unsaved changes were kept as a draft.',
+                          style: AppTextStyles.bodySm,
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ],
               const Spacer(),
-              PrimaryButton(label: 'Sign In Again', onPressed: widget.onSignInAgain),
+              PrimaryButton(
+                label: 'Sign In Again',
+                onPressed: widget.onSignInAgain,
+              ),
               if (widget.showBiometric) ...[
                 const SizedBox(height: AppSpacing.sm),
-                SecondaryButton(label: 'Unlock with Face ID', onPressed: widget.onSignInAgain),
+                SecondaryButton(
+                  label: 'Unlock with Face ID',
+                  onPressed: widget.onSignInAgain,
+                ),
               ],
               const SizedBox(height: AppSpacing.lg),
             ],

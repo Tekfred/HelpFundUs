@@ -28,8 +28,11 @@ abstract class AppTextStyles {
   static TextStyle h3 = _base(size: 22, weight: FontWeight.w600, height: 1.28);
 
   // Body
-  static TextStyle bodyLg =
-      _base(size: 17, weight: FontWeight.w400, height: 1.5);
+  static TextStyle bodyLg = _base(
+    size: 17,
+    weight: FontWeight.w400,
+    height: 1.5,
+  );
   static TextStyle bodyMd = _base(
     size: 15,
     weight: FontWeight.w400,
@@ -44,15 +47,27 @@ abstract class AppTextStyles {
   );
 
   // Labels / buttons
-  static TextStyle buttonLg =
-      _base(size: 17, weight: FontWeight.w600, color: AppColors.surface);
+  static TextStyle buttonLg = _base(
+    size: 17,
+    weight: FontWeight.w600,
+    color: AppColors.surface,
+  );
   static TextStyle buttonMd = _base(size: 15, weight: FontWeight.w600);
-  static TextStyle label =
-      _base(size: 14, weight: FontWeight.w500, color: AppColors.textSecondary);
-  static TextStyle caption =
-      _base(size: 12, weight: FontWeight.w500, color: AppColors.textMuted);
+  static TextStyle label = _base(
+    size: 14,
+    weight: FontWeight.w500,
+    color: AppColors.textSecondary,
+  );
+  static TextStyle caption = _base(
+    size: 12,
+    weight: FontWeight.w500,
+    color: AppColors.textMuted,
+  );
 
   static TextStyle brand = _base(size: 30, weight: FontWeight.w700);
-  static TextStyle tagline =
-      _base(size: 15, weight: FontWeight.w400, color: AppColors.textSecondary);
+  static TextStyle tagline = _base(
+    size: 15,
+    weight: FontWeight.w400,
+    color: AppColors.textSecondary,
+  );
 }

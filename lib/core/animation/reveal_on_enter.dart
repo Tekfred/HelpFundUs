@@ -44,9 +44,16 @@ class RevealOnEnter extends StatefulWidget {
   State<RevealOnEnter> createState() => _RevealOnEnterState();
 }
 
-class _RevealOnEnterState extends State<RevealOnEnter> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(vsync: this, duration: widget.duration);
-  late final Animation<double> _t = CurvedAnimation(parent: _controller, curve: widget.curve);
+class _RevealOnEnterState extends State<RevealOnEnter>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: widget.duration,
+  );
+  late final Animation<double> _t = CurvedAnimation(
+    parent: _controller,
+    curve: widget.curve,
+  );
 
   @override
   void initState() {
@@ -72,12 +79,18 @@ class _RevealOnEnterState extends State<RevealOnEnter> with SingleTickerProvider
         final sigma = (1 - v).clamp(0.0, 1.0) * widget.blurSigma;
         Widget result = Opacity(
           opacity: v.clamp(0.0, 1.0),
-          child: Transform.translate(offset: Offset(0, (1 - v) * widget.offsetY), child: child),
+          child: Transform.translate(
+            offset: Offset(0, (1 - v) * widget.offsetY),
+            child: child,
+          ),
         );
         // Skip the filter entirely once it's a no-op — ImageFiltered isn't
         // free, and most of the cascade is at sigma≈0 well before it ends.
         if (sigma > 0.06) {
-          result = ImageFiltered(imageFilter: ui.ImageFilter.blur(sigmaX: sigma, sigmaY: sigma), child: result);
+          result = ImageFiltered(
+            imageFilter: ui.ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
+            child: result,
+          );
         }
         return result;
       },
@@ -109,7 +122,12 @@ class RevealStagger extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         for (var i = 0; i < children.length; i++)
-          RevealOnEnter(index: startIndex + i, baseDelay: baseDelay, step: step, child: children[i]),
+          RevealOnEnter(
+            index: startIndex + i,
+            baseDelay: baseDelay,
+            step: step,
+            child: children[i],
+          ),
       ],
     );
   }

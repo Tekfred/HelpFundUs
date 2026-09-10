@@ -17,7 +17,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with TickerProviderStateMixin {
   late final AnimationController _logoController = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 900),
@@ -30,10 +31,13 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     parent: _logoController,
     curve: const Interval(0.45, 1, curve: Curves.easeOut),
   );
-  late final Animation<Offset> _textOffset = Tween<Offset>(
-    begin: const Offset(0, 0.25),
-    end: Offset.zero,
-  ).animate(CurvedAnimation(parent: _logoController, curve: const Interval(0.45, 1, curve: Curves.easeOut)));
+  late final Animation<Offset> _textOffset =
+      Tween<Offset>(begin: const Offset(0, 0.25), end: Offset.zero).animate(
+        CurvedAnimation(
+          parent: _logoController,
+          curve: const Interval(0.45, 1, curve: Curves.easeOut),
+        ),
+      );
 
   late final AnimationController _dotsController = AnimationController(
     vsync: this,
@@ -67,8 +71,15 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
               child: Container(
                 width: 96,
                 height: 96,
-                decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-                child: const Icon(Icons.favorite, color: AppColors.surface, size: 44),
+                decoration: const BoxDecoration(
+                  color: AppColors.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.favorite,
+                  color: AppColors.surface,
+                  size: 44,
+                ),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -80,7 +91,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                   children: [
                     Text('HelpFundUs', style: AppTextStyles.brand),
                     const SizedBox(height: AppSpacing.xs),
-                    Text('Crowdfunding that cares', style: AppTextStyles.tagline),
+                    Text(
+                      'Crowdfunding that cares',
+                      style: AppTextStyles.tagline,
+                    ),
                   ],
                 ),
               ),
@@ -105,7 +119,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                           child: Container(
                             width: 8,
                             height: 8,
-                            decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                            decoration: const BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle,
+                            ),
                           ),
                         ),
                       ),

@@ -7,7 +7,11 @@ import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/auth_text_field.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-  const ForgotPasswordScreen({super.key, required this.onBack, required this.onBackToSignIn});
+  const ForgotPasswordScreen({
+    super.key,
+    required this.onBack,
+    required this.onBackToSignIn,
+  });
   final VoidCallback onBack;
   final VoidCallback onBackToSignIn;
 
@@ -50,15 +54,24 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           const SizedBox(height: AppSpacing.lg),
           PrimaryButton(
             label: 'Send Reset Instructions',
-            onPressed: _identifier.text.trim().isEmpty ? null : () => setState(() => _sent = true),
+            onPressed: _identifier.text.trim().isEmpty
+                ? null
+                : () => setState(() => _sent = true),
           ),
         ] else ...[
           Container(
             width: 64,
             height: 64,
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), shape: BoxShape.circle),
-            child: const Icon(Icons.mark_email_read_outlined, color: AppColors.primary, size: 28),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.mark_email_read_outlined,
+              color: AppColors.primary,
+              size: 28,
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
           Text('Check your inbox', style: AppTextStyles.h1),
@@ -76,9 +89,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.arrow_back, size: 16, color: AppColors.textSecondary),
+                const Icon(
+                  Icons.arrow_back,
+                  size: 16,
+                  color: AppColors.textSecondary,
+                ),
                 const SizedBox(width: 6),
-                Text('Back to Sign In', style: AppTextStyles.buttonMd.copyWith(color: AppColors.textSecondary)),
+                Text(
+                  'Back to Sign In',
+                  style: AppTextStyles.buttonMd.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
               ],
             ),
           ),

@@ -56,26 +56,47 @@ class _VerifyLoginOtpScreenState extends State<VerifyLoginOtpScreen> {
         const SizedBox(height: 2),
         Text(widget.destination, style: AppTextStyles.h3),
         const SizedBox(height: AppSpacing.xl),
-        OtpInput(key: _otpKey, hasError: _error != null, onCompleted: _handleSubmit),
+        OtpInput(
+          key: _otpKey,
+          hasError: _error != null,
+          onCompleted: _handleSubmit,
+        ),
         if (_error != null) ...[
           const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
-              const Icon(Icons.error_outline, size: 16, color: AppColors.danger),
+              const Icon(
+                Icons.error_outline,
+                size: 16,
+                color: AppColors.danger,
+              ),
               const SizedBox(width: 6),
-              Expanded(child: Text(_error!, style: AppTextStyles.bodySm.copyWith(color: AppColors.danger))),
+              Expanded(
+                child: Text(
+                  _error!,
+                  style: AppTextStyles.bodySm.copyWith(color: AppColors.danger),
+                ),
+              ),
             ],
           ),
         ],
         const SizedBox(height: AppSpacing.lg),
-        PrimaryButton(label: 'Verify', onPressed: () => _handleSubmit(_otpKey.currentState?.value ?? '')),
+        PrimaryButton(
+          label: 'Verify',
+          onPressed: () => _handleSubmit(_otpKey.currentState?.value ?? ''),
+        ),
         const SizedBox(height: AppSpacing.lg),
-        Center(child: ResendCountdown(onResend: () => _otpKey.currentState?.clear())),
+        Center(
+          child: ResendCountdown(onResend: () => _otpKey.currentState?.clear()),
+        ),
         const SizedBox(height: AppSpacing.sm),
         Center(
           child: GestureDetector(
             onTap: widget.onChangeAccount,
-            child: Text('Not you? Switch account', style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary)),
+            child: Text(
+              'Not you? Switch account',
+              style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary),
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -84,7 +105,9 @@ class _VerifyLoginOtpScreenState extends State<VerifyLoginOtpScreen> {
             // Demo affordance for previewing the MFA-required redirect.
             onTap: () => setState(() => _requireMfaDemo = !_requireMfaDemo),
             child: Text(
-              _requireMfaDemo ? 'Demo: will redirect to MFA next' : 'This account requires extra verification?',
+              _requireMfaDemo
+                  ? 'Demo: will redirect to MFA next'
+                  : 'This account requires extra verification?',
               style: AppTextStyles.bodySm,
             ),
           ),

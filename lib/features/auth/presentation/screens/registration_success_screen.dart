@@ -18,10 +18,12 @@ class RegistrationSuccessScreen extends StatefulWidget {
   final VoidCallback onEnableSecurity;
 
   @override
-  State<RegistrationSuccessScreen> createState() => _RegistrationSuccessScreenState();
+  State<RegistrationSuccessScreen> createState() =>
+      _RegistrationSuccessScreenState();
 }
 
-class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen> with SingleTickerProviderStateMixin {
+class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1000),
@@ -53,22 +55,38 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen> w
                       alignment: Alignment.center,
                       children: [
                         ..._sparklePositions.map((pos) {
-                          final t = ((_controller.value - 0.2) / 0.6).clamp(0.0, 1.0);
+                          final t = ((_controller.value - 0.2) / 0.6).clamp(
+                            0.0,
+                            1.0,
+                          );
                           return Transform.translate(
                             offset: pos * (t * 46),
                             child: Opacity(
                               opacity: (1 - t).clamp(0.0, 1.0),
-                              child: const Icon(Icons.auto_awesome, size: 16, color: AppColors.gold),
+                              child: const Icon(
+                                Icons.auto_awesome,
+                                size: 16,
+                                color: AppColors.gold,
+                              ),
                             ),
                           );
                         }),
                         Transform.scale(
-                          scale: Curves.elasticOut.transform(_controller.value.clamp(0.0, 1.0)),
+                          scale: Curves.elasticOut.transform(
+                            _controller.value.clamp(0.0, 1.0),
+                          ),
                           child: Container(
                             width: 110,
                             height: 110,
-                            decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-                            child: const Icon(Icons.check_rounded, color: AppColors.surface, size: 56),
+                            decoration: const BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.check_rounded,
+                              color: AppColors.surface,
+                              size: 56,
+                            ),
                           ),
                         ),
                       ],
@@ -77,7 +95,11 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen> w
                 ),
               ),
               const SizedBox(height: AppSpacing.xl),
-              Text("You're all set!", style: AppTextStyles.h1, textAlign: TextAlign.center),
+              Text(
+                "You're all set!",
+                style: AppTextStyles.h1,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 'Your account has been verified. Welcome to a community that funds what matters.',
@@ -88,14 +110,16 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen> w
               _PromptCard(
                 icon: Icons.person_outline,
                 title: 'Complete your profile',
-                subtitle: 'Add a photo and a short bio so donors know who you are.',
+                subtitle:
+                    'Add a photo and a short bio so donors know who you are.',
                 onTap: widget.onCompleteProfile,
               ),
               const SizedBox(height: AppSpacing.sm),
               _PromptCard(
                 icon: Icons.shield_outlined,
                 title: 'Enable stronger security',
-                subtitle: 'Turn on two-factor authentication to protect your account.',
+                subtitle:
+                    'Turn on two-factor authentication to protect your account.',
                 onTap: widget.onEnableSecurity,
               ),
               const Spacer(),
@@ -115,7 +139,12 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen> w
 }
 
 class _PromptCard extends StatelessWidget {
-  const _PromptCard({required this.icon, required this.title, required this.subtitle, required this.onTap});
+  const _PromptCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
   final IconData icon;
   final String title;
   final String subtitle;
@@ -137,7 +166,10 @@ class _PromptCard extends StatelessWidget {
             Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.12), shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
               child: Icon(icon, color: AppColors.primary, size: 20),
             ),
             const SizedBox(width: AppSpacing.sm),

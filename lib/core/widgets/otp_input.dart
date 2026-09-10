@@ -28,9 +28,14 @@ class OtpInput extends StatefulWidget {
 }
 
 class OtpInputState extends State<OtpInput> {
-  late final List<TextEditingController> _controllers =
-      List.generate(widget.length, (_) => TextEditingController());
-  late final List<FocusNode> _nodes = List.generate(widget.length, (_) => FocusNode());
+  late final List<TextEditingController> _controllers = List.generate(
+    widget.length,
+    (_) => TextEditingController(),
+  );
+  late final List<FocusNode> _nodes = List.generate(
+    widget.length,
+    (_) => FocusNode(),
+  );
 
   String get value => _controllers.map((c) => c.text).join();
   String get _value => value;
@@ -142,12 +147,18 @@ class _OtpBoxState extends State<_OtpBox> {
           color: widget.hasError
               ? AppColors.danger
               : focused
-                  ? AppColors.primary
-                  : AppColors.borderStrong,
+              ? AppColors.primary
+              : AppColors.borderStrong,
           width: focused || widget.hasError ? 1.8 : 1.2,
         ),
         boxShadow: focused
-            ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.15), blurRadius: 10, spreadRadius: 1)]
+            ? [
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: 0.15),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                ),
+              ]
             : null,
       ),
       alignment: Alignment.center,
@@ -170,7 +181,10 @@ class _OtpBoxState extends State<_OtpBox> {
           showCursor: true,
           cursorColor: AppColors.primary,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          decoration: const InputDecoration(counterText: '', border: InputBorder.none),
+          decoration: const InputDecoration(
+            counterText: '',
+            border: InputBorder.none,
+          ),
           onChanged: widget.onChanged,
         ),
       ),
@@ -226,7 +240,10 @@ class _ResendCountdownState extends State<ResendCountdown> {
           widget.onResend();
           setState(_start);
         },
-        child: Text('Resend code', style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary)),
+        child: Text(
+          'Resend code',
+          style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary),
+        ),
       );
     }
     final m = _remaining ~/ 60;

@@ -11,7 +11,12 @@ import '../../../../core/widgets/google_auth_button.dart';
 import '../../../../core/widgets/password_strength_meter.dart';
 
 class CreateAccountScreen extends StatefulWidget {
-  const CreateAccountScreen({super.key, required this.onBack, required this.onCreated, required this.onSignIn});
+  const CreateAccountScreen({
+    super.key,
+    required this.onBack,
+    required this.onCreated,
+    required this.onSignIn,
+  });
   final VoidCallback onBack;
   final VoidCallback onCreated;
   final VoidCallback onSignIn;
@@ -88,7 +93,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         const SizedBox(height: AppSpacing.xs),
         Row(
           children: [
-            CountryCodeSelector(selected: _country, onChanged: (c) => setState(() => _country = c)),
+            CountryCodeSelector(
+              selected: _country,
+              onChanged: (c) => setState(() => _country = c),
+            ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: AuthTextField(
@@ -125,9 +133,18 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 decoration: BoxDecoration(
                   color: _agreed ? AppColors.primary : AppColors.surface,
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: _agreed ? AppColors.primary : AppColors.borderStrong, width: 1.4),
+                  border: Border.all(
+                    color: _agreed ? AppColors.primary : AppColors.borderStrong,
+                    width: 1.4,
+                  ),
                 ),
-                child: _agreed ? const Icon(Icons.check, size: 15, color: AppColors.surface) : null,
+                child: _agreed
+                    ? const Icon(
+                        Icons.check,
+                        size: 15,
+                        color: AppColors.surface,
+                      )
+                    : null,
               ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
@@ -138,13 +155,19 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       const TextSpan(text: 'I agree to the '),
                       TextSpan(
                         text: 'Terms of Service',
-                        style: AppTextStyles.bodyMd.copyWith(color: AppColors.primary, fontWeight: FontWeight.w600),
+                        style: AppTextStyles.bodyMd.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
                         recognizer: TapGestureRecognizer()..onTap = () {},
                       ),
                       const TextSpan(text: ' and '),
                       TextSpan(
                         text: 'Privacy Policy',
-                        style: AppTextStyles.bodyMd.copyWith(color: AppColors.primary, fontWeight: FontWeight.w600),
+                        style: AppTextStyles.bodyMd.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
                         recognizer: TapGestureRecognizer()..onTap = () {},
                       ),
                     ],
@@ -155,7 +178,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
-        PrimaryButton(label: 'Create Account', onPressed: _canSubmit ? widget.onCreated : null),
+        PrimaryButton(
+          label: 'Create Account',
+          onPressed: _canSubmit ? widget.onCreated : null,
+        ),
         const SizedBox(height: AppSpacing.md),
         const OrDivider(),
         const SizedBox(height: AppSpacing.md),
@@ -168,7 +194,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               Text('Already have an account? ', style: AppTextStyles.bodyMd),
               GestureDetector(
                 onTap: widget.onSignIn,
-                child: Text('Sign In', style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary)),
+                child: Text(
+                  'Sign In',
+                  style: AppTextStyles.buttonMd.copyWith(
+                    color: AppColors.primary,
+                  ),
+                ),
               ),
             ],
           ),

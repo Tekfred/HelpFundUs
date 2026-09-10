@@ -20,7 +20,11 @@ PasswordStrength scorePassword(String value) {
 /// Three-segment animated bar + label + a small checklist of requirements —
 /// used on Create Account and Reset Password.
 class PasswordStrengthMeter extends StatelessWidget {
-  const PasswordStrengthMeter({super.key, required this.password, this.showChecklist = true});
+  const PasswordStrengthMeter({
+    super.key,
+    required this.password,
+    this.showChecklist = true,
+  });
   final String password;
   final bool showChecklist;
 
@@ -35,18 +39,18 @@ class PasswordStrengthMeter extends StatelessWidget {
   static bool _hasNumber(String v) => RegExp(r'[0-9]').hasMatch(v);
 
   Color _colorFor(PasswordStrength s) => switch (s) {
-        PasswordStrength.empty => AppColors.border,
-        PasswordStrength.weak => AppColors.danger,
-        PasswordStrength.fair => AppColors.warning,
-        PasswordStrength.strong => AppColors.primary,
-      };
+    PasswordStrength.empty => AppColors.border,
+    PasswordStrength.weak => AppColors.danger,
+    PasswordStrength.fair => AppColors.warning,
+    PasswordStrength.strong => AppColors.primary,
+  };
 
   String _labelFor(PasswordStrength s) => switch (s) {
-        PasswordStrength.empty => '',
-        PasswordStrength.weak => 'Weak password',
-        PasswordStrength.fair => 'Fair password',
-        PasswordStrength.strong => 'Strong password',
-      };
+    PasswordStrength.empty => '',
+    PasswordStrength.weak => 'Weak password',
+    PasswordStrength.fair => 'Fair password',
+    PasswordStrength.strong => 'Strong password',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +82,10 @@ class PasswordStrengthMeter extends StatelessWidget {
         ),
         if (strength != PasswordStrength.empty) ...[
           const SizedBox(height: AppSpacing.xs),
-          Text(_labelFor(strength), style: AppTextStyles.bodySm.copyWith(color: _colorFor(strength))),
+          Text(
+            _labelFor(strength),
+            style: AppTextStyles.bodySm.copyWith(color: _colorFor(strength)),
+          ),
         ],
         if (showChecklist) ...[
           const SizedBox(height: AppSpacing.sm),
@@ -88,10 +95,20 @@ class PasswordStrengthMeter extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 4),
               child: Row(
                 children: [
-                  Icon(met ? Icons.check_circle : Icons.circle_outlined,
-                      size: 14, color: met ? AppColors.primary : AppColors.textMuted),
+                  Icon(
+                    met ? Icons.check_circle : Icons.circle_outlined,
+                    size: 14,
+                    color: met ? AppColors.primary : AppColors.textMuted,
+                  ),
                   const SizedBox(width: 6),
-                  Text(r.$1, style: AppTextStyles.bodySm.copyWith(color: met ? AppColors.textSecondary : AppColors.textMuted)),
+                  Text(
+                    r.$1,
+                    style: AppTextStyles.bodySm.copyWith(
+                      color: met
+                          ? AppColors.textSecondary
+                          : AppColors.textMuted,
+                    ),
+                  ),
                 ],
               ),
             );

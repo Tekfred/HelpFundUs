@@ -1,17 +1,18 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:helpfundus/core/scroll/helpfundus_scroll_behavior.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimens.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../state/app_shell_controller.dart';
 import '../state/online_status.dart';
-import 'screens/account_screen.dart';
-import 'screens/activity_screen.dart';
-import 'screens/campaigns_screen.dart';
-import 'screens/donor_home_screen.dart';
-import 'screens/explore_screen.dart';
-import 'screens/fundraiser_home_screen.dart';
-import 'screens/inbox_screen.dart';
+import 'package:helpfundus/features/account/presentation/account/account_screen.dart';
+import 'package:helpfundus/features/activity/presentation/activity/activity_screen.dart';
+import 'package:helpfundus/features/campaign/presentation/screens/donor_home/donor_home_screen.dart';
+import 'package:helpfundus/features/campaign/presentation/screens/explore/explore_screen.dart';
+import 'package:helpfundus/features/fundraiser/presentation/campaigns/campaigns_screen.dart';
+import 'package:helpfundus/features/fundraiser/presentation/home/fundraiser_home_screen.dart';
+import 'package:helpfundus/features/inbox/presentation/inbox/inbox_screen.dart';
 import 'widgets/app_bottom_nav.dart';
 import 'widgets/login_gate.dart';
 
@@ -218,8 +219,9 @@ class _LoadingOverlay extends StatelessWidget {
   );
 }
 
-class _ShellScrollBehavior extends MaterialScrollBehavior {
+class _ShellScrollBehavior extends HelpFundUsScrollBehavior {
   const _ShellScrollBehavior();
+
   @override
   Widget buildScrollbar(
     BuildContext context,

@@ -53,7 +53,9 @@ class _AuthFlowState extends State<AuthFlow> {
     if (value.contains('@')) {
       final parts = value.split('@');
       final name = parts.first;
-      final masked = name.length <= 2 ? '${name[0]}•' : '${name[0]}${'•' * (name.length - 2)}${name[name.length - 1]}';
+      final masked = name.length <= 2
+          ? '${name[0]}•'
+          : '${name[0]}${'•' * (name.length - 2)}${name[name.length - 1]}';
       return '$masked@${parts.last}';
     }
     return value.isEmpty ? '+233 •• •• 4821' : value;
@@ -149,14 +151,17 @@ class _AuthFlowState extends State<AuthFlow> {
         );
 
       case AuthStep.sessionExpired:
-        return SessionExpiredScreen(onSignInAgain: () => _controller.reset(AuthStep.signIn));
+        return SessionExpiredScreen(
+          onSignInAgain: () => _controller.reset(AuthStep.signIn),
+        );
 
       case AuthStep.accountRestricted:
         return AccountRestrictedScreen(
           reason: _controller.restrictedReason,
           onContactSupport: () {},
           onReactivate: widget.onFinished ?? () {},
-          onChangeReasonDemo: (r) => setState(() => _controller.restrictedReason = r),
+          onChangeReasonDemo: (r) =>
+              setState(() => _controller.restrictedReason = r),
         );
     }
   }

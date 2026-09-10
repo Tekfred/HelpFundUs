@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 
 class DonationController extends ChangeNotifier {
-  double amount = 25;
+  /// Starts empty so donors deliberately choose or enter their amount.
+  double amount = 0;
   String paymentMethod = 'Card';
   bool acceptedTerms = false;
   double get fee => amount * .029;

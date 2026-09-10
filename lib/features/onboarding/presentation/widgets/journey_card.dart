@@ -30,7 +30,10 @@ class JourneyCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected ? AppColors.background : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: Border.all(color: selected ? AppColors.primary : AppColors.border, width: selected ? 2 : 1),
+          border: Border.all(
+            color: selected ? AppColors.primary : AppColors.border,
+            width: selected ? 2 : 1,
+          ),
         ),
         child: Row(
           children: [
@@ -38,7 +41,10 @@ class JourneyCard extends StatelessWidget {
               width: 48,
               height: 48,
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(AppRadius.md)),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(AppRadius.md),
+              ),
               child: Text(emoji, style: const TextStyle(fontSize: 22)),
             ),
             const SizedBox(width: AppSpacing.md),

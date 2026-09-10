@@ -32,7 +32,9 @@ class _MfaVerificationScreenState extends State<MfaVerificationScreen> {
 
   void _handleSubmit(String code) {
     if (code.length < 6) return;
-    setState(() => _error = code == '000000' ? 'Incorrect code. Try again.' : null);
+    setState(
+      () => _error = code == '000000' ? 'Incorrect code. Try again.' : null,
+    );
     if (_error == null) widget.onVerified();
   }
 
@@ -70,20 +72,36 @@ class _MfaVerificationScreenState extends State<MfaVerificationScreen> {
           style: AppTextStyles.bodyMd,
         ),
         const SizedBox(height: AppSpacing.lg),
-        OtpInput(key: _otpKey, hasError: _error != null, onCompleted: _handleSubmit),
+        OtpInput(
+          key: _otpKey,
+          hasError: _error != null,
+          onCompleted: _handleSubmit,
+        ),
         if (_error != null) ...[
           const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
-              const Icon(Icons.error_outline, size: 16, color: AppColors.danger),
+              const Icon(
+                Icons.error_outline,
+                size: 16,
+                color: AppColors.danger,
+              ),
               const SizedBox(width: 6),
-              Text(_error!, style: AppTextStyles.bodySm.copyWith(color: AppColors.danger)),
+              Text(
+                _error!,
+                style: AppTextStyles.bodySm.copyWith(color: AppColors.danger),
+              ),
             ],
           ),
         ],
         if (_method == MfaMethod.email) ...[
           const SizedBox(height: AppSpacing.md),
-          Align(alignment: Alignment.centerLeft, child: ResendCountdown(onResend: () => _otpKey.currentState?.clear())),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: ResendCountdown(
+              onResend: () => _otpKey.currentState?.clear(),
+            ),
+          ),
         ],
         const SizedBox(height: AppSpacing.md),
         GestureDetector(
@@ -97,27 +115,52 @@ class _MfaVerificationScreenState extends State<MfaVerificationScreen> {
                 decoration: BoxDecoration(
                   color: _trustDevice ? AppColors.primary : AppColors.surface,
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: _trustDevice ? AppColors.primary : AppColors.borderStrong, width: 1.4),
+                  border: Border.all(
+                    color: _trustDevice
+                        ? AppColors.primary
+                        : AppColors.borderStrong,
+                    width: 1.4,
+                  ),
                 ),
-                child: _trustDevice ? const Icon(Icons.check, size: 15, color: AppColors.surface) : null,
+                child: _trustDevice
+                    ? const Icon(
+                        Icons.check,
+                        size: 15,
+                        color: AppColors.surface,
+                      )
+                    : null,
               ),
               const SizedBox(width: AppSpacing.sm),
-              Expanded(child: Text('Trust this device for 30 days', style: AppTextStyles.bodyMd)),
+              Expanded(
+                child: Text(
+                  'Trust this device for 30 days',
+                  style: AppTextStyles.bodyMd,
+                ),
+              ),
             ],
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
-        PrimaryButton(label: 'Verify', onPressed: () => _handleSubmit(_otpKey.currentState?.value ?? '')),
+        PrimaryButton(
+          label: 'Verify',
+          onPressed: () => _handleSubmit(_otpKey.currentState?.value ?? ''),
+        ),
         const SizedBox(height: AppSpacing.lg),
         Center(
           child: GestureDetector(
             onTap: widget.onUseBackupCode,
-            child: Text('Use a backup code instead', style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary)),
+            child: Text(
+              'Use a backup code instead',
+              style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary),
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
         Center(
-          child: Text('Having trouble? Contact security support', style: AppTextStyles.bodySm),
+          child: Text(
+            'Having trouble? Contact security support',
+            style: AppTextStyles.bodySm,
+          ),
         ),
       ],
     );
@@ -125,7 +168,11 @@ class _MfaVerificationScreenState extends State<MfaVerificationScreen> {
 }
 
 class _MethodTab extends StatelessWidget {
-  const _MethodTab({required this.label, required this.selected, required this.onTap});
+  const _MethodTab({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -141,12 +188,16 @@ class _MethodTab extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected ? AppColors.primary : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(color: selected ? AppColors.primary : AppColors.borderStrong),
+          border: Border.all(
+            color: selected ? AppColors.primary : AppColors.borderStrong,
+          ),
         ),
         child: Text(
           label,
           textAlign: TextAlign.center,
-          style: AppTextStyles.buttonMd.copyWith(color: selected ? AppColors.surface : AppColors.textPrimary),
+          style: AppTextStyles.buttonMd.copyWith(
+            color: selected ? AppColors.surface : AppColors.textPrimary,
+          ),
         ),
       ),
     );

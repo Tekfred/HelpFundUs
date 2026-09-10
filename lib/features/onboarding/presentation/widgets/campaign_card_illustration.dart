@@ -24,14 +24,18 @@ class CampaignCardIllustration extends StatelessWidget {
             left: -18,
             child: Transform.rotate(
               angle: -0.09,
-              child: _shadowCard(color: const Color(0xFF7B5CF0).withValues(alpha: 0.55)),
+              child: _shadowCard(
+                color: const Color(0xFF7B5CF0).withValues(alpha: 0.55),
+              ),
             ),
           ),
           Positioned(
             right: -14,
             child: Transform.rotate(
               angle: 0.06,
-              child: _shadowCard(color: AppColors.primaryLight.withValues(alpha: 0.7)),
+              child: _shadowCard(
+                color: AppColors.primaryLight.withValues(alpha: 0.7),
+              ),
             ),
           ),
           _MainCard(),
@@ -64,7 +68,10 @@ class CampaignCardIllustration extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 1),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.5),
+          width: 1,
+        ),
       ),
     );
   }
@@ -79,7 +86,13 @@ class _MainCard extends StatelessWidget {
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: AppColors.borderStrong, width: 1.2),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.10), blurRadius: 24, offset: const Offset(0, 12))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.10),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
+        ],
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -94,7 +107,11 @@ class _MainCard extends StatelessWidget {
               children: [
                 const PillBadge(
                   label: 'Verified',
-                  leading: Icon(Icons.check_circle, size: 12, color: AppColors.primary),
+                  leading: Icon(
+                    Icons.check_circle,
+                    size: 12,
+                    color: AppColors.primary,
+                  ),
                 ),
                 Positioned(
                   right: 0,
@@ -103,10 +120,7 @@ class _MainCard extends StatelessWidget {
                     leading: const Text('❤️', style: TextStyle(fontSize: 11)),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: _AvatarStack(),
-                ),
+                Align(alignment: Alignment.bottomCenter, child: _AvatarStack()),
               ],
             ),
           ),
@@ -115,14 +129,23 @@ class _MainCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Help rebuild our community center', style: AppTextStyles.buttonMd),
+                Text(
+                  'Help rebuild our community center',
+                  style: AppTextStyles.buttonMd,
+                ),
                 const SizedBox(height: AppSpacing.sm),
                 _AnimatedProgressBar(progress: 0.72),
                 const SizedBox(height: AppSpacing.xs),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('\$14,400 raised', style: AppTextStyles.bodySm.copyWith(color: AppColors.primary, fontWeight: FontWeight.w600)),
+                    Text(
+                      '\$14,400 raised',
+                      style: AppTextStyles.bodySm.copyWith(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     Text('72%', style: AppTextStyles.bodySm),
                   ],
                 ),

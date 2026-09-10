@@ -8,7 +8,11 @@ import '../theme/app_text_styles.dart';
 /// relying on Material's flat ripple alone — this is what gives buttons
 /// the same "alive" feel as the reference motion spec.
 class _SpringTap extends StatefulWidget {
-  const _SpringTap({required this.onTap, required this.child, this.enabled = true});
+  const _SpringTap({
+    required this.onTap,
+    required this.child,
+    this.enabled = true,
+  });
   final VoidCallback? onTap;
   final Widget child;
   final bool enabled;
@@ -17,7 +21,8 @@ class _SpringTap extends StatefulWidget {
   State<_SpringTap> createState() => _SpringTapState();
 }
 
-class _SpringTapState extends State<_SpringTap> with SingleTickerProviderStateMixin {
+class _SpringTapState extends State<_SpringTap>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 150),
@@ -34,9 +39,10 @@ class _SpringTapState extends State<_SpringTap> with SingleTickerProviderStateMi
 
   @override
   Widget build(BuildContext context) {
-    final scale = Tween<double>(begin: 1.0, end: 0.96).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    final scale = Tween<double>(
+      begin: 1.0,
+      end: 0.96,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapDown: widget.enabled ? (_) => _controller.forward() : null,
@@ -49,7 +55,8 @@ class _SpringTapState extends State<_SpringTap> with SingleTickerProviderStateMi
       onTapCancel: widget.enabled ? () => _controller.reverse() : null,
       child: AnimatedBuilder(
         animation: scale,
-        builder: (context, child) => Transform.scale(scale: scale.value, child: child),
+        builder: (context, child) =>
+            Transform.scale(scale: scale.value, child: child),
         child: widget.child,
       ),
     );
@@ -83,9 +90,13 @@ class PrimaryButton extends StatelessWidget {
         height: 58,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: enabled ? AppColors.primary : AppColors.primary.withValues(alpha: 0.4),
+          color: enabled
+              ? AppColors.primary
+              : AppColors.primary.withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: Border.all(color: AppColors.primaryDark.withValues(alpha: enabled ? 0.6 : 0.2)),
+          border: Border.all(
+            color: AppColors.primaryDark.withValues(alpha: enabled ? 0.6 : 0.2),
+          ),
           boxShadow: enabled
               ? [
                   BoxShadow(
@@ -101,7 +112,10 @@ class PrimaryButton extends StatelessWidget {
             ? const SizedBox(
                 height: 22,
                 width: 22,
-                child: CircularProgressIndicator(strokeWidth: 2.4, color: AppColors.surface),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.4,
+                  color: AppColors.surface,
+                ),
               )
             : Row(
                 mainAxisSize: MainAxisSize.min,
@@ -137,7 +151,10 @@ class SecondaryButton extends StatelessWidget {
           border: Border.all(color: AppColors.borderStrong, width: 1.4),
         ),
         alignment: Alignment.center,
-        child: Text(label, style: AppTextStyles.buttonLg.copyWith(color: AppColors.textPrimary)),
+        child: Text(
+          label,
+          style: AppTextStyles.buttonLg.copyWith(color: AppColors.textPrimary),
+        ),
       ),
     );
   }
@@ -145,7 +162,12 @@ class SecondaryButton extends StatelessWidget {
 
 /// Plain text link CTA ("Explore Campaigns →", "Sign in").
 class TextLinkButton extends StatelessWidget {
-  const TextLinkButton({super.key, required this.label, this.onPressed, this.trailingArrow = false});
+  const TextLinkButton({
+    super.key,
+    required this.label,
+    this.onPressed,
+    this.trailingArrow = false,
+  });
   final String label;
   final VoidCallback? onPressed;
   final bool trailingArrow;
@@ -159,10 +181,17 @@ class TextLinkButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(label, style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary)),
+            Text(
+              label,
+              style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary),
+            ),
             if (trailingArrow) ...[
               const SizedBox(width: 4),
-              const Icon(Icons.arrow_forward, size: 16, color: AppColors.primary),
+              const Icon(
+                Icons.arrow_forward,
+                size: 16,
+                color: AppColors.primary,
+              ),
             ],
           ],
         ),
