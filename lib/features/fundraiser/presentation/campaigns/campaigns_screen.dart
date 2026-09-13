@@ -1,87 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
-import 'package:helpfundus/core/theme/app_text_styles.dart';
-import 'package:helpfundus/features/campaign/presentation/widgets/campaign_card.dart';
+import 'package:helpfundus/features/fundraiser/data/fundraiser_campaign_catalog.dart';
+import 'package:helpfundus/features/fundraiser/domain/entities/fundraiser_campaign.dart';
+import 'package:helpfundus/features/fundraiser/presentation/campaign_management/campaign_management_screen.dart';
+import 'package:helpfundus/features/fundraiser/presentation/campaigns/widgets/campaign_filter_chips.dart';
+import 'package:helpfundus/features/fundraiser/presentation/campaigns/widgets/campaign_search_field.dart';
+import 'package:helpfundus/features/fundraiser/presentation/campaigns/widgets/campaigns_header.dart';
+import 'package:helpfundus/features/fundraiser/presentation/campaigns/widgets/fundraiser_campaign_card.dart';
 
-class CampaignsScreen extends StatelessWidget {
+class CampaignsScreen extends StatefulWidget {
   const CampaignsScreen({super.key});
   @override
-  Widget build(BuildContext context) => ListView(
-    padding: const EdgeInsets.fromLTRB(24, 30, 24, 112),
-    children: [
-      Row(
-        children: [
-          Text('My campaigns', style: AppTextStyles.h1),
-          const Spacer(),
-          FilledButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.add),
-            label: const Text('Create'),
-          ),
-        ],
-      ),
-      const SizedBox(height: 24),
-      const CampaignCard(
-        title: 'Help rebuild our community centre',
-        category: 'Active',
-        amount: '\$14,400',
-        progress: .72,
-        location: 'Lagos, Nigeria',
-      ),
-      const SizedBox(height: 24),
-      Container(
-        padding: const EdgeInsets.all(22),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Draft · School supplies for 200 children',
-              style: AppTextStyles.buttonMd,
-            ),
-            const SizedBox(height: 8),
-            Text('Last edited yesterday', style: AppTextStyles.bodyMd),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                OutlinedButton(onPressed: () {}, child: const Text('Edit')),
-                const SizedBox(width: 12),
-                FilledButton(onPressed: () {}, child: const Text('Submit')),
-              ],
-            ),
-          ],
-        ),
-      ),
-      const SizedBox(height: 30),
-      Text('Lifetime impact', style: AppTextStyles.h3),
-      const SizedBox(height: 14),
-      Row(
-        children: [
-          _tile('\$24.8k', 'Raised'),
-          _tile('391', 'Donors'),
-          _tile('3', 'Campaigns'),
-        ],
-      ),
-    ],
+  State<CampaignsScreen> createState() => _CampaignsScreenState();
+}
+
+class _CampaignsScreenState extends State<CampaignsScreen> {
+  String _filter = 'All', _query = '';
+  Map<String, int> get _counts => {
+    'All': FundraiserCampaignCatalog.campaigns.length,
+    'Active': 1,
+    'Draft': 1,
+    'In review': 2,
+    'Suspended': 1,
+    'Closed': 2,
+  };
+  List<FundraiserCampaign> get _visible => FundraiserCampaignCatalog.campaigns
+      .where(
+        (c) =>
+            (_filter == 'All' || c.status.label == _filter) &&
+            c.title.toLowerCase().contains(_query.toLowerCase()),
+      )
+      .toList();
+  void _manage(FundraiserCampaign campaign) => Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      builder: (_) => CampaignManagementScreen(campaign: campaign),
+    ),
   );
-  static Widget _tile(String value, String label) => Expanded(
-    child: Container(
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: AppColors.background,
+    body: SafeArea(
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 26, 20, 112),
         children: [
-          Text(
-            value,
-            style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary),
+          CampaignsHeader(onCreate: () {}),
+          const SizedBox(height: 18),
+          CampaignSearchField(onChanged: (q) => setState(() => _query = q)),
+          const SizedBox(height: 14),
+          CampaignFilterChips(
+            selected: _filter,
+            counts: _counts,
+            onSelected: (v) => setState(() => _filter = v),
           ),
-          Text(label, style: AppTextStyles.caption),
+          const SizedBox(height: 18),
+          ..._visible.map(
+            (c) =>
+                FundraiserCampaignCard(campaign: c, onManage: () => _manage(c)),
+          ),
         ],
       ),
     ),

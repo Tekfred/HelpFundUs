@@ -110,6 +110,11 @@ class AppShareSheet extends StatelessWidget {
                           );
                         },
                         style: OutlinedButton.styleFrom(
+                          // The global outlined-button theme uses
+                          // Size.fromHeight(56), whose width is infinite.
+                          // This compact button sits in a Row, so it needs a
+                          // finite local minimum width instead.
+                          minimumSize: const Size(0, 42),
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           side: const BorderSide(color: Color(0xFFCBD1DB)),
                           shape: RoundedRectangleBorder(

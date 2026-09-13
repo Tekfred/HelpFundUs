@@ -24,7 +24,7 @@ class AppBottomNav extends StatelessWidget {
   ];
   static const _f = [
     Icons.home_rounded,
-    Icons.campaign_outlined,
+    Icons.grid_view_outlined,
     Icons.bar_chart_rounded,
     Icons.notifications_none_rounded,
     Icons.person_outline_rounded,
