@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 
 class DonationFlowScaffold extends StatelessWidget {
   const DonationFlowScaffold({
@@ -20,7 +21,7 @@ class DonationFlowScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.background,
+    backgroundColor: context.appBackground,
     body: SafeArea(
       child: Column(
         children: [
@@ -34,7 +35,7 @@ class DonationFlowScaffold extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Material(
-                      color: Colors.white,
+                      color: context.appSurface,
                       shape: const CircleBorder(),
                       child: InkWell(
                         onTap: () => Navigator.of(context).pop(),

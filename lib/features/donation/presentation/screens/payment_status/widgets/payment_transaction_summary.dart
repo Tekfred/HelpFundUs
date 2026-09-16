@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/donation/presentation/screens/choose_donation_amount/widgets/campaign_summary.dart';
 
@@ -27,9 +28,9 @@ class PaymentTransactionSummary extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.fromLTRB(18, 16, 18, 14),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: context.appSurface,
       borderRadius: BorderRadius.circular(24),
-      border: Border.all(color: AppColors.border),
+      border: Border.all(color: context.appBorder),
     ),
     child: Column(
       children: [
@@ -72,12 +73,12 @@ class _SummaryRow extends StatelessWidget {
   const _SummaryRow({
     required this.label,
     required this.value,
-    this.valueColor = AppColors.textPrimary,
+    this.valueColor,
   });
 
   final String label;
   final String value;
-  final Color valueColor;
+  final Color? valueColor;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -87,7 +88,10 @@ class _SummaryRow extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: AppTextStyles.bodyMd.copyWith(fontSize: 15),
+            style: AppTextStyles.bodyMd.copyWith(
+              fontSize: 15,
+              color: context.appTextSecondary,
+            ),
           ),
         ),
         const SizedBox(width: 16),
@@ -99,7 +103,7 @@ class _SummaryRow extends StatelessWidget {
             textAlign: TextAlign.right,
             style: AppTextStyles.buttonMd.copyWith(
               fontSize: 15,
-              color: valueColor,
+              color: valueColor ?? context.appTextPrimary,
             ),
           ),
         ),
@@ -113,5 +117,5 @@ class _SummaryDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      const Divider(height: 1, thickness: 1, color: AppColors.borderStrong);
+      Divider(height: 1, thickness: 1, color: context.appDivider);
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 
 class DonationFilterChips extends StatelessWidget {
@@ -26,11 +27,11 @@ class DonationFilterChips extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary : Colors.white,
+                color: isSelected ? AppColors.primary : context.appSurface,
                 border: Border.all(
                   color: isSelected
                       ? AppColors.primary
-                      : const Color(0xFFCBD1DB),
+                      : context.appBorderStrong,
                 ),
                 borderRadius: BorderRadius.circular(999),
               ),
@@ -38,7 +39,7 @@ class DonationFilterChips extends StatelessWidget {
                 filter,
                 style: AppTextStyles.buttonMd.copyWith(
                   fontSize: 13,
-                  color: isSelected ? Colors.white : const Color(0xFF697487),
+                  color: isSelected ? Colors.white : context.appTextSecondary,
                 ),
               ),
             ),

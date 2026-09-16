@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/widgets/brand_logo.dart';
 
 /// NOTE: the product brief also mentions the splash being a short video
 /// clip. If/when that asset exists, swap this screen's body for a
@@ -68,19 +69,7 @@ class _SplashScreenState extends State<SplashScreen>
           children: [
             ScaleTransition(
               scale: _logoScale,
-              child: Container(
-                width: 96,
-                height: 96,
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.favorite,
-                  color: AppColors.surface,
-                  size: 44,
-                ),
-              ),
+              child: const BrandLogo(size: 136),
             ),
             const SizedBox(height: AppSpacing.lg),
             FadeTransition(

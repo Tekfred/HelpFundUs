@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/campaign/data/campaign_catalog.dart';
 import 'package:helpfundus/features/campaign/presentation/screens/campaign_detail/widgets/campaign_update_card.dart';
@@ -10,7 +10,7 @@ class CampaignUpdatesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.background,
+    backgroundColor: context.appBackground,
     body: SafeArea(
       child: ListView(
         padding: const EdgeInsets.fromLTRB(24, 12, 24, 28),
@@ -18,7 +18,7 @@ class CampaignUpdatesScreen extends StatelessWidget {
           Row(
             children: [
               Material(
-                color: Colors.white,
+                color: context.appSurface,
                 shape: const CircleBorder(),
                 child: InkWell(
                   onTap: () => Navigator.of(context).pop(),
@@ -34,7 +34,10 @@ class CampaignUpdatesScreen extends StatelessWidget {
                 child: Text(
                   'Campaign Updates',
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.h2.copyWith(fontSize: 22),
+                  style: AppTextStyles.h2.copyWith(
+                    fontSize: 22,
+                    color: context.appTextPrimary,
+                  ),
                 ),
               ),
               const SizedBox(width: 52),

@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'app_root.dart';
 import 'core/scroll/helpfundus_scroll_behavior.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_provider.dart';
 import 'features/app_shell/presentation/app_shell.dart';
 import 'features/app_shell/state/app_shell_controller.dart';
 
-void main() {
-  runApp(const HelpFundUsApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final themeProvider = ThemeProvider();
+  await themeProvider.load();
+  runApp(
+    ChangeNotifierProvider.value(
+      value: themeProvider,
+      child: const HelpFundUsApp(),
+    ),
+  );
 }
 
 class HelpFundUsApp extends StatelessWidget {
@@ -14,10 +24,13 @@ class HelpFundUsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
     return MaterialApp(
       title: 'HelpFundUs',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: themeProvider.themeMode,
       scrollBehavior: const HelpFundUsScrollBehavior(),
       home: const AppRoot(),
       onGenerateRoute: (settings) {

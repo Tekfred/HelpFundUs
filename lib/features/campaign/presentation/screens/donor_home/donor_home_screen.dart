@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
 import 'package:helpfundus/core/theme/app_dimens.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
+import 'package:helpfundus/core/theme/theme_provider.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
+import 'package:provider/provider.dart';
 import 'package:helpfundus/features/campaign/data/campaign_catalog.dart';
 import 'package:helpfundus/features/campaign/presentation/screens/campaign_detail/campaign_detail_screen.dart';
 import 'package:helpfundus/features/campaign/presentation/screens/category_campaigns/category_campaigns_screen.dart';
@@ -45,12 +48,15 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
     });
   }
 
+  // Retained temporarily for the internal search overlay, which is no longer
+  // exposed from the donor dashboard header.
+  // ignore: unused_element
   void _openSearch() {
     Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
         builder: (_) => Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: context.appBackground,
           body: SafeArea(child: _searchView()),
         ),
       ),
@@ -74,7 +80,10 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
       const SizedBox(height: 14),
       Text(
         'Make your giving count today',
-        style: AppTextStyles.bodyMd.copyWith(fontSize: 16),
+        style: AppTextStyles.bodyMd.copyWith(
+          fontSize: 16,
+          color: context.appTextSecondary,
+        ),
       ),
       const SizedBox(height: 18),
       _impact(),
@@ -149,20 +158,33 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
     children: [
       Text(
         'Good morning, Jane',
-        style: AppTextStyles.h2.copyWith(fontSize: 27),
+        style: AppTextStyles.h2.copyWith(
+          fontSize: 25,
+          color: context.appTextPrimary,
+        ),
       ),
       const SizedBox(height: 4),
       Row(
         children: [
           const Text('👋', style: TextStyle(fontSize: 31)),
           const Spacer(),
+          Tooltip(
+            message: context.watch<ThemeProvider>().isDarkMode
+                ? 'Switch to light mode'
+                : 'Switch to dark mode',
+            child: _action(
+              context.watch<ThemeProvider>().isDarkMode
+                  ? Icons.light_mode_rounded
+                  : Icons.dark_mode_outlined,
+              onTap: context.read<ThemeProvider>().toggleTheme,
+            ),
+          ),
+          const SizedBox(width: 12),
           _action(
             Icons.refresh_rounded,
             onTap: _startRefresh,
             active: _refreshing,
           ),
-          const SizedBox(width: 12),
-          _action(Icons.search_rounded, onTap: _openSearch),
           const SizedBox(width: 12),
           Stack(
             clipBehavior: Clip.none,
@@ -190,9 +212,9 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.appSurface,
             shape: BoxShape.circle,
-            border: Border.all(color: const Color(0xFFCBD1DB), width: 1.5),
+            border: Border.all(color: context.appBorderStrong, width: 1.5),
           ),
           alignment: Alignment.center,
           child: active
@@ -207,7 +229,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
               : Icon(
                   icon,
                   size: 21,
-                  color: active ? AppColors.primary : AppColors.textPrimary,
+                  color: active ? AppColors.primary : context.appTextPrimary,
                 ),
         ),
       );
@@ -224,7 +246,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
                 prefixIcon: const Icon(Icons.search),
                 hintText: 'Search campaigns, causes, locations',
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: context.appInput,
                 contentPadding: const EdgeInsets.symmetric(vertical: 14),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
@@ -256,7 +278,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
       Text(
         'RECENT SEARCHES',
         style: AppTextStyles.label.copyWith(
-          color: const Color(0xFF9AA4B5),
+          color: context.appTextMuted,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -275,19 +297,19 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
           ),
           child: Row(
             children: [
-              const Icon(Icons.history, size: 22, color: Color(0xFF9AA4B5)),
+              Icon(Icons.history, size: 22, color: context.appTextMuted),
               const SizedBox(width: 18),
               Expanded(
                 child: Text(
                   item,
                   style: AppTextStyles.buttonMd.copyWith(
                     fontSize: 16,
-                    color: AppColors.textPrimary,
+                    color: context.appTextPrimary,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-              const Icon(Icons.north_east, size: 20, color: Color(0xFF9AA4B5)),
+              Icon(Icons.north_east, size: 20, color: context.appTextMuted),
             ],
           ),
         ),
@@ -296,7 +318,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
       Text(
         'SUGGESTED CATEGORIES',
         style: AppTextStyles.label.copyWith(
-          color: const Color(0xFF9AA4B5),
+          color: context.appTextMuted,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -324,15 +346,15 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
                         vertical: 10,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: const Color(0xFFCBD1DB)),
+                        color: context.appSurface,
+                        border: Border.all(color: context.appBorderStrong),
                         borderRadius: BorderRadius.circular(AppRadius.pill),
                       ),
                       child: Text(
                         label,
                         style: AppTextStyles.buttonMd.copyWith(
                           fontSize: 14,
-                          color: const Color(0xFF697487),
+                          color: context.appTextSecondary,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -388,7 +410,15 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
   );
   Widget _section(String title, {String? action, VoidCallback? onTap}) => Row(
     children: [
-      Expanded(child: Text(title, style: AppTextStyles.h3)),
+      Expanded(
+        child: Text(
+          title,
+          style: AppTextStyles.h3.copyWith(
+            fontSize: 20,
+            color: context.appTextPrimary,
+          ),
+        ),
+      ),
       if (action != null)
         TextButton(
           onPressed: onTap,
@@ -448,7 +478,9 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
                   category.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.caption,
+                  style: AppTextStyles.caption.copyWith(
+                    color: context.appTextMuted,
+                  ),
                 ),
               ],
             ),
@@ -501,12 +533,20 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
         constraints: const BoxConstraints(minHeight: 132),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFFC6F1D5), Color(0xFFE0F7EA)],
+          gradient: context.isDarkTheme
+              ? null
+              : const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFFC6F1D5), Color(0xFFE0F7EA)],
+                ),
+          color: context.isDarkTheme ? context.appSurfaceElevated : null,
+          border: Border.all(
+            color: context.isDarkTheme
+                ? context.appBorder
+                : const Color(0xFFAAE6BF),
+            width: 2,
           ),
-          border: Border.all(color: Color(0xFFAAE6BF), width: 2),
           borderRadius: BorderRadius.circular(22),
         ),
         child: Row(
@@ -531,6 +571,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
                     style: AppTextStyles.h3.copyWith(
                       fontSize: 20,
                       height: 1.15,
+                      color: context.appTextPrimary,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -539,6 +580,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
                     style: AppTextStyles.bodyMd.copyWith(
                       fontSize: 14,
                       height: 1.42,
+                      color: context.appTextSecondary,
                     ),
                   ),
                 ],

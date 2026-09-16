@@ -48,9 +48,14 @@ class _AppRootState extends State<AppRoot> {
     setState(() {
       _mode = _AppMode.auth;
       _isGuest = false;
-      _authController.goTo(step);
+      _authController.reset(step);
     });
   }
+
+  void _exitAuth() => setState(() {
+    _isGuest = false;
+    _mode = _AppMode.onboarding;
+  });
 
   void _jumpToAppShell() => setState(() {
     _isGuest = false;
@@ -80,6 +85,7 @@ class _AppRootState extends State<AppRoot> {
               _AppMode.auth => AuthFlow(
                 controller: _authController,
                 onFinished: _jumpToAppShell,
+                onExit: _exitAuth,
               ),
               _AppMode.appShell => AppShell(
                 isGuest: _isGuest,

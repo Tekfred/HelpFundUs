@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 
 class CampaignFilterChips extends StatelessWidget {
@@ -26,9 +27,9 @@ class CampaignFilterChips extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: active ? AppColors.primary : Colors.white,
+                color: active ? AppColors.primary : context.appSurface,
                 border: Border.all(
-                  color: active ? AppColors.primary : const Color(0xFFCBD1DB),
+                  color: active ? AppColors.primary : context.appBorderStrong,
                 ),
                 borderRadius: BorderRadius.circular(999),
               ),
@@ -36,7 +37,7 @@ class CampaignFilterChips extends StatelessWidget {
                 '${entry.key}  ${entry.value}',
                 style: AppTextStyles.buttonMd.copyWith(
                   fontSize: 13,
-                  color: active ? Colors.white : const Color(0xFF697487),
+                  color: active ? Colors.white : context.appTextSecondary,
                 ),
               ),
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/features/campaign/data/campaign_catalog.dart';
 import 'package:helpfundus/features/campaign/presentation/screens/campaign_detail/campaign_detail_screen.dart';
 import 'package:helpfundus/features/campaign/presentation/widgets/campaign_card.dart';
@@ -42,7 +43,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(24, 30, 24, 112),
       children: [
-        Text('Explore', style: AppTextStyles.h1),
+        Text(
+          'Explore',
+          style: AppTextStyles.h1.copyWith(
+            fontSize: 27,
+            color: context.appTextPrimary,
+          ),
+        ),
         const SizedBox(height: 24),
         Row(
           children: [
@@ -55,14 +62,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   prefixIcon: const Icon(Icons.search),
                   hintText: 'Search campaigns...',
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: context.appInput,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(18),
-                    borderSide: const BorderSide(color: Color(0xFFCBD1DB)),
+                    borderSide: BorderSide(color: context.appBorderStrong),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(18),
-                    borderSide: const BorderSide(color: Color(0xFFCBD1DB)),
+                    borderSide: BorderSide(color: context.appBorderStrong),
                   ),
                 ),
               ),
@@ -75,15 +82,15 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 onPressed: () {},
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.zero,
-                  side: const BorderSide(color: Color(0xFFCBD1DB)),
+                  side: BorderSide(color: context.appBorderStrong),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18),
                   ),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.filter_alt_outlined,
                   size: 30,
-                  color: Color(0xFF687386),
+                  color: context.appTextSecondary,
                 ),
               ),
             ),
@@ -108,11 +115,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           vertical: 10,
                         ),
                         decoration: BoxDecoration(
-                          color: selected ? AppColors.primary : Colors.white,
+                          color: selected
+                              ? AppColors.primary
+                              : context.appSurface,
                           border: Border.all(
                             color: selected
                                 ? AppColors.primary
-                                : const Color(0xFFCBD1DB),
+                                : context.appBorderStrong,
                           ),
                           borderRadius: BorderRadius.circular(999),
                         ),
@@ -123,7 +132,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                             fontWeight: FontWeight.w700,
                             color: selected
                                 ? Colors.white
-                                : const Color(0xFF697487),
+                                : context.appTextSecondary,
                           ),
                         ),
                       ),
@@ -136,7 +145,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         const SizedBox(height: 20),
         Text(
           '${campaigns.length} campaigns',
-          style: AppTextStyles.bodyLg.copyWith(color: const Color(0xFF9AA4B5)),
+          style: AppTextStyles.bodyLg.copyWith(color: context.appTextMuted),
         ),
         const SizedBox(height: 18),
         ...campaigns.expand(
@@ -184,7 +193,7 @@ class _ExploreSearchOverlayState extends State<_ExploreSearchOverlay> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.background,
+    backgroundColor: context.appBackground,
     body: SafeArea(
       child: ListView(
         padding: const EdgeInsets.fromLTRB(24, 26, 24, 28),
@@ -199,7 +208,7 @@ class _ExploreSearchOverlayState extends State<_ExploreSearchOverlay> {
                     prefixIcon: const Icon(Icons.search),
                     hintText: 'Search campaigns, causes, locations',
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: context.appInput,
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(18),
                       borderSide: const BorderSide(
@@ -232,7 +241,7 @@ class _ExploreSearchOverlayState extends State<_ExploreSearchOverlay> {
           Text(
             'RECENT SEARCHES',
             style: AppTextStyles.label.copyWith(
-              color: const Color(0xFF9AA4B5),
+              color: context.appTextMuted,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -245,22 +254,23 @@ class _ExploreSearchOverlayState extends State<_ExploreSearchOverlay> {
             'disaster relief',
           ].map(
             (item) => ListTile(
-              leading: const Icon(Icons.history, color: Color(0xFF9AA4B5)),
+              leading: Icon(Icons.history, color: context.appTextMuted),
               title: Text(
                 item,
                 style: AppTextStyles.buttonMd.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
+                  color: context.appTextPrimary,
                 ),
               ),
-              trailing: const Icon(Icons.north_east, color: Color(0xFF9AA4B5)),
+              trailing: Icon(Icons.north_east, color: context.appTextMuted),
             ),
           ),
           const SizedBox(height: 22),
           Text(
             'SUGGESTED CATEGORIES',
             style: AppTextStyles.label.copyWith(
-              color: const Color(0xFF9AA4B5),
+              color: context.appTextMuted,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -284,15 +294,15 @@ class _ExploreSearchOverlayState extends State<_ExploreSearchOverlay> {
                           vertical: 10,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: const Color(0xFFCBD1DB)),
+                          color: context.appSurface,
+                          border: Border.all(color: context.appBorderStrong),
                           borderRadius: BorderRadius.circular(99),
                         ),
                         child: Text(
                           label,
                           style: AppTextStyles.buttonMd.copyWith(
                             fontSize: 14,
-                            color: const Color(0xFF697487),
+                            color: context.appTextSecondary,
                             fontWeight: FontWeight.w700,
                           ),
                         ),

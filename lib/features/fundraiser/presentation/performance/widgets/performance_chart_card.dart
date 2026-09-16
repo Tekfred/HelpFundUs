@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/fundraiser/domain/entities/fundraiser_campaign.dart';
 
@@ -27,7 +28,7 @@ class PerformanceChartCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 16, 14, 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -64,12 +65,22 @@ class PerformanceChartCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('14 days ago', style: AppTextStyles.caption),
-              Text('Today', style: AppTextStyles.caption),
+              Text(
+                '14 days ago',
+                style: AppTextStyles.caption.copyWith(
+                  color: context.appTextMuted,
+                ),
+              ),
+              Text(
+                'Today',
+                style: AppTextStyles.caption.copyWith(
+                  color: context.appTextMuted,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 10),
-          const Divider(height: 1, color: AppColors.borderStrong),
+          Divider(height: 1, color: context.appDivider),
           const SizedBox(height: 10),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +94,10 @@ class PerformanceChartCard extends StatelessWidget {
               Expanded(
                 child: Text.rich(
                   TextSpan(
-                    style: AppTextStyles.bodySm.copyWith(fontSize: 12),
+                    style: AppTextStyles.bodySm.copyWith(
+                      fontSize: 12,
+                      color: context.appTextSecondary,
+                    ),
                     children: [
                       const TextSpan(text: 'Campaign is performing '),
                       TextSpan(

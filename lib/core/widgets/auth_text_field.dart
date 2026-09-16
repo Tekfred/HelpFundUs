@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/app_theme_colors.dart';
 
 /// A labeled input with the field's label sitting above the box (matching
 /// the reference auth screens), rather than a floating Material label.
@@ -57,12 +58,12 @@ class _AuthTextFieldState extends State<AuthTextField> {
           decoration: InputDecoration(
             hintText: widget.hint,
             hintStyle: AppTextStyles.bodyLg.copyWith(
-              color: AppColors.textMuted,
+              color: context.appTextMuted,
             ),
             errorText: widget.errorText,
             prefixIcon: widget.prefix,
             filled: true,
-            fillColor: AppColors.surface,
+            fillColor: context.appInput,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: 16,
@@ -74,18 +75,18 @@ class _AuthTextFieldState extends State<AuthTextField> {
                           ? Icons.visibility_off_outlined
                           : Icons.visibility_outlined,
                       size: 20,
-                      color: AppColors.textMuted,
+                      color: context.appTextMuted,
                     ),
                     onPressed: () => setState(() => _obscure = !_obscure),
                   )
                 : null,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.md),
-              borderSide: const BorderSide(color: AppColors.borderStrong),
+              borderSide: BorderSide(color: context.appBorderStrong),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.md),
-              borderSide: const BorderSide(color: AppColors.borderStrong),
+              borderSide: BorderSide(color: context.appBorderStrong),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.md),

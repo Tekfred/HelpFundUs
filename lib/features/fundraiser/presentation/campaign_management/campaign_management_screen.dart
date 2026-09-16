@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/fundraiser/domain/entities/fundraiser_campaign.dart';
 
@@ -11,7 +12,7 @@ class CampaignManagementScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(child: _hero(context)),
@@ -23,14 +24,17 @@ class CampaignManagementScreen extends StatelessWidget {
                 children: [
                   Text(
                     campaign.title,
-                    style: AppTextStyles.h2.copyWith(fontSize: 24),
+                    style: AppTextStyles.h2.copyWith(
+                      fontSize: 24,
+                      color: context.appTextPrimary,
+                    ),
                   ),
                   const SizedBox(height: 14),
-                  _summary(),
+                  _summary(context),
                   const SizedBox(height: 22),
-                  _heading('Campaign checklist'),
+                  _heading(context, 'Campaign checklist'),
                   const SizedBox(height: 12),
-                  _group(const [
+                  _group(context, const [
                     'Campaign story written',
                     'Cover image / media uploaded',
                     'Identity verification (KYC)',
@@ -38,9 +42,9 @@ class CampaignManagementScreen extends StatelessWidget {
                     'Milestones added',
                   ], checks: true),
                   const SizedBox(height: 22),
-                  _heading('Campaign management'),
+                  _heading(context, 'Campaign management'),
                   const SizedBox(height: 12),
-                  _group(const [
+                  _group(context, const [
                     'Performance analytics|Donations, trends, reach',
                     'Edit campaign|Story, media, goal, dates',
                     'Milestones|2 milestones',
@@ -52,11 +56,11 @@ class CampaignManagementScreen extends StatelessWidget {
                     'DANGER ZONE',
                     style: AppTextStyles.label.copyWith(
                       fontSize: 15,
-                      color: const Color(0xFF9AA4B5),
+                      color: context.appTextMuted,
                     ),
                   ),
                   const SizedBox(height: 10),
-                  _group(const [
+                  _group(context, const [
                     'Pause campaign',
                     'Close campaign permanently',
                   ], danger: true),
@@ -139,14 +143,19 @@ class CampaignManagementScreen extends StatelessWidget {
     );
   }
 
-  Widget _heading(String label) =>
-      Text(label, style: AppTextStyles.h3.copyWith(fontSize: 20));
+  Widget _heading(BuildContext context, String label) => Text(
+    label,
+    style: AppTextStyles.h3.copyWith(
+      fontSize: 20,
+      color: context.appTextPrimary,
+    ),
+  );
 
-  Widget _summary() {
+  Widget _summary(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -163,7 +172,9 @@ class CampaignManagementScreen extends StatelessWidget {
               const Spacer(),
               Text(
                 'of \$${campaign.goal.toStringAsFixed(0)} goal',
-                style: AppTextStyles.bodyMd,
+                style: AppTextStyles.bodyMd.copyWith(
+                  color: context.appTextSecondary,
+                ),
               ),
             ],
           ),
@@ -174,15 +185,21 @@ class CampaignManagementScreen extends StatelessWidget {
               value: campaign.progress,
               minHeight: 8,
               color: AppColors.primary,
-              backgroundColor: const Color(0xFFE3E5EA),
+              backgroundColor: context.isDarkTheme
+                  ? AppColors.dividerDark
+                  : const Color(0xFFE3E5EA),
             ),
           ),
           const SizedBox(height: 15),
           Row(
             children: [
-              _metric('${campaign.donorCount}', 'Donors'),
-              _metric('${(campaign.progress * 100).round()}%', 'Progress'),
-              _metric('${campaign.daysRemaining}', 'Days left'),
+              _metric(context, '${campaign.donorCount}', 'Donors'),
+              _metric(
+                context,
+                '${(campaign.progress * 100).round()}%',
+                'Progress',
+              ),
+              _metric(context, '${campaign.daysRemaining}', 'Days left'),
             ],
           ),
         ],
@@ -190,22 +207,36 @@ class CampaignManagementScreen extends StatelessWidget {
     );
   }
 
-  Widget _metric(String value, String label) {
+  Widget _metric(BuildContext context, String value, String label) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(value, style: AppTextStyles.h3.copyWith(fontSize: 18)),
-          Text(label, style: AppTextStyles.caption),
+          Text(
+            value,
+            style: AppTextStyles.h3.copyWith(
+              fontSize: 18,
+              color: context.appTextPrimary,
+            ),
+          ),
+          Text(
+            label,
+            style: AppTextStyles.caption.copyWith(color: context.appTextMuted),
+          ),
         ],
       ),
     );
   }
 
-  Widget _group(List<String> rows, {bool checks = false, bool danger = false}) {
+  Widget _group(
+    BuildContext context,
+    List<String> rows, {
+    bool checks = false,
+    bool danger = false,
+  }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(22),
       ),
       child: Column(
@@ -213,7 +244,7 @@ class CampaignManagementScreen extends StatelessWidget {
           final parts = rows[index].split('|');
           final color = danger
               ? (index == 1 ? AppColors.danger : const Color(0xFFE17A00))
-              : AppColors.textPrimary;
+              : context.appTextPrimary;
           return Column(
             children: [
               ListTile(
@@ -231,14 +262,19 @@ class CampaignManagementScreen extends StatelessWidget {
                   ),
                 ),
                 subtitle: parts.length > 1
-                    ? Text(parts[1], style: AppTextStyles.bodySm)
+                    ? Text(
+                        parts[1],
+                        style: AppTextStyles.bodySm.copyWith(
+                          color: context.appTextMuted,
+                        ),
+                      )
                     : null,
                 trailing: checks
                     ? null
                     : Icon(Icons.chevron_right_rounded, color: color),
               ),
               if (index < rows.length - 1)
-                const Divider(height: 1, color: AppColors.borderStrong),
+                Divider(height: 1, color: context.appDivider),
             ],
           );
         }),

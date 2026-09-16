@@ -13,14 +13,22 @@ abstract class AppColors {
 
   /// Background — soft mint. Screen backgrounds.
   static const Color background = Color(0xFFEAF7F0);
+  static const Color backgroundDark = Color(0xFF0D1628);
 
   /// Surface — pure white. Cards, sheets, inputs.
   static const Color surface = Color(0xFFFFFFFF);
+  static const Color surfaceDark = Color(0xFF16233A);
+  static const Color surfaceElevatedDark = Color(0xFF1D2C45);
+  static const Color inputDark = Color(0xFF192943);
+  static const Color navDark = Color(0xFF0B1425);
 
   /// Text
   static const Color textPrimary = Color(0xFF1A1A2E);
   static const Color textSecondary = Color(0x991A1A2E); // ~60% opacity
   static const Color textMuted = Color(0x661A1A2E); // ~40% opacity
+  static const Color textPrimaryDark = Color(0xFFF7F9FC);
+  static const Color textSecondaryDark = Color(0xFFAAB5C6);
+  static const Color textMutedDark = Color(0xFF758197);
 
   /// Utility
   static const Color border = Color(0x141A1A2E); // ~8% opacity
@@ -28,6 +36,8 @@ abstract class AppColors {
     0x261A1A2E,
   ); // ~15% opacity, for visible card/button outlines
   static const Color shadow = Color(0x1A1DB954); // soft green shadow
+  static const Color borderDark = Color(0xFF2D3E59);
+  static const Color dividerDark = Color(0xFF24344D);
   static const Color danger = Color(0xFFE5484D);
   static const Color warning = Color(0xFFF5A524);
 

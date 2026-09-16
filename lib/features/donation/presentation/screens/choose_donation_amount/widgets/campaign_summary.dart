@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 
 class CampaignSummary extends StatelessWidget {
   const CampaignSummary({
@@ -18,7 +19,7 @@ class CampaignSummary extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: EdgeInsets.all(expanded ? 14 : 12),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: context.appSurface,
       borderRadius: BorderRadius.circular(22),
     ),
     child: Row(
@@ -56,7 +57,9 @@ class CampaignSummary extends StatelessWidget {
                         value: .72,
                         minHeight: expanded ? 7 : 6,
                         color: AppColors.primary,
-                        backgroundColor: Color(0xFFE3E5EA),
+                        backgroundColor: context.isDarkTheme
+                            ? AppColors.borderDark
+                            : const Color(0xFFE3E5EA),
                       ),
                     ),
                   ),

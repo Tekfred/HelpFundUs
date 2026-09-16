@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 
 /// Shared page chrome for the later donation steps.
 class DonationPage extends StatelessWidget {
@@ -10,8 +10,8 @@ class DonationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.background,
-    appBar: AppBar(backgroundColor: AppColors.background, title: Text(title)),
+    backgroundColor: context.appBackground,
+    appBar: AppBar(backgroundColor: context.appBackground, title: Text(title)),
     body: SafeArea(
       child: ListView(
         padding: const EdgeInsets.all(20),
@@ -19,7 +19,7 @@ class DonationPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.appSurface,
               borderRadius: BorderRadius.circular(22),
             ),
             child: child,

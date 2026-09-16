@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/app_theme_colors.dart';
 
 /// Shared press-spring behaviour for every tappable CTA in the app.
 /// Scales down to 0.96 on press and springs back on release, instead of
@@ -146,14 +147,14 @@ class SecondaryButton extends StatelessWidget {
         height: 58,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.appSurface,
           borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(color: AppColors.borderStrong, width: 1.4),
+          border: Border.all(color: context.appBorderStrong, width: 1.4),
         ),
         alignment: Alignment.center,
         child: Text(
           label,
-          style: AppTextStyles.buttonLg.copyWith(color: AppColors.textPrimary),
+          style: AppTextStyles.buttonLg.copyWith(color: context.appTextPrimary),
         ),
       ),
     );

@@ -5,15 +5,14 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/pill_badge.dart';
 
 /// The tilted campaign preview card on the Welcome screen: gradient
-/// header, verified badge, supporter count, animated progress bar,
-/// and two floating celebration chips.
+/// header, verified badge, supporter count, and animated progress bar.
 class CampaignCardIllustration extends StatelessWidget {
   const CampaignCardIllustration({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 210,
+      height: 190,
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.center,
@@ -39,21 +38,25 @@ class CampaignCardIllustration extends StatelessWidget {
             ),
           ),
           _MainCard(),
-          Positioned(
-            top: -14,
-            right: 8,
-            child: FloatingNotificationChip(
-              label: '+\$500 🎉',
-              background: AppColors.surface,
+          const Positioned(
+            top: 10,
+            right: -2,
+            child: PillBadge(
+              label: '248 supporters',
+              leading: Text('❤️', style: TextStyle(fontSize: 11)),
             ),
           ),
-          Positioned(
+          const Positioned(
+            top: -18,
+            right: 8,
+            child: FloatingNotificationChip(label: '+\$500 🎉'),
+          ),
+          const Positioned(
             bottom: -10,
             left: 4,
             child: FloatingNotificationChip(
               label: '💚 Just donated!',
-              delay: const Duration(milliseconds: 500),
-              background: AppColors.surface,
+              delay: Duration(milliseconds: 500),
             ),
           ),
         ],
@@ -63,8 +66,8 @@ class CampaignCardIllustration extends StatelessWidget {
 
   Widget _shadowCard({required Color color}) {
     return Container(
-      width: 250,
-      height: 168,
+      width: 240,
+      height: 154,
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -81,7 +84,8 @@ class _MainCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 280,
+      width: 270,
+      height: 176,
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -100,7 +104,7 @@ class _MainCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            height: 88,
+            height: 78,
             decoration: const BoxDecoration(gradient: AppColors.cardGradient),
             padding: const EdgeInsets.all(AppSpacing.sm),
             child: Stack(
@@ -113,43 +117,40 @@ class _MainCard extends StatelessWidget {
                     color: AppColors.primary,
                   ),
                 ),
-                Positioned(
-                  right: 0,
-                  child: PillBadge(
-                    label: '248 supporters',
-                    leading: const Text('❤️', style: TextStyle(fontSize: 11)),
-                  ),
-                ),
                 Align(alignment: Alignment.bottomCenter, child: _AvatarStack()),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Help rebuild our community center',
-                  style: AppTextStyles.buttonMd,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                _AnimatedProgressBar(progress: 0.72),
-                const SizedBox(height: AppSpacing.xs),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '\$14,400 raised',
-                      style: AppTextStyles.bodySm.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 10, 14, 9),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Help rebuild our community center',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.buttonMd.copyWith(fontSize: 14),
+                  ),
+                  const SizedBox(height: 7),
+                  _AnimatedProgressBar(progress: 0.72),
+                  const SizedBox(height: AppSpacing.xs),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '\$14,400 raised',
+                        style: AppTextStyles.bodySm.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    Text('72%', style: AppTextStyles.bodySm),
-                  ],
-                ),
-              ],
+                      Text('72%', style: AppTextStyles.bodySm),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],

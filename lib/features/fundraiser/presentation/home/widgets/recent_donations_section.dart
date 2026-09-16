@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 
 class RecentDonationsSection extends StatelessWidget {
@@ -34,7 +35,10 @@ class RecentDonationsSection extends StatelessWidget {
           children: [
             Text(
               'Recent donations',
-              style: AppTextStyles.h3.copyWith(fontSize: 20),
+              style: AppTextStyles.h3.copyWith(
+                fontSize: 20,
+                color: context.appTextPrimary,
+              ),
             ),
             const Spacer(),
             TextButton(
@@ -49,16 +53,16 @@ class RecentDonationsSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 4),
-        for (final donation in donations) _row(donation),
+        for (final donation in donations) _row(context, donation),
       ],
     );
   }
 
-  Widget _row(_Donation donation) {
+  Widget _row(BuildContext context, _Donation donation) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 11),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.borderStrong)),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: context.appDivider)),
       ),
       child: Row(
         children: [
@@ -76,12 +80,18 @@ class RecentDonationsSection extends StatelessWidget {
               children: [
                 Text(
                   donation.name,
-                  style: AppTextStyles.buttonMd.copyWith(fontSize: 16),
+                  style: AppTextStyles.buttonMd.copyWith(
+                    fontSize: 16,
+                    color: context.appTextPrimary,
+                  ),
                 ),
                 if (donation.message.isNotEmpty)
                   Text(
                     donation.message,
-                    style: AppTextStyles.bodyMd.copyWith(fontSize: 13),
+                    style: AppTextStyles.bodyMd.copyWith(
+                      fontSize: 13,
+                      color: context.appTextSecondary,
+                    ),
                   ),
               ],
             ),
@@ -96,7 +106,12 @@ class RecentDonationsSection extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-              Text(donation.time, style: AppTextStyles.caption),
+              Text(
+                donation.time,
+                style: AppTextStyles.caption.copyWith(
+                  color: context.appTextMuted,
+                ),
+              ),
             ],
           ),
         ],

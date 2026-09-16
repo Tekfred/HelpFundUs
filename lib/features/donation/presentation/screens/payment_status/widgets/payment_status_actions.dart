@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 
 class PaymentStatusActions extends StatelessWidget {
@@ -44,7 +45,7 @@ class PaymentStatusActions extends StatelessWidget {
           child: Text(
             secondaryLabel!,
             style: AppTextStyles.buttonMd.copyWith(
-              color: AppColors.textSecondary,
+              color: context.appTextSecondary,
             ),
           ),
         ),
@@ -55,7 +56,7 @@ class PaymentStatusActions extends StatelessWidget {
           child: Text(
             tertiaryLabel!,
             style: AppTextStyles.buttonMd.copyWith(
-              color: AppColors.textSecondary,
+              color: context.appTextSecondary,
             ),
           ),
         ),

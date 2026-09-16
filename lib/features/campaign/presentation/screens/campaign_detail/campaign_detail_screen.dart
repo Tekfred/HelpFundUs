@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_dimens.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/core/widgets/app_share_sheet.dart';
@@ -19,7 +20,7 @@ class CampaignDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.background,
+    backgroundColor: context.appBackground,
     body: SafeArea(
       bottom: false,
       child: CustomScrollView(
@@ -40,10 +41,11 @@ class CampaignDetailScreen extends StatelessWidget {
                     style: AppTextStyles.h1.copyWith(
                       fontSize: 24,
                       height: 1.15,
+                      color: context.appTextPrimary,
                     ),
                   ),
                   const SizedBox(height: 12),
-                  _fundraiser(),
+                  _fundraiser(context),
                   const SizedBox(height: 12),
                   Row(
                     children: [
@@ -57,24 +59,27 @@ class CampaignDetailScreen extends StatelessWidget {
                         campaign.location,
                         style: AppTextStyles.bodyMd.copyWith(
                           fontSize: 15,
-                          color: const Color(0xFF687386),
+                          color: context.appTextSecondary,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 18),
-                  _fundingSummary(),
+                  _fundingSummary(context),
                   const SizedBox(height: 22),
                   Text(
                     'Campaign story',
-                    style: AppTextStyles.h2.copyWith(fontSize: 20),
+                    style: AppTextStyles.h2.copyWith(
+                      fontSize: 20,
+                      color: context.appTextPrimary,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     campaign.story,
                     style: AppTextStyles.bodyMd.copyWith(
                       fontSize: 15,
-                      color: const Color(0xFF687386),
+                      color: context.appTextSecondary,
                       height: 1.52,
                     ),
                   ),
@@ -86,7 +91,9 @@ class CampaignDetailScreen extends StatelessWidget {
                     () => _openMilestones(context),
                   ),
                   const SizedBox(height: 10),
-                  ...campaign.milestones.take(2).map(_milestoneTile),
+                  ...campaign.milestones
+                      .take(2)
+                      .map((milestone) => _milestoneTile(context, milestone)),
                   const SizedBox(height: 22),
                   _sectionHeader(
                     context,
@@ -96,7 +103,7 @@ class CampaignDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   if (campaign.updates.isNotEmpty)
-                    _updateTile(campaign.updates.first),
+                    _updateTile(context, campaign.updates.first),
                 ],
               ),
             ),
@@ -246,7 +253,7 @@ class CampaignDetailScreen extends StatelessWidget {
     ),
   );
 
-  Widget _fundraiser() => Row(
+  Widget _fundraiser(BuildContext context) => Row(
     children: [
       CircleAvatar(
         radius: 23,
@@ -265,7 +272,7 @@ class CampaignDetailScreen extends StatelessWidget {
           text: TextSpan(
             style: AppTextStyles.bodyMd.copyWith(
               fontSize: 15,
-              color: const Color(0xFF687386),
+              color: context.appTextSecondary,
             ),
             children: [
               const TextSpan(text: 'by '),
@@ -273,7 +280,7 @@ class CampaignDetailScreen extends StatelessWidget {
                 text: campaign.fundraiser,
                 style: AppTextStyles.buttonMd.copyWith(
                   fontSize: 15,
-                  color: AppColors.textPrimary,
+                  color: context.appTextPrimary,
                 ),
               ),
               if (campaign.organisation)
@@ -290,10 +297,10 @@ class CampaignDetailScreen extends StatelessWidget {
     ],
   );
 
-  Widget _fundingSummary() => Container(
+  Widget _fundingSummary(BuildContext context) => Container(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: context.appSurface,
       borderRadius: BorderRadius.circular(22),
       boxShadow: const [
         BoxShadow(
@@ -320,7 +327,7 @@ class CampaignDetailScreen extends StatelessWidget {
               'of ${campaign.goal}',
               style: AppTextStyles.bodyMd.copyWith(
                 fontSize: 15,
-                color: const Color(0xFF687386),
+                color: context.appTextSecondary,
               ),
             ),
           ],
@@ -331,33 +338,41 @@ class CampaignDetailScreen extends StatelessWidget {
           child: LinearProgressIndicator(
             value: campaign.progress,
             minHeight: 10,
-            backgroundColor: const Color(0xFFE1E4E9),
+            backgroundColor: context.isDarkTheme
+                ? AppColors.dividerDark
+                : const Color(0xFFE1E4E9),
             valueColor: const AlwaysStoppedAnimation(AppColors.primary),
           ),
         ),
         const SizedBox(height: 14),
         Row(
           children: [
-            _stat('${campaign.donors}', 'Donors'),
-            _stat('${(campaign.progress * 100).round()}%', 'Progress'),
-            _stat('${campaign.daysLeft}', 'Days left'),
+            _stat(context, '${campaign.donors}', 'Donors'),
+            _stat(context, '${(campaign.progress * 100).round()}%', 'Progress'),
+            _stat(context, '${campaign.daysLeft}', 'Days left'),
           ],
         ),
       ],
     ),
   );
 
-  Widget _stat(String value, String label) => Expanded(
+  Widget _stat(BuildContext context, String value, String label) => Expanded(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(value, style: AppTextStyles.h2.copyWith(fontSize: 22)),
+        Text(
+          value,
+          style: AppTextStyles.h2.copyWith(
+            fontSize: 22,
+            color: context.appTextPrimary,
+          ),
+        ),
         const SizedBox(height: 4),
         Text(
           label,
           style: AppTextStyles.bodyMd.copyWith(
             fontSize: 14,
-            color: const Color(0xFF9AA4B5),
+            color: context.appTextMuted,
           ),
         ),
       ],
@@ -371,7 +386,13 @@ class CampaignDetailScreen extends StatelessWidget {
   ) => Row(
     children: [
       Expanded(
-        child: Text(title, style: AppTextStyles.h2.copyWith(fontSize: 22)),
+        child: Text(
+          title,
+          style: AppTextStyles.h2.copyWith(
+            fontSize: 22,
+            color: context.appTextPrimary,
+          ),
+        ),
       ),
       TextButton(
         onPressed: onTap,
@@ -385,53 +406,57 @@ class CampaignDetailScreen extends StatelessWidget {
       ),
     ],
   );
-  Widget _milestoneTile(CampaignMilestone milestone) => Container(
-    margin: const EdgeInsets.only(bottom: 10),
-    padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(18),
-    ),
-    child: Row(
-      children: [
-        CircleAvatar(
-          radius: 18,
-          backgroundColor: milestone.completed
-              ? AppColors.primary
-              : AppColors.warning,
-          child: Icon(
-            milestone.completed ? Icons.check : Icons.circle,
-            color: Colors.white,
-            size: 18,
-          ),
+  Widget _milestoneTile(BuildContext context, CampaignMilestone milestone) =>
+      Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: context.appSurface,
+          borderRadius: BorderRadius.circular(18),
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                milestone.title,
-                style: AppTextStyles.h3.copyWith(fontSize: 17),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 18,
+              backgroundColor: milestone.completed
+                  ? AppColors.primary
+                  : AppColors.warning,
+              child: Icon(
+                milestone.completed ? Icons.check : Icons.circle,
+                color: Colors.white,
+                size: 18,
               ),
-              const SizedBox(height: 5),
-              Text(
-                milestone.dateAmount,
-                style: AppTextStyles.bodyMd.copyWith(
-                  fontSize: 14,
-                  color: const Color(0xFF9AA4B5),
-                ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    milestone.title,
+                    style: AppTextStyles.h3.copyWith(
+                      fontSize: 17,
+                      color: context.appTextPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    milestone.dateAmount,
+                    style: AppTextStyles.bodyMd.copyWith(
+                      fontSize: 14,
+                      color: context.appTextMuted,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
-  Widget _updateTile(CampaignUpdate update) => Container(
+      );
+  Widget _updateTile(BuildContext context, CampaignUpdate update) => Container(
     padding: const EdgeInsets.all(18),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: context.appSurface,
       borderRadius: BorderRadius.circular(24),
     ),
     child: Column(
@@ -447,13 +472,16 @@ class CampaignDetailScreen extends StatelessWidget {
                 children: [
                   Text(
                     update.title,
-                    style: AppTextStyles.h3.copyWith(fontSize: 17),
+                    style: AppTextStyles.h3.copyWith(
+                      fontSize: 17,
+                      color: context.appTextPrimary,
+                    ),
                   ),
                   Text(
                     update.when,
                     style: AppTextStyles.bodyMd.copyWith(
                       fontSize: 14,
-                      color: const Color(0xFF9AA4B5),
+                      color: context.appTextMuted,
                     ),
                   ),
                 ],
@@ -466,7 +494,7 @@ class CampaignDetailScreen extends StatelessWidget {
           update.message,
           style: AppTextStyles.bodyMd.copyWith(
             fontSize: 15,
-            color: const Color(0xFF687386),
+            color: context.appTextSecondary,
             height: 1.45,
           ),
         ),
@@ -493,7 +521,7 @@ class CampaignDetailScreen extends StatelessWidget {
     top: false,
     child: Container(
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 16),
-      color: AppColors.background,
+      color: context.appBackground,
       child: Row(
         children: [
           SizedBox(
@@ -503,12 +531,15 @@ class CampaignDetailScreen extends StatelessWidget {
               onPressed: () => _showShareSheet(context),
               style: OutlinedButton.styleFrom(
                 padding: EdgeInsets.zero,
-                side: const BorderSide(color: Color(0xFFCBD1DB)),
+                side: BorderSide(color: context.appBorderStrong),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
                 ),
               ),
-              child: const Icon(Icons.share_outlined, color: Color(0xFF687386)),
+              child: Icon(
+                Icons.share_outlined,
+                color: context.appTextSecondary,
+              ),
             ),
           ),
           const SizedBox(width: 16),

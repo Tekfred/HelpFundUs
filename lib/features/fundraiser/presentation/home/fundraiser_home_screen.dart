@@ -68,7 +68,7 @@ class FundraiserHomeScreen extends StatelessWidget {
           backgroundColor: Color(0xFFEAF2FF),
           accentColor: Color(0xFF2563EB),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 15),
         const FundraiserStatusCard(
           icon: Icons.error_outline_rounded,
           leadingText: '1 campaign suspended',

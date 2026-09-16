@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/donation/presentation/screens/payment_authorization/widgets/payment_security_notice.dart';
 import 'package:helpfundus/features/donation/presentation/screens/payment_authorization/widgets/payment_summary_card.dart';
@@ -40,7 +41,7 @@ class PaymentAuthorizationScreen extends StatelessWidget {
       child: Text(
         'Cancel payment',
         style: AppTextStyles.buttonMd.copyWith(
-          color: AppColors.textSecondary,
+          color: context.appTextSecondary,
           fontSize: 16,
         ),
       ),

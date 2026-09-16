@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 
 class FundraiserStatsSection extends StatelessWidget {
@@ -9,22 +10,27 @@ class FundraiserStatsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _card('\$7,800', 'Total raised\nall time', primary: true),
+        _card(context, '\$7,800', 'Total raised\nall time', primary: true),
         const SizedBox(width: 8),
-        _card('1', 'Active\nlive campaigns'),
+        _card(context, '1', 'Active\nlive campaigns'),
         const SizedBox(width: 8),
-        _card('\$3,800', 'Balance\navailable'),
+        _card(context, '\$3,800', 'Balance\navailable'),
       ],
     );
   }
 
-  Widget _card(String value, String label, {bool primary = false}) {
+  Widget _card(
+    BuildContext context,
+    String value,
+    String label, {
+    bool primary = false,
+  }) {
     return Expanded(
       child: Container(
         height: 116,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: primary ? AppColors.primary : Colors.white,
+          color: primary ? AppColors.primary : context.appSurface,
           borderRadius: BorderRadius.circular(22),
         ),
         child: Column(
@@ -43,7 +49,7 @@ class FundraiserStatsSection extends StatelessWidget {
               label,
               style: AppTextStyles.bodyMd.copyWith(
                 fontSize: 12,
-                color: primary ? Colors.white70 : const Color(0xFF9AA4B5),
+                color: primary ? Colors.white70 : context.appTextMuted,
               ),
             ),
           ],

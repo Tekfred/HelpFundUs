@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/features/fundraiser/data/fundraiser_campaign_catalog.dart';
 import 'package:helpfundus/features/fundraiser/domain/entities/fundraiser_campaign.dart';
 import 'package:helpfundus/features/fundraiser/presentation/campaign_management/campaign_management_screen.dart';
@@ -38,7 +38,7 @@ class _CampaignsScreenState extends State<CampaignsScreen> {
   );
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.background,
+    backgroundColor: context.appBackground,
     body: SafeArea(
       child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 26, 20, 112),

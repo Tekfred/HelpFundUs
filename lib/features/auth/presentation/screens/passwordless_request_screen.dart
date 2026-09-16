@@ -57,21 +57,24 @@ class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
     return AuthScaffold(
       title: 'Sign In with a Code',
       onBack: widget.onBack,
+      bodyMainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (!_sent) ...[
           const SizedBox(height: AppSpacing.sm),
-          Container(
-            width: 64,
-            height: 64,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.sms_outlined,
-              color: AppColors.primary,
-              size: 28,
+          Center(
+            child: Container(
+              width: 64,
+              height: 64,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.sms_outlined,
+                color: AppColors.primary,
+                size: 28,
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -79,6 +82,7 @@ class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
             "We'll text or email you a one-time code — no password needed. "
             'The code expires a few minutes after it\'s sent.',
             style: AppTextStyles.bodyMd,
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.lg),
           AuthTextField(
@@ -95,23 +99,25 @@ class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
           PrimaryButton(label: 'Request Code', onPressed: _send),
         ] else ...[
           const SizedBox(height: AppSpacing.sm),
-          Container(
-            width: 64,
-            height: 64,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.mark_email_read_outlined,
-              color: AppColors.primary,
-              size: 28,
+          Center(
+            child: Container(
+              width: 64,
+              height: 64,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.mark_email_read_outlined,
+                color: AppColors.primary,
+                size: 28,
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          Text('Code sent to', style: AppTextStyles.bodyMd),
-          Text(_identifier.text, style: AppTextStyles.h3),
+          Center(child: Text('Code sent to', style: AppTextStyles.bodyMd)),
+          Center(child: Text(_identifier.text, style: AppTextStyles.h3)),
           const SizedBox(height: AppSpacing.lg),
           Center(child: ResendCountdown(seconds: 45, onResend: () {})),
           const SizedBox(height: AppSpacing.lg),

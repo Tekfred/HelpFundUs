@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 
 class DonationSearchField extends StatelessWidget {
   const DonationSearchField({
@@ -20,14 +21,14 @@ class DonationSearchField extends StatelessWidget {
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(vertical: 15),
       filled: true,
-      fillColor: Colors.white,
+      fillColor: context.appInput,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(color: Color(0xFFCBD1DB)),
+        borderSide: BorderSide(color: context.appBorderStrong),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(color: Color(0xFFCBD1DB)),
+        borderSide: BorderSide(color: context.appBorderStrong),
       ),
     ),
   );

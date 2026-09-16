@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../state/app_shell_controller.dart';
 import 'notification_badge.dart';
 
@@ -41,21 +42,21 @@ class AppBottomNav extends StatelessWidget {
       top: false,
       child: Container(
         height: 84,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(top: BorderSide(color: AppColors.border)),
+        decoration: BoxDecoration(
+          color: context.appNavigation,
+          border: Border(top: BorderSide(color: context.appBorder)),
         ),
         child: Row(
           children: List.generate(
             labels.length,
-            (i) => _item(i, labels[i], displayedIcons[i]),
+            (i) => _item(context, i, labels[i], displayedIcons[i]),
           ),
         ),
       ),
     );
   }
 
-  Widget _item(int i, String label, IconData icon) {
+  Widget _item(BuildContext context, int i, String label, IconData icon) {
     final signIn = isGuest && i == 2;
     final s = signIn || i == controller.tabIndex;
     final n = isGuest
@@ -90,7 +91,7 @@ class AppBottomNav extends StatelessWidget {
                     child: Icon(
                       icon,
                       size: 24,
-                      color: s ? AppColors.primary : const Color(0xFF9AA4B5),
+                      color: s ? AppColors.primary : context.appTextMuted,
                     ),
                   ),
                   if (n > 0)
@@ -107,7 +108,7 @@ class AppBottomNav extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppTextStyles.caption.copyWith(
-                  color: s ? AppColors.primary : const Color(0xFF9AA4B5),
+                  color: s ? AppColors.primary : context.appTextMuted,
                   fontWeight: s ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),

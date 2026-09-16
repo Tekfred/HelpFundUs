@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
 import 'package:helpfundus/core/theme/app_dimens.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/features/app_shell/state/app_shell_controller.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -53,10 +54,19 @@ class AccountScreen extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Jane Doe', style: AppTextStyles.h2.copyWith(fontSize: 24)),
+              Text(
+                'Jane Doe',
+                style: AppTextStyles.h2.copyWith(
+                  fontSize: 24,
+                  color: context.appTextPrimary,
+                ),
+              ),
               Text(
                 'jane@example.com',
-                style: AppTextStyles.bodyMd.copyWith(fontSize: 15),
+                style: AppTextStyles.bodyMd.copyWith(
+                  fontSize: 15,
+                  color: context.appTextSecondary,
+                ),
               ),
               const SizedBox(height: 4),
               Text(
@@ -74,7 +84,7 @@ class AccountScreen extends StatelessWidget {
       Text(
         'VIEW AS',
         style: AppTextStyles.label.copyWith(
-          color: const Color(0xFF9AA4B5),
+          color: context.appTextMuted,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -82,7 +92,7 @@ class AccountScreen extends StatelessWidget {
       Container(
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 245, 246, 245),
+          color: context.appInput,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
@@ -97,11 +107,11 @@ class AccountScreen extends StatelessWidget {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: controller.role == role
-                          ? Colors.white
+                          ? context.appSurface
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(12),
                       border: controller.role == role
-                          ? Border.all(color: const Color(0xFFCDD5DE))
+                          ? Border.all(color: context.appBorderStrong)
                           : null,
                       boxShadow: controller.role == role
                           ? const [
@@ -118,8 +128,8 @@ class AccountScreen extends StatelessWidget {
                       style: AppTextStyles.buttonLg.copyWith(
                         fontSize: 15,
                         color: controller.role == role
-                            ? AppColors.textPrimary
-                            : const Color(0xFF9AA4B5),
+                            ? context.appTextPrimary
+                            : context.appTextMuted,
                       ),
                     ),
                   ),
@@ -131,11 +141,11 @@ class AccountScreen extends StatelessWidget {
       const SizedBox(height: 28),
       Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.appSurface,
           borderRadius: BorderRadius.circular(22),
         ),
         child: Column(
-          children: const [
+          children: [
             _Setting(
               Icons.person_outline,
               'Edit profile',
@@ -183,7 +193,7 @@ class AccountScreen extends StatelessWidget {
       Center(
         child: Text(
           'HelpFundUs v2.4.1 · Terms · Privacy',
-          style: AppTextStyles.bodySm,
+          style: AppTextStyles.bodySm.copyWith(color: context.appTextMuted),
         ),
       ),
     ],
@@ -200,7 +210,7 @@ class _Setting extends StatelessWidget {
     decoration: BoxDecoration(
       border: last
           ? null
-          : const Border(bottom: BorderSide(color: Color(0xFFE0E4E8))),
+          : Border(bottom: BorderSide(color: context.appDivider)),
     ),
     child: ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
@@ -218,17 +228,17 @@ class _Setting extends StatelessWidget {
         style: AppTextStyles.buttonMd.copyWith(
           fontSize: 16,
           fontWeight: FontWeight.w700,
-          color: AppColors.textPrimary,
+          color: context.appTextPrimary,
         ),
       ),
       subtitle: Text(
         subtitle,
         style: AppTextStyles.bodyMd.copyWith(
           fontSize: 14,
-          color: const Color(0xFF6B7587),
+          color: context.appTextSecondary,
         ),
       ),
-      trailing: const Icon(Icons.chevron_right, color: Color(0xFF9AA4B5)),
+      trailing: Icon(Icons.chevron_right, color: context.appTextMuted),
     ),
   );
 }

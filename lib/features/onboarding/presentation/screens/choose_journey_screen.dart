@@ -47,7 +47,7 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
                 index: 0,
                 child: CircularBackButton(onPressed: widget.onBack),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: 18),
               RevealOnEnter(
                 index: 1,
                 blurSigma: 8,
@@ -64,7 +64,7 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
                   style: AppTextStyles.bodyMd,
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: 18),
               RevealOnEnter(
                 index: 3,
                 child: JourneyCard(
@@ -76,7 +76,7 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
                   onTap: () => setState(() => _choice = JourneyChoice.donor),
                 ),
               ),
-              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: 10),
               RevealOnEnter(
                 index: 4,
                 child: JourneyCard(
@@ -89,14 +89,14 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
                       setState(() => _choice = JourneyChoice.fundraiser),
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: 12),
               RevealOnEnter(
                 index: 5,
                 child: Container(
-                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: AppColors.surface,
-                    borderRadius: BorderRadius.circular(AppRadius.md),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

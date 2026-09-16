@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/fundraiser/domain/entities/fundraiser_campaign.dart';
 import 'package:helpfundus/features/fundraiser/presentation/performance/widgets/performance_chart_card.dart';
@@ -14,7 +14,7 @@ class PerformanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
@@ -25,14 +25,20 @@ class PerformanceScreen extends StatelessWidget {
             const SizedBox(height: 18),
             Text(
               'Payout summary',
-              style: AppTextStyles.buttonMd.copyWith(fontSize: 15),
+              style: AppTextStyles.buttonMd.copyWith(
+                fontSize: 15,
+                color: context.appTextPrimary,
+              ),
             ),
             const SizedBox(height: 10),
             PayoutSummaryCard(totalRaised: campaign.amountRaised),
             const SizedBox(height: 18),
             Text(
               'Recent donations',
-              style: AppTextStyles.buttonMd.copyWith(fontSize: 15),
+              style: AppTextStyles.buttonMd.copyWith(
+                fontSize: 15,
+                color: context.appTextPrimary,
+              ),
             ),
             const SizedBox(height: 10),
             const PerformanceRecentDonations(),
@@ -51,7 +57,7 @@ class PerformanceScreen extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Material(
-              color: Colors.white,
+              color: context.appSurface,
               shape: const CircleBorder(),
               child: InkWell(
                 onTap: () => Navigator.of(context).pop(),
@@ -64,7 +70,13 @@ class PerformanceScreen extends StatelessWidget {
               ),
             ),
           ),
-          Text('Performance', style: AppTextStyles.h3.copyWith(fontSize: 18)),
+          Text(
+            'Performance',
+            style: AppTextStyles.h3.copyWith(
+              fontSize: 18,
+              color: context.appTextPrimary,
+            ),
+          ),
         ],
       ),
     );

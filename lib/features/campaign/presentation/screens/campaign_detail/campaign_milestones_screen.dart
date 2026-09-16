@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/campaign/data/campaign_catalog.dart';
 import 'package:helpfundus/features/campaign/presentation/screens/campaign_detail/widgets/milestone_card.dart';
@@ -10,14 +11,14 @@ class CampaignMilestonesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.background,
+    backgroundColor: context.appBackground,
     body: SafeArea(
       child: ListView(
         padding: const EdgeInsets.fromLTRB(24, 12, 24, 28),
         children: [
           _header(context),
           const SizedBox(height: 14),
-          _summary(),
+          _summary(context),
           const SizedBox(height: 20),
           ...List.generate(
             campaign.milestones.length,
@@ -37,7 +38,7 @@ class CampaignMilestonesScreen extends StatelessWidget {
   Widget _header(BuildContext context) => Row(
     children: [
       Material(
-        color: Colors.white,
+        color: context.appSurface,
         shape: const CircleBorder(),
         child: InkWell(
           onTap: () => Navigator.of(context).pop(),
@@ -53,17 +54,20 @@ class CampaignMilestonesScreen extends StatelessWidget {
         child: Text(
           'Milestones',
           textAlign: TextAlign.center,
-          style: AppTextStyles.h2.copyWith(fontSize: 22),
+          style: AppTextStyles.h2.copyWith(
+            fontSize: 22,
+            color: context.appTextPrimary,
+          ),
         ),
       ),
       const SizedBox(width: 52),
     ],
   );
 
-  Widget _summary() => Container(
+  Widget _summary(BuildContext context) => Container(
     padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: context.appSurface,
       borderRadius: BorderRadius.circular(20),
     ),
     child: Column(
@@ -83,7 +87,7 @@ class CampaignMilestonesScreen extends StatelessWidget {
               'of ${campaign.goal} goal',
               style: AppTextStyles.bodyMd.copyWith(
                 fontSize: 14,
-                color: const Color(0xFF8E99AA),
+                color: context.appTextMuted,
               ),
             ),
           ],
@@ -95,7 +99,9 @@ class CampaignMilestonesScreen extends StatelessWidget {
             value: campaign.progress,
             minHeight: 7,
             color: AppColors.primary,
-            backgroundColor: const Color(0xFFE1E4E9),
+            backgroundColor: context.isDarkTheme
+                ? AppColors.dividerDark
+                : const Color(0xFFE1E4E9),
           ),
         ),
         const SizedBox(height: 8),
@@ -103,7 +109,7 @@ class CampaignMilestonesScreen extends StatelessWidget {
           '${(campaign.progress * 100).round()}% funded · ${campaign.donors} donors',
           style: AppTextStyles.bodyMd.copyWith(
             fontSize: 14,
-            color: const Color(0xFF687386),
+            color: context.appTextSecondary,
           ),
         ),
       ],

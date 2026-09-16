@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 
 class FundraiserStatusCard extends StatelessWidget {
   const FundraiserStatusCard({
@@ -26,7 +27,9 @@ class FundraiserStatusCard extends StatelessWidget {
       constraints: const BoxConstraints(minHeight: 82),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: context.isDarkTheme
+            ? accentColor.withValues(alpha: .13)
+            : backgroundColor,
         border: Border.all(color: accentColor.withValues(alpha: .28)),
         borderRadius: BorderRadius.circular(18),
       ),
@@ -41,11 +44,17 @@ class FundraiserStatusCard extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: leadingText,
-                    style: AppTextStyles.buttonMd.copyWith(fontSize: 14),
+                    style: AppTextStyles.buttonMd.copyWith(
+                      fontSize: 14,
+                      color: context.appTextPrimary,
+                    ),
                   ),
                   TextSpan(
                     text: ' $message',
-                    style: AppTextStyles.bodyMd.copyWith(fontSize: 14),
+                    style: AppTextStyles.bodyMd.copyWith(
+                      fontSize: 14,
+                      color: context.appTextSecondary,
+                    ),
                   ),
                 ],
               ),

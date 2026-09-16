@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/donation/data/donation_catalog.dart';
 import 'package:helpfundus/features/donation/domain/entities/donation_record.dart';
@@ -51,7 +51,7 @@ class _MyDonationsScreenState extends State<MyDonationsScreen> {
   Widget build(BuildContext context) {
     final donations = _visibleDonations;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 30),
@@ -85,7 +85,9 @@ class _MyDonationsScreenState extends State<MyDonationsScreen> {
                 child: Text(
                   'No donations match this filter.',
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.bodyMd,
+                  style: AppTextStyles.bodyMd.copyWith(
+                    color: context.appTextSecondary,
+                  ),
                 ),
               ),
           ],
@@ -109,7 +111,7 @@ class _Header extends StatelessWidget {
         Align(
           alignment: Alignment.centerLeft,
           child: Material(
-            color: Colors.white,
+            color: context.appSurface,
             shape: const CircleBorder(),
             child: InkWell(
               onTap: onBack,
@@ -122,7 +124,13 @@ class _Header extends StatelessWidget {
             ),
           ),
         ),
-        Text('My Donations', style: AppTextStyles.h2.copyWith(fontSize: 23)),
+        Text(
+          'My Donations',
+          style: AppTextStyles.h2.copyWith(
+            fontSize: 23,
+            color: context.appTextPrimary,
+          ),
+        ),
       ],
     ),
   );

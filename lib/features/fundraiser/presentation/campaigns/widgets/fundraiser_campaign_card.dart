@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/fundraiser/domain/entities/fundraiser_campaign.dart';
 
@@ -26,14 +27,14 @@ class FundraiserCampaignCard extends StatelessWidget {
     margin: const EdgeInsets.only(bottom: 12),
     padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: context.appSurface,
       borderRadius: BorderRadius.circular(22),
       border: campaign.status == FundraiserCampaignStatus.suspended
           ? Border.all(color: AppColors.danger.withValues(alpha: .35), width: 2)
           : null,
     ),
     child: dashboardVariant
-        ? _dashboardContent()
+        ? _dashboardContent(context)
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -49,7 +50,10 @@ class FundraiserCampaignCard extends StatelessWidget {
                           campaign.title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.h3.copyWith(fontSize: 16),
+                          style: AppTextStyles.h3.copyWith(
+                            fontSize: 16,
+                            color: context.appTextPrimary,
+                          ),
                         ),
                         const SizedBox(height: 6),
                         Row(
@@ -63,6 +67,7 @@ class FundraiserCampaignCard extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 style: AppTextStyles.caption.copyWith(
                                   fontSize: 11,
+                                  color: context.appTextMuted,
                                 ),
                               ),
                             ),
@@ -76,7 +81,7 @@ class FundraiserCampaignCard extends StatelessWidget {
                     height: 44,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: AppColors.background,
+                      color: context.appInput,
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: const Icon(
@@ -111,7 +116,9 @@ class FundraiserCampaignCard extends StatelessWidget {
                     value: campaign.progress,
                     minHeight: 6,
                     color: AppColors.primary,
-                    backgroundColor: const Color(0xFFE3E5EA),
+                    backgroundColor: context.isDarkTheme
+                        ? AppColors.dividerDark
+                        : const Color(0xFFE3E5EA),
                   ),
                 ),
                 const SizedBox(height: 7),
@@ -127,18 +134,21 @@ class FundraiserCampaignCard extends StatelessWidget {
                     const Spacer(),
                     Text(
                       '${(campaign.progress * 100).round()}% · ${campaign.donorCount} donors',
-                      style: AppTextStyles.caption.copyWith(fontSize: 12),
+                      style: AppTextStyles.caption.copyWith(
+                        fontSize: 12,
+                        color: context.appTextMuted,
+                      ),
                     ),
                   ],
                 ),
               ],
               const SizedBox(height: 13),
-              _actions(),
+              _actions(context),
             ],
           ),
   );
 
-  Widget _dashboardContent() => Column(
+  Widget _dashboardContent(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Row(
@@ -153,12 +163,18 @@ class FundraiserCampaignCard extends StatelessWidget {
                   campaign.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.h3.copyWith(fontSize: 16),
+                  style: AppTextStyles.h3.copyWith(
+                    fontSize: 16,
+                    color: context.appTextPrimary,
+                  ),
                 ),
                 const SizedBox(height: 5),
                 Text(
                   'Live · ${campaign.daysRemaining} days remaining',
-                  style: AppTextStyles.bodyMd.copyWith(fontSize: 13),
+                  style: AppTextStyles.bodyMd.copyWith(
+                    fontSize: 13,
+                    color: context.appTextSecondary,
+                  ),
                 ),
               ],
             ),
@@ -186,7 +202,9 @@ class FundraiserCampaignCard extends StatelessWidget {
           value: campaign.progress,
           minHeight: 7,
           color: AppColors.primary,
-          backgroundColor: const Color(0xFFE3E5EA),
+          backgroundColor: context.isDarkTheme
+              ? AppColors.dividerDark
+              : const Color(0xFFE3E5EA),
         ),
       ),
       const SizedBox(height: 12),
@@ -202,7 +220,10 @@ class FundraiserCampaignCard extends StatelessWidget {
           const Spacer(),
           Text(
             'of \$${campaign.goal.toStringAsFixed(0)} · ${(campaign.progress * 100).round()}%',
-            style: AppTextStyles.bodyMd.copyWith(fontSize: 13),
+            style: AppTextStyles.bodyMd.copyWith(
+              fontSize: 13,
+              color: context.appTextSecondary,
+            ),
           ),
         ],
       ),
@@ -234,8 +255,8 @@ class FundraiserCampaignCard extends StatelessWidget {
               child: FilledButton.icon(
                 onPressed: onPerformance,
                 style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFFF2F3F6),
-                  foregroundColor: AppColors.textPrimary,
+                  backgroundColor: context.appInput,
+                  foregroundColor: context.appTextPrimary,
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   textStyle: AppTextStyles.buttonMd.copyWith(fontSize: 13),
@@ -256,8 +277,8 @@ class FundraiserCampaignCard extends StatelessWidget {
             child: FilledButton(
               onPressed: () {},
               style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFFF2F3F6),
-                foregroundColor: const Color(0xFF6E7889),
+                backgroundColor: context.appInput,
+                foregroundColor: context.appTextSecondary,
                 elevation: 0,
                 padding: EdgeInsets.zero,
               ),
@@ -310,7 +331,7 @@ class FundraiserCampaignCard extends StatelessWidget {
       ),
     ),
   );
-  Widget _actions() {
+  Widget _actions(BuildContext context) {
     final label = switch (campaign.status) {
       FundraiserCampaignStatus.active => 'Manage',
       FundraiserCampaignStatus.draft => 'Edit',

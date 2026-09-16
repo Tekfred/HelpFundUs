@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_exception.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/auth_text_field.dart';
 import '../../../../core/widgets/country_code_selector.dart';
 import '../../../../core/widgets/google_auth_button.dart';
 import '../../../../core/widgets/password_strength_meter.dart';
+import '../../data/datasources/auth_remote_data_source.dart';
+import '../../data/models/register_request.dart';
+import '../../data/repositories/auth_repository.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({
@@ -16,10 +21,12 @@ class CreateAccountScreen extends StatefulWidget {
     required this.onBack,
     required this.onCreated,
     required this.onSignIn,
+    this.authRepository,
   });
   final VoidCallback onBack;
   final VoidCallback onCreated;
   final VoidCallback onSignIn;
+  final AuthRepository? authRepository;
 
   @override
   State<CreateAccountScreen> createState() => _CreateAccountScreenState();
@@ -34,6 +41,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   Country _country = kCountries.first;
   bool _agreed = false;
   String _passwordValue = '';
+  late final AuthRepository _authRepository;
+  bool _submitting = false;
 
   bool get _canSubmit =>
       _firstName.text.isNotEmpty &&
@@ -42,6 +51,49 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       _phone.text.isNotEmpty &&
       scorePassword(_passwordValue) != PasswordStrength.empty &&
       _agreed;
+
+  @override
+  void initState() {
+    super.initState();
+    _authRepository =
+        widget.authRepository ??
+        AuthRepository(AuthRemoteDataSource(ApiClient()));
+  }
+
+  Future<void> _submit() async {
+    if (!_canSubmit || _submitting) return;
+
+    setState(() => _submitting = true);
+    try {
+      await _authRepository.register(
+        RegisterRequest(
+          firstName: _firstName.text.trim(),
+          lastName: _lastName.text.trim(),
+          email: _email.text.trim(),
+          phone: '${_country.dialCode}${_phone.text.trim()}'.replaceAll(
+            RegExp(r'\s+'),
+            '',
+          ),
+          password: _password.text,
+        ),
+      );
+      if (mounted) widget.onCreated();
+    } on ApiException catch (error) {
+      if (mounted) _showRequestError(error.message);
+    } catch (_) {
+      if (mounted) {
+        _showRequestError('Unable to create your account. Please try again.');
+      }
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
+  }
+
+  void _showRequestError(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
 
   @override
   void dispose() {
@@ -180,7 +232,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         const SizedBox(height: AppSpacing.lg),
         PrimaryButton(
           label: 'Create Account',
-          onPressed: _canSubmit ? widget.onCreated : null,
+          onPressed: _canSubmit ? _submit : null,
+          isLoading: _submitting,
         ),
         const SizedBox(height: AppSpacing.md),
         const OrDivider(),

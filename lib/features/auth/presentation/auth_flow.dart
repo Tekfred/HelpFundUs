@@ -18,7 +18,12 @@ import 'screens/verify_registration_otp_screen.dart';
 /// direction, this widget just renders whatever step is current through
 /// the shared [SpringPageSwitcher].
 class AuthFlow extends StatefulWidget {
-  const AuthFlow({super.key, required this.controller, this.onFinished});
+  const AuthFlow({
+    super.key,
+    required this.controller,
+    this.onFinished,
+    this.onExit,
+  });
 
   final AuthController controller;
 
@@ -26,6 +31,10 @@ class AuthFlow extends StatefulWidget {
   /// Registration Successful's "Continue", or a normal sign-in) — wire
   /// this to hand off into the real app shell once it exists.
   final VoidCallback? onFinished;
+
+  /// Leaves authentication when the current screen has no earlier auth
+  /// screen to return to.
+  final VoidCallback? onExit;
 
   @override
   State<AuthFlow> createState() => _AuthFlowState();
@@ -48,6 +57,14 @@ class _AuthFlowState extends State<AuthFlow> {
   }
 
   void _onControllerChanged() => setState(() {});
+
+  void _goBack() {
+    if (_controller.canGoBack) {
+      _controller.back();
+    } else {
+      widget.onExit?.call();
+    }
+  }
 
   String _mask(String value) {
     if (value.contains('@')) {
@@ -76,7 +93,7 @@ class _AuthFlowState extends State<AuthFlow> {
     switch (step) {
       case AuthStep.createAccount:
         return CreateAccountScreen(
-          onBack: _controller.back,
+          onBack: _goBack,
           onSignIn: () => _controller.goTo(AuthStep.signIn),
           onCreated: () {
             _pendingDestination = 'jane@example.com';
@@ -87,7 +104,7 @@ class _AuthFlowState extends State<AuthFlow> {
       case AuthStep.verifyRegistrationOtp:
         return VerifyRegistrationOtpScreen(
           destination: _mask(_pendingDestination),
-          onBack: _controller.back,
+          onBack: _goBack,
           onVerified: () => _controller.goTo(AuthStep.registrationSuccess),
           onChangeDestination: _controller.back,
         );
@@ -101,7 +118,7 @@ class _AuthFlowState extends State<AuthFlow> {
 
       case AuthStep.signIn:
         return SignInScreen(
-          onBack: _controller.back,
+          onBack: _goBack,
           onSignedIn: widget.onFinished ?? () {},
           onForgotPassword: () => _controller.goTo(AuthStep.forgotPassword),
           onPasswordless: () => _controller.goTo(AuthStep.passwordlessRequest),
@@ -114,7 +131,7 @@ class _AuthFlowState extends State<AuthFlow> {
 
       case AuthStep.passwordlessRequest:
         return PasswordlessRequestScreen(
-          onBack: _controller.back,
+          onBack: _goBack,
           onBackToPassword: () => _controller.goTo(AuthStep.signIn),
           onCodeSent: (destination) {
             _pendingDestination = destination;
@@ -125,7 +142,7 @@ class _AuthFlowState extends State<AuthFlow> {
       case AuthStep.verifyLoginOtp:
         return VerifyLoginOtpScreen(
           destination: _mask(_pendingDestination),
-          onBack: _controller.back,
+          onBack: _goBack,
           onVerified: widget.onFinished ?? () {},
           onNeedsMfa: () => _controller.goTo(AuthStep.mfaVerification),
           onChangeAccount: () => _controller.goTo(AuthStep.signIn),
@@ -133,20 +150,20 @@ class _AuthFlowState extends State<AuthFlow> {
 
       case AuthStep.mfaVerification:
         return MfaVerificationScreen(
-          onBack: _controller.back,
+          onBack: _goBack,
           onVerified: widget.onFinished ?? () {},
           onUseBackupCode: widget.onFinished ?? () {},
         );
 
       case AuthStep.forgotPassword:
         return ForgotPasswordScreen(
-          onBack: _controller.back,
+          onBack: _goBack,
           onBackToSignIn: () => _controller.goTo(AuthStep.signIn),
         );
 
       case AuthStep.resetPassword:
         return ResetPasswordScreen(
-          onBack: _controller.back,
+          onBack: _goBack,
           onReset: () => _controller.reset(AuthStep.signIn),
         );
 

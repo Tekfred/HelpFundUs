@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/donation/domain/entities/donation_record.dart';
 
@@ -12,7 +12,7 @@ class DonationPaymentDetailsCard extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: context.appSurface,
       borderRadius: BorderRadius.circular(22),
     ),
     child: Column(
@@ -21,7 +21,10 @@ class DonationPaymentDetailsCard extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             'Payment details',
-            style: AppTextStyles.h3.copyWith(fontSize: 18),
+            style: AppTextStyles.h3.copyWith(
+              fontSize: 18,
+              color: context.appTextPrimary,
+            ),
           ),
         ),
         const SizedBox(height: 14),
@@ -40,7 +43,10 @@ class DonationPaymentDetailsCard extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(
               'Your message',
-              style: AppTextStyles.label.copyWith(fontSize: 14),
+              style: AppTextStyles.label.copyWith(
+                fontSize: 14,
+                color: context.appTextMuted,
+              ),
             ),
           ),
           const SizedBox(height: 5),
@@ -48,7 +54,10 @@ class DonationPaymentDetailsCard extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(
               donation.donorMessage!,
-              style: AppTextStyles.bodyMd.copyWith(fontSize: 15),
+              style: AppTextStyles.bodyMd.copyWith(
+                fontSize: 15,
+                color: context.appTextSecondary,
+              ),
             ),
           ),
         ],
@@ -71,7 +80,10 @@ class _PaymentRow extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: AppTextStyles.bodyMd.copyWith(fontSize: 14),
+            style: AppTextStyles.bodyMd.copyWith(
+              fontSize: 14,
+              color: context.appTextSecondary,
+            ),
           ),
         ),
         const SizedBox(width: 12),
@@ -81,7 +93,10 @@ class _PaymentRow extends StatelessWidget {
             textAlign: TextAlign.right,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.buttonMd.copyWith(fontSize: 14),
+            style: AppTextStyles.buttonMd.copyWith(
+              fontSize: 14,
+              color: context.appTextPrimary,
+            ),
           ),
         ),
       ],
@@ -94,5 +109,5 @@ class _Divider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      const Divider(height: 1, thickness: 1, color: AppColors.borderStrong);
+      Divider(height: 1, thickness: 1, color: context.appDivider);
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 
 class PerformanceRecentDonations extends StatelessWidget {
@@ -15,22 +16,22 @@ class PerformanceRecentDonations extends StatelessWidget {
     ];
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
         children: [
           for (var index = 0; index < donors.length; index++) ...[
-            _row(donors[index]),
+            _row(context, donors[index]),
             if (index < donors.length - 1)
-              const Divider(height: 1, color: AppColors.borderStrong),
+              Divider(height: 1, color: context.appDivider),
           ],
         ],
       ),
     );
   }
 
-  Widget _row(_Donor donor) {
+  Widget _row(BuildContext context, _Donor donor) {
     return SizedBox(
       height: 58,
       child: Padding(
@@ -56,11 +57,17 @@ class PerformanceRecentDonations extends StatelessWidget {
                 children: [
                   Text(
                     donor.name,
-                    style: AppTextStyles.buttonMd.copyWith(fontSize: 12),
+                    style: AppTextStyles.buttonMd.copyWith(
+                      fontSize: 12,
+                      color: context.appTextPrimary,
+                    ),
                   ),
                   Text(
                     donor.time,
-                    style: AppTextStyles.caption.copyWith(fontSize: 10),
+                    style: AppTextStyles.caption.copyWith(
+                      fontSize: 10,
+                      color: context.appTextMuted,
+                    ),
                   ),
                 ],
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 
 class CampaignSearchField extends StatelessWidget {
   const CampaignSearchField({super.key, required this.onChanged});
@@ -10,15 +11,15 @@ class CampaignSearchField extends StatelessWidget {
       prefixIcon: const Icon(Icons.search, color: Color(0xFF9AA4B5)),
       hintText: 'Search your campaigns...',
       filled: true,
-      fillColor: Colors.white,
+      fillColor: context.appInput,
       contentPadding: const EdgeInsets.symmetric(vertical: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(color: Color(0xFFCBD1DB)),
+        borderSide: BorderSide(color: context.appBorderStrong),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(color: Color(0xFFCBD1DB)),
+        borderSide: BorderSide(color: context.appBorderStrong),
       ),
     ),
   );

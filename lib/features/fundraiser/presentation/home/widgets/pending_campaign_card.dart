@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/features/fundraiser/domain/entities/fundraiser_campaign.dart';
 
 class PendingCampaignCard extends StatelessWidget {
@@ -14,7 +15,7 @@ class PendingCampaignCard extends StatelessWidget {
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -43,14 +44,20 @@ class PendingCampaignCard extends StatelessWidget {
                   campaign.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.buttonMd.copyWith(fontSize: 16),
+                  style: AppTextStyles.buttonMd.copyWith(
+                    fontSize: 16,
+                    color: context.appTextPrimary,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Submitted · awaiting review',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.bodyMd.copyWith(fontSize: 13),
+                  style: AppTextStyles.bodyMd.copyWith(
+                    fontSize: 13,
+                    color: context.appTextSecondary,
+                  ),
                 ),
               ],
             ),

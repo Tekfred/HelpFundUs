@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 
 class InboxScreen extends StatelessWidget {
@@ -43,7 +44,13 @@ class InboxScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             children: [
-              Text('Inbox', style: AppTextStyles.h2.copyWith(fontSize: 25)),
+              Text(
+                'Inbox',
+                style: AppTextStyles.h2.copyWith(
+                  fontSize: 25,
+                  color: context.appTextPrimary,
+                ),
+              ),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -100,8 +107,8 @@ class _InboxRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-    decoration: const BoxDecoration(
-      border: Border(bottom: BorderSide(color: Color(0xFFE0E4E8))),
+    decoration: BoxDecoration(
+      border: Border(bottom: BorderSide(color: context.appDivider)),
     ),
     child: Row(
       children: [
@@ -119,16 +126,16 @@ class _InboxRow extends StatelessWidget {
                       avatarColor == AppColors.primary ||
                           avatarColor == const Color(0xFF8255F3)
                       ? Colors.white
-                      : AppColors.textPrimary,
+                      : context.appTextPrimary,
                 ),
               ),
             ),
-            const Positioned(
+            Positioned(
               right: -1,
               top: -1,
               child: CircleAvatar(
                 radius: 7,
-                backgroundColor: Colors.white,
+                backgroundColor: context.appSurface,
                 child: CircleAvatar(
                   radius: 4.5,
                   backgroundColor: AppColors.primary,
@@ -149,7 +156,7 @@ class _InboxRow extends StatelessWidget {
                 style: AppTextStyles.buttonMd.copyWith(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+                  color: context.appTextPrimary,
                 ),
               ),
               const SizedBox(height: 2),
@@ -159,7 +166,7 @@ class _InboxRow extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: AppTextStyles.bodyMd.copyWith(
                   fontSize: 14,
-                  color: const Color(0xFF6B7587),
+                  color: context.appTextSecondary,
                 ),
               ),
             ],
@@ -170,7 +177,7 @@ class _InboxRow extends StatelessWidget {
           timestamp,
           style: AppTextStyles.caption.copyWith(
             fontSize: 12,
-            color: const Color(0xFF9AA4B5),
+            color: context.appTextMuted,
           ),
         ),
       ],

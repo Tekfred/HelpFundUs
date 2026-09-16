@@ -1,10 +1,11 @@
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:helpfundus/core/theme/app_dimens.dart';
 import 'package:helpfundus/main.dart';
 
 void main() {
-  testWidgets('App starts with splash and auto-advances to welcome screen', (WidgetTester tester) async {
+  testWidgets('App starts with splash and auto-advances to welcome screen', (
+    WidgetTester tester,
+  ) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const HelpFundUsApp());
 

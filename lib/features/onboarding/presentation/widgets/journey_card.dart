@@ -26,35 +26,41 @@ class JourneyCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: AppMotion.fast,
         curve: Curves.easeOut,
-        padding: const EdgeInsets.all(AppSpacing.md),
+        constraints: const BoxConstraints(minHeight: 104),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
           color: selected ? AppColors.background : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(
-            color: selected ? AppColors.primary : AppColors.border,
-            width: selected ? 2 : 1,
+            color: selected ? AppColors.primary : AppColors.borderStrong,
+            width: selected ? 2 : 1.5,
           ),
         ),
         child: Row(
           children: [
             Container(
-              width: 48,
-              height: 48,
+              width: 60,
+              height: 60,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: AppColors.background,
                 borderRadius: BorderRadius.circular(AppRadius.md),
               ),
-              child: Text(emoji, style: const TextStyle(fontSize: 22)),
+              child: Text(emoji, style: const TextStyle(fontSize: 28)),
             ),
-            const SizedBox(width: AppSpacing.md),
+            const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: AppTextStyles.h3),
+                  Text(title, style: AppTextStyles.h3.copyWith(fontSize: 18)),
                   const SizedBox(height: 2),
-                  Text(description, style: AppTextStyles.bodyMd),
+                  Text(
+                    description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.bodyMd.copyWith(fontSize: 14),
+                  ),
                 ],
               ),
             ),

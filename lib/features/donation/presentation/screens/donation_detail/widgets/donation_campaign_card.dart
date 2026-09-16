@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/donation/domain/entities/donation_record.dart';
 
@@ -12,7 +13,7 @@ class DonationCampaignCard extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: context.appSurface,
       borderRadius: BorderRadius.circular(22),
     ),
     child: Row(
@@ -41,7 +42,10 @@ class DonationCampaignCard extends StatelessWidget {
                 donation.campaignTitle,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.h3.copyWith(fontSize: 16),
+                style: AppTextStyles.h3.copyWith(
+                  fontSize: 16,
+                  color: context.appTextPrimary,
+                ),
               ),
               const SizedBox(height: 9),
               Row(
@@ -53,14 +57,19 @@ class DonationCampaignCard extends StatelessWidget {
                         value: donation.campaignProgress,
                         minHeight: 6,
                         color: AppColors.primary,
-                        backgroundColor: const Color(0xFFE3E5EA),
+                        backgroundColor: context.isDarkTheme
+                            ? AppColors.dividerDark
+                            : const Color(0xFFE3E5EA),
                       ),
                     ),
                   ),
                   const SizedBox(width: 10),
                   Text(
                     '${(donation.campaignProgress * 100).round()}%',
-                    style: AppTextStyles.label.copyWith(fontSize: 13),
+                    style: AppTextStyles.label.copyWith(
+                      fontSize: 13,
+                      color: context.appTextSecondary,
+                    ),
                   ),
                 ],
               ),

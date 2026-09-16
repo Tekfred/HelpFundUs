@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/core/widgets/app_share_sheet.dart';
 import 'package:helpfundus/features/donation/data/donation_receipt_catalog.dart';
@@ -15,7 +16,7 @@ class DonationReceiptScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.background,
+    backgroundColor: context.appBackground,
     body: SafeArea(
       child: Column(
         children: [
@@ -39,7 +40,7 @@ class DonationReceiptScreen extends StatelessWidget {
                     child: Text(
                       'Contact support',
                       style: AppTextStyles.buttonMd.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.appTextSecondary,
                       ),
                     ),
                   ),
@@ -114,13 +115,19 @@ class _OfficialReceiptIntro extends StatelessWidget {
         ),
       ),
       const SizedBox(height: 16),
-      Text('Official Receipt', style: AppTextStyles.h2.copyWith(fontSize: 23)),
+      Text(
+        'Official Receipt',
+        style: AppTextStyles.h2.copyWith(
+          fontSize: 23,
+          color: context.appTextPrimary,
+        ),
+      ),
       const SizedBox(height: 4),
       Text(
         'HelpFundUs · Tax reference document',
         style: AppTextStyles.bodyMd.copyWith(
           fontSize: 15,
-          color: AppColors.textMuted,
+          color: context.appTextMuted,
         ),
       ),
     ],
@@ -144,7 +151,7 @@ class _ReceiptHeader extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Material(
-              color: Colors.white,
+              color: context.appSurface,
               shape: const CircleBorder(),
               child: InkWell(
                 onTap: onBack,
@@ -159,7 +166,10 @@ class _ReceiptHeader extends StatelessWidget {
           ),
           Text(
             'Donation Receipt',
-            style: AppTextStyles.h2.copyWith(fontSize: 23),
+            style: AppTextStyles.h2.copyWith(
+              fontSize: 23,
+              color: context.appTextPrimary,
+            ),
           ),
           Align(
             alignment: Alignment.centerRight,
@@ -189,7 +199,7 @@ class _ReceiptDetailsCard extends StatelessWidget {
     width: double.infinity,
     padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: context.appSurface,
       borderRadius: BorderRadius.circular(25),
     ),
     child: Column(
@@ -220,12 +230,18 @@ class _ReceiptDetailsCard extends StatelessWidget {
                     receipt.campaignTitle,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.h3.copyWith(fontSize: 17),
+                    style: AppTextStyles.h3.copyWith(
+                      fontSize: 17,
+                      color: context.appTextPrimary,
+                    ),
                   ),
                   const SizedBox(height: 3),
                   Text(
                     receipt.campaignLocation,
-                    style: AppTextStyles.bodyMd.copyWith(fontSize: 14),
+                    style: AppTextStyles.bodyMd.copyWith(
+                      fontSize: 14,
+                      color: context.appTextSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -233,7 +249,7 @@ class _ReceiptDetailsCard extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        const Divider(height: 1, color: AppColors.borderStrong),
+        Divider(height: 1, color: context.appDivider),
         const SizedBox(height: 8),
         _ReceiptRow(label: 'Donation reference', value: receipt.reference),
         const _ReceiptDivider(),
@@ -254,13 +270,16 @@ class _ReceiptDetailsCard extends StatelessWidget {
           valueColor: AppColors.primary,
         ),
         const SizedBox(height: 14),
-        const Divider(height: 1, color: AppColors.borderStrong),
+        Divider(height: 1, color: context.appDivider),
         const SizedBox(height: 14),
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
             'Donor message',
-            style: AppTextStyles.label.copyWith(fontSize: 14),
+            style: AppTextStyles.label.copyWith(
+              fontSize: 14,
+              color: context.appTextMuted,
+            ),
           ),
         ),
         const SizedBox(height: 6),
@@ -268,7 +287,10 @@ class _ReceiptDetailsCard extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             receipt.donorMessage,
-            style: AppTextStyles.bodyMd.copyWith(fontSize: 15),
+            style: AppTextStyles.bodyMd.copyWith(
+              fontSize: 15,
+              color: context.appTextSecondary,
+            ),
           ),
         ),
       ],
@@ -280,12 +302,12 @@ class _ReceiptRow extends StatelessWidget {
   const _ReceiptRow({
     required this.label,
     required this.value,
-    this.valueColor = AppColors.textPrimary,
+    this.valueColor,
   });
 
   final String label;
   final String value;
-  final Color valueColor;
+  final Color? valueColor;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -295,7 +317,10 @@ class _ReceiptRow extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: AppTextStyles.bodyMd.copyWith(fontSize: 14),
+            style: AppTextStyles.bodyMd.copyWith(
+              fontSize: 14,
+              color: context.appTextSecondary,
+            ),
           ),
         ),
         const SizedBox(width: 14),
@@ -307,7 +332,7 @@ class _ReceiptRow extends StatelessWidget {
             textAlign: TextAlign.right,
             style: AppTextStyles.buttonMd.copyWith(
               fontSize: 14,
-              color: valueColor,
+              color: valueColor ?? context.appTextPrimary,
             ),
           ),
         ),
@@ -321,7 +346,7 @@ class _ReceiptDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      const Divider(height: 1, thickness: 1, color: AppColors.borderStrong);
+      Divider(height: 1, thickness: 1, color: context.appDivider);
 }
 
 class _TaxInformationCard extends StatelessWidget {
@@ -334,12 +359,18 @@ class _TaxInformationCard extends StatelessWidget {
     width: double.infinity,
     padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(
-      color: Colors.white.withValues(alpha: .55),
+      color: context.isDarkTheme
+          ? AppColors.surfaceElevatedDark
+          : Colors.white.withValues(alpha: .55),
       borderRadius: BorderRadius.circular(19),
     ),
     child: Text(
       'This receipt is issued by HelpFundUs Inc. Donations to verified campaigns may be eligible for tax deductions in your jurisdiction. Please consult a tax professional for advice.\nReceipt ID: $receiptId.',
-      style: AppTextStyles.bodySm.copyWith(fontSize: 13, height: 1.38),
+      style: AppTextStyles.bodySm.copyWith(
+        fontSize: 13,
+        height: 1.38,
+        color: context.appTextSecondary,
+      ),
     ),
   );
 }
@@ -363,19 +394,25 @@ class _ReceiptActionButton extends StatelessWidget {
     child: OutlinedButton.icon(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        foregroundColor: primary ? AppColors.primary : AppColors.textPrimary,
+        foregroundColor: primary ? AppColors.primary : context.appTextPrimary,
         side: BorderSide(
           color: primary
               ? AppColors.primary.withValues(alpha: .22)
-              : AppColors.borderStrong,
+              : context.appBorderStrong,
         ),
         backgroundColor: primary
             ? AppColors.primary.withValues(alpha: .04)
-            : Colors.white,
+            : context.appSurface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(19)),
       ),
       icon: Icon(icon, size: 21),
-      label: Text(label, style: AppTextStyles.buttonMd.copyWith(fontSize: 15)),
+      label: Text(
+        label,
+        style: AppTextStyles.buttonMd.copyWith(
+          fontSize: 15,
+          color: primary ? AppColors.primary : context.appTextPrimary,
+        ),
+      ),
     ),
   );
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 
 class ShareSheetData {
@@ -40,8 +40,8 @@ class AppShareSheet extends StatelessWidget {
         width: constraints.maxWidth,
         child: Container(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration: BoxDecoration(
+            color: context.appSurfaceElevated,
             borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
           ),
           child: Column(
@@ -51,7 +51,7 @@ class AppShareSheet extends StatelessWidget {
                 width: 36,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFCBD1DB),
+                  color: context.appBorderStrong,
                   borderRadius: BorderRadius.circular(99),
                 ),
               ),
@@ -84,7 +84,7 @@ class AppShareSheet extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
                 decoration: BoxDecoration(
-                  color: AppColors.background,
+                  color: context.appInput,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
@@ -94,7 +94,10 @@ class AppShareSheet extends StatelessWidget {
                         data.link,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.bodyMd.copyWith(fontSize: 14),
+                        style: AppTextStyles.bodyMd.copyWith(
+                          fontSize: 14,
+                          color: context.appTextSecondary,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -116,7 +119,7 @@ class AppShareSheet extends StatelessWidget {
                           // finite local minimum width instead.
                           minimumSize: const Size(0, 42),
                           padding: const EdgeInsets.symmetric(horizontal: 12),
-                          side: const BorderSide(color: Color(0xFFCBD1DB)),
+                          side: BorderSide(color: context.appBorderStrong),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -124,7 +127,10 @@ class AppShareSheet extends StatelessWidget {
                         icon: const Icon(Icons.copy_outlined, size: 17),
                         label: Text(
                           'Copy',
-                          style: AppTextStyles.buttonMd.copyWith(fontSize: 14),
+                          style: AppTextStyles.buttonMd.copyWith(
+                            fontSize: 14,
+                            color: context.appTextPrimary,
+                          ),
                         ),
                       ),
                     ),
@@ -138,6 +144,7 @@ class AppShareSheet extends StatelessWidget {
                 style: AppTextStyles.bodySm.copyWith(
                   fontSize: 12,
                   height: 1.35,
+                  color: context.appTextMuted,
                 ),
               ),
             ],
@@ -158,7 +165,7 @@ class _ShareCampaignSummary extends StatelessWidget {
     width: double.infinity,
     padding: const EdgeInsets.all(12),
     decoration: BoxDecoration(
-      color: AppColors.background,
+      color: context.appInput,
       borderRadius: BorderRadius.circular(18),
     ),
     child: Row(
@@ -182,14 +189,20 @@ class _ShareCampaignSummary extends StatelessWidget {
                 data.title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.h3.copyWith(fontSize: 16),
+                style: AppTextStyles.h3.copyWith(
+                  fontSize: 16,
+                  color: context.appTextPrimary,
+                ),
               ),
               const SizedBox(height: 3),
               Text(
                 data.subtitle,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.bodyMd.copyWith(fontSize: 13),
+                style: AppTextStyles.bodyMd.copyWith(
+                  fontSize: 13,
+                  color: context.appTextSecondary,
+                ),
               ),
             ],
           ),
@@ -216,7 +229,7 @@ class _ShareOption extends StatelessWidget {
             height: tileSize,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: AppColors.background,
+              color: context.appInput,
               borderRadius: BorderRadius.circular(17),
             ),
             child: Text(emoji, style: const TextStyle(fontSize: 22)),
@@ -227,7 +240,10 @@ class _ShareOption extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: AppTextStyles.caption.copyWith(fontSize: 10),
+            style: AppTextStyles.caption.copyWith(
+              fontSize: 10,
+              color: context.appTextMuted,
+            ),
           ),
         ],
       );

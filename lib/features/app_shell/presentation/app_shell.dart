@@ -4,6 +4,9 @@ import 'package:helpfundus/core/scroll/helpfundus_scroll_behavior.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimens.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/theme/app_theme_colors.dart';
+import '../../../core/widgets/app_shimmer.dart';
+import '../../../core/widgets/brand_logo.dart';
 import '../state/app_shell_controller.dart';
 import '../state/online_status.dart';
 import 'package:helpfundus/features/account/presentation/account/account_screen.dart';
@@ -51,7 +54,7 @@ class _AppShellState extends State<AppShell> {
     _controller.addListener(_refresh);
     _onlineSubscription = onlineStatusChanges().listen(_controller.setOnline);
     if (_loading) {
-      Future<void>.delayed(const Duration(milliseconds: 900), () {
+      Future<void>.delayed(const Duration(milliseconds: 1400), () {
         if (mounted) setState(() => _loading = false);
       });
     }
@@ -123,7 +126,7 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.background,
+    backgroundColor: context.appBackground,
     body: Stack(
       children: [
         ScrollConfiguration(
@@ -177,46 +180,130 @@ class _AppShellState extends State<AppShell> {
         if (_loading) const _LoadingOverlay(),
       ],
     ),
-    bottomNavigationBar: AppBottomNav(
-      controller: _controller,
-      isGuest: widget.isGuest,
-      onSignIn: widget.onGuestSignIn,
-    ),
+    bottomNavigationBar: _loading
+        ? null
+        : AppBottomNav(
+            controller: _controller,
+            isGuest: widget.isGuest,
+            onSignIn: widget.onGuestSignIn,
+          ),
   );
 }
 
 class _LoadingOverlay extends StatelessWidget {
   const _LoadingOverlay();
+
   @override
-  Widget build(BuildContext context) => ColoredBox(
-    color: AppColors.background,
-    child: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 74,
-            height: 74,
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.favorite, color: Colors.white, size: 35),
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: context.appBackground,
+      child: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) => Column(
+            children: [
+              SizedBox(height: constraints.maxHeight * .23),
+              const BrandLogo(size: 134),
+              const SizedBox(height: 4),
+              const _LoadingDots(),
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: AppShimmer(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      _SkeletonBlock(height: 12, widthFactor: 1),
+                      SizedBox(height: 16),
+                      _SkeletonBlock(height: 12, widthFactor: .7),
+                      SizedBox(height: 44),
+                      _SkeletonBlock(height: 120, widthFactor: 1, radius: 24),
+                      SizedBox(height: 16),
+                      _SkeletonBlock(height: 120, widthFactor: 1, radius: 24),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 18),
-          Text('HelpFundUs', style: AppTextStyles.brand),
-          const SizedBox(height: 18),
-          const SizedBox(
-            width: 30,
-            child: LinearProgressIndicator(
-              color: AppColors.primary,
-              backgroundColor: Colors.transparent,
-            ),
-          ),
-        ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SkeletonBlock extends StatelessWidget {
+  const _SkeletonBlock({
+    required this.height,
+    required this.widthFactor,
+    this.radius = 99,
+  });
+
+  final double height;
+  final double widthFactor;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) => FractionallySizedBox(
+    widthFactor: widthFactor,
+    child: Container(
+      height: height,
+      decoration: BoxDecoration(
+        color: context.appSurface,
+        borderRadius: BorderRadius.circular(radius),
       ),
     ),
   );
+}
+
+class _LoadingDots extends StatefulWidget {
+  const _LoadingDots();
+
+  @override
+  State<_LoadingDots> createState() => _LoadingDotsState();
+}
+
+class _LoadingDotsState extends State<_LoadingDots>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1050),
+  )..repeat();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(3, (index) {
+          final value = (_controller.value - (index * .18)) % 1;
+          final opacity = .35 + ((1 - ((value - .5).abs() * 2)) * .65);
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Opacity(
+              opacity: opacity,
+              child: const SizedBox(
+                width: 10,
+                height: 10,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
 }
 
 class _ShellScrollBehavior extends HelpFundUsScrollBehavior {
@@ -227,11 +314,5 @@ class _ShellScrollBehavior extends HelpFundUsScrollBehavior {
     BuildContext context,
     Widget child,
     ScrollableDetails details,
-  ) => Scrollbar(
-    controller: details.controller,
-    interactive: false,
-    thickness: 3,
-    radius: const Radius.circular(99),
-    child: child,
-  );
+  ) => child;
 }

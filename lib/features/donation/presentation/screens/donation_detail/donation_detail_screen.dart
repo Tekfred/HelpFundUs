@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/donation/domain/entities/donation_record.dart';
 import 'package:helpfundus/features/donation/presentation/screens/donation_detail/widgets/donation_amount_header.dart';
@@ -15,7 +15,7 @@ class DonationDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.background,
+    backgroundColor: context.appBackground,
     body: SafeArea(
       child: Column(
         children: [
@@ -33,7 +33,7 @@ class DonationDetailScreen extends StatelessWidget {
                       'CAMPAIGN',
                       style: AppTextStyles.label.copyWith(
                         fontSize: 14,
-                        color: const Color(0xFF9AA4B5),
+                        color: context.appTextMuted,
                       ),
                     ),
                   ),
@@ -80,7 +80,10 @@ class _ViewCampaignButton extends StatelessWidget {
       icon: const Icon(Icons.open_in_new_rounded, size: 20),
       label: Text(
         'View campaign',
-        style: AppTextStyles.buttonMd.copyWith(fontSize: 16),
+        style: AppTextStyles.buttonMd.copyWith(
+          fontSize: 16,
+          color: context.appTextPrimary,
+        ),
       ),
     ),
   );
@@ -102,7 +105,7 @@ class _Header extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Material(
-              color: Colors.white,
+              color: context.appSurface,
               shape: const CircleBorder(),
               child: InkWell(
                 onTap: onBack,
@@ -117,7 +120,10 @@ class _Header extends StatelessWidget {
           ),
           Text(
             'Donation Detail',
-            style: AppTextStyles.h2.copyWith(fontSize: 23),
+            style: AppTextStyles.h2.copyWith(
+              fontSize: 23,
+              color: context.appTextPrimary,
+            ),
           ),
         ],
       ),

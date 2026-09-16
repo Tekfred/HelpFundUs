@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 
 class DonationDetailActions extends StatelessWidget {
@@ -43,7 +44,10 @@ class DonationDetailActions extends StatelessWidget {
           icon: const Icon(Icons.help_outline_rounded, size: 21),
           label: Text(
             'Contact support',
-            style: AppTextStyles.buttonMd.copyWith(fontSize: 16),
+            style: AppTextStyles.buttonMd.copyWith(
+              fontSize: 16,
+              color: context.appTextPrimary,
+            ),
           ),
         ),
       ),

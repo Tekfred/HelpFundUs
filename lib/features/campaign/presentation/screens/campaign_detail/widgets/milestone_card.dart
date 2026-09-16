@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/campaign/data/campaign_catalog.dart';
 
@@ -30,7 +31,7 @@ class MilestoneCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
@@ -39,7 +40,7 @@ class MilestoneCard extends StatelessWidget {
             radius: 18,
             backgroundColor: milestone.completed || inProgress
                 ? color
-                : Colors.white,
+                : context.appInput,
             child: Icon(
               milestone.completed ? Icons.check : Icons.circle_outlined,
               color: milestone.completed || inProgress
@@ -58,7 +59,10 @@ class MilestoneCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         milestone.title,
-                        style: AppTextStyles.h3.copyWith(fontSize: 15),
+                        style: AppTextStyles.h3.copyWith(
+                          fontSize: 15,
+                          color: context.appTextPrimary,
+                        ),
                       ),
                     ),
                     Container(
@@ -86,7 +90,7 @@ class MilestoneCard extends StatelessWidget {
                   'Target: ${parts.last}',
                   style: AppTextStyles.bodyMd.copyWith(
                     fontSize: 12,
-                    color: const Color(0xFF9AA4B5),
+                    color: context.appTextMuted,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -94,7 +98,7 @@ class MilestoneCard extends StatelessWidget {
                   parts.first,
                   style: AppTextStyles.bodyMd.copyWith(
                     fontSize: 12,
-                    color: const Color(0xFF9AA4B5),
+                    color: context.appTextMuted,
                   ),
                 ),
               ],

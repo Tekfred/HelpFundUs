@@ -10,7 +10,7 @@ class VerificationBadge extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
         decoration: BoxDecoration(
           color: AppColors.primary.withValues(alpha: .05),
           borderRadius: BorderRadius.circular(99),

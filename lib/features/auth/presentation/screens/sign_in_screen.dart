@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
@@ -32,20 +34,46 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final _identifier = TextEditingController();
   final _password = TextEditingController();
-  bool _simulateSuspended = false;
+  bool _showEmptyCredentialsPrompt = false;
+  Timer? _credentialsPromptTimer;
 
   @override
   void dispose() {
+    _credentialsPromptTimer?.cancel();
     _identifier.dispose();
     _password.dispose();
     super.dispose();
   }
 
   void _submit() {
-    if (_simulateSuspended) {
-      widget.onAccountRestricted();
-    } else {
-      widget.onSignedIn();
+    if (_identifier.text.trim().isEmpty || _password.text.isEmpty) {
+      _showIncompleteCredentialsPrompt();
+      return;
+    }
+
+    widget.onSignedIn();
+  }
+
+  void _showIncompleteCredentialsPrompt() {
+    _credentialsPromptTimer?.cancel();
+
+    if (!_showEmptyCredentialsPrompt) {
+      setState(() => _showEmptyCredentialsPrompt = true);
+    }
+
+    _credentialsPromptTimer = Timer(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() => _showEmptyCredentialsPrompt = false);
+      }
+    });
+  }
+
+  void _onCredentialsChanged(String _) {
+    final hasBothCredentials =
+        _identifier.text.trim().isNotEmpty && _password.text.isNotEmpty;
+    if (hasBothCredentials && _showEmptyCredentialsPrompt) {
+      _credentialsPromptTimer?.cancel();
+      setState(() => _showEmptyCredentialsPrompt = false);
     }
   }
 
@@ -55,11 +83,45 @@ class _SignInScreenState extends State<SignInScreen> {
       title: 'Sign In',
       onBack: widget.onBack,
       children: [
+        AnimatedSwitcher(
+          duration: AppMotion.fast,
+          reverseDuration: AppMotion.fast,
+          transitionBuilder: (child, animation) {
+            final curvedAnimation = CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+            );
+            return SizeTransition(
+              sizeFactor: curvedAnimation,
+              alignment: Alignment.topCenter,
+              child: FadeTransition(
+                opacity: curvedAnimation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, -0.04),
+                    end: Offset.zero,
+                  ).animate(curvedAnimation),
+                  child: child,
+                ),
+              ),
+            );
+          },
+          child: _showEmptyCredentialsPrompt
+              ? const Column(
+                  key: ValueKey('incomplete-credentials-prompt'),
+                  children: [
+                    _EmptyCredentialsPrompt(),
+                    SizedBox(height: AppSpacing.lg),
+                  ],
+                )
+              : const SizedBox(key: ValueKey('no-credentials-prompt')),
+        ),
         AuthTextField(
           label: 'Email or phone number',
           controller: _identifier,
           hint: 'jane@example.com',
           keyboardType: TextInputType.emailAddress,
+          onChanged: _onCredentialsChanged,
         ),
         const SizedBox(height: AppSpacing.md),
         AuthTextField(
@@ -67,6 +129,7 @@ class _SignInScreenState extends State<SignInScreen> {
           controller: _password,
           hint: 'Enter your password',
           togglableObscure: true,
+          onChanged: _onCredentialsChanged,
         ),
         Align(
           alignment: Alignment.centerRight,
@@ -113,56 +176,43 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.sm,
-            vertical: AppSpacing.xs,
-          ),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: AppColors.borderStrong,
-              style: BorderStyle.solid,
-            ),
-            borderRadius: BorderRadius.circular(AppRadius.md),
-          ),
-          child: Row(
-            children: [
-              Text('Demo:', style: AppTextStyles.bodySm),
-              const Spacer(),
-              GestureDetector(
-                onTap: () =>
-                    setState(() => _simulateSuspended = !_simulateSuspended),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _simulateSuspended
-                        ? AppColors.danger.withValues(alpha: 0.1)
-                        : AppColors.background,
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
-                    border: Border.all(
-                      color: _simulateSuspended
-                          ? AppColors.danger
-                          : AppColors.border,
-                    ),
-                  ),
-                  child: Text(
-                    _simulateSuspended ? 'Suspended account' : 'Normal account',
-                    style: AppTextStyles.bodySm.copyWith(
-                      color: _simulateSuspended
-                          ? AppColors.danger
-                          : AppColors.textSecondary,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: AppSpacing.lg),
       ],
+    );
+  }
+}
+
+class _EmptyCredentialsPrompt extends StatelessWidget {
+  const _EmptyCredentialsPrompt();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: 10,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.danger.withValues(alpha: 0.05),
+        border: Border.all(color: AppColors.danger.withValues(alpha: 0.35)),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.error_outline_rounded,
+            color: AppColors.danger,
+            size: 23,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Please enter your email and password.',
+              style: AppTextStyles.bodyMd.copyWith(color: AppColors.danger),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
+import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/features/donation/data/donation_receipt_catalog.dart';
 import 'package:helpfundus/features/donation/domain/entities/donation_receipt.dart';
@@ -64,7 +65,13 @@ class _ActivityScreenState extends State<ActivityScreen> {
       children: [
         Row(
           children: [
-            Text('Activity', style: AppTextStyles.h2.copyWith(fontSize: 24)),
+            Text(
+              'Activity',
+              style: AppTextStyles.h2.copyWith(
+                fontSize: 24,
+                color: context.appTextPrimary,
+              ),
+            ),
             const Spacer(),
             InkWell(
               onTap: () => Navigator.of(context).push(
@@ -112,11 +119,11 @@ class _ActivityScreenState extends State<ActivityScreen> {
                         decoration: BoxDecoration(
                           color: filter == _filter
                               ? AppColors.primary
-                              : Colors.white,
+                              : context.appSurface,
                           border: Border.all(
                             color: filter == _filter
                                 ? AppColors.primary
-                                : const Color(0xFFCBD1DB),
+                                : context.appBorderStrong,
                           ),
                           borderRadius: BorderRadius.circular(999),
                         ),
@@ -127,7 +134,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                             fontWeight: FontWeight.w700,
                             color: filter == _filter
                                 ? Colors.white
-                                : const Color(0xFF697487),
+                                : context.appTextSecondary,
                           ),
                         ),
                       ),
@@ -152,8 +159,8 @@ class _ActivityScreenState extends State<ActivityScreen> {
                     ),
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: const BoxDecoration(
-                  border: Border(bottom: BorderSide(color: Color(0xFFE0E4E8))),
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: context.appDivider)),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,7 +170,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                       height: 48,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.appSurface,
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Text(
@@ -181,7 +188,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                             style: AppTextStyles.buttonMd.copyWith(
                               fontSize: 15,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
+                              color: context.appTextPrimary,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -189,7 +196,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                             item.subtitle,
                             style: AppTextStyles.bodyMd.copyWith(
                               fontSize: 14,
-                              color: const Color(0xFF6B7587),
+                              color: context.appTextSecondary,
                             ),
                           ),
                         ],
@@ -199,7 +206,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                       item.timestamp,
                       style: AppTextStyles.caption.copyWith(
                         fontSize: 12,
-                        color: const Color(0xFF9AA4B5),
+                        color: context.appTextMuted,
                       ),
                     ),
                   ],
