@@ -20,7 +20,7 @@ class FundraiserHeader extends StatelessWidget {
               Text(
                 'Fundraiser Hub',
                 style: AppTextStyles.h1.copyWith(
-                  fontSize: 27,
+                  fontSize: 24,
                   color: context.appTextPrimary,
                 ),
               ),
@@ -28,7 +28,7 @@ class FundraiserHeader extends StatelessWidget {
               Text(
                 'Welcome back, Jane 👋',
                 style: AppTextStyles.bodyLg.copyWith(
-                  fontSize: 16,
+                  fontSize: 14,
                   color: context.appTextSecondary,
                 ),
               ),

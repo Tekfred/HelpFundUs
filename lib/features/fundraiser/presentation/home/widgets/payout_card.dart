@@ -9,8 +9,8 @@ class PayoutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 112,
-      padding: const EdgeInsets.all(16),
+      height: 100,
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFF7438F2), Color(0xFF4D46E9)],
@@ -20,20 +20,20 @@ class PayoutCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: 50,
+            height: 50,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: .16),
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: const Icon(
               Icons.account_balance_wallet_outlined,
               color: Colors.white,
-              size: 30,
+              size: 26,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 11),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -43,7 +43,7 @@ class PayoutCard extends StatelessWidget {
                   'Available for payout',
                   style: AppTextStyles.bodyMd.copyWith(
                     color: Colors.white70,
-                    fontSize: 14,
+                    fontSize: 13,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -51,23 +51,26 @@ class PayoutCard extends StatelessWidget {
                   '\$3,800',
                   style: AppTextStyles.h2.copyWith(
                     color: Colors.white,
-                    fontSize: 27,
+                    fontSize: 24,
                   ),
                 ),
               ],
             ),
           ),
           SizedBox(
-            height: 44,
+            height: 40,
             child: OutlinedButton(
               onPressed: onRequest,
               style: OutlinedButton.styleFrom(
-                minimumSize: const Size(100, 44),
-                padding: const EdgeInsets.symmetric(horizontal: 14),
+                minimumSize: const Size(88, 40),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 foregroundColor: Colors.white,
                 backgroundColor: Colors.white.withValues(alpha: .16),
                 side: const BorderSide(color: Color(0x88FFFFFF)),
-                textStyle: AppTextStyles.buttonMd.copyWith(color: Colors.white),
+                textStyle: AppTextStyles.buttonMd.copyWith(
+                  color: Colors.white,
+                  fontSize: 13,
+                ),
               ),
               child: const Text('Request'),
             ),

@@ -2,283 +2,450 @@ import 'package:flutter/material.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
 import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
+import 'package:helpfundus/core/widgets/animated_progress_bar.dart';
+import 'package:helpfundus/core/widgets/app_share_sheet.dart';
+import 'package:helpfundus/features/campaign/data/campaign_catalog.dart';
+import 'package:helpfundus/features/campaign/presentation/screens/campaign_detail/campaign_detail_screen.dart';
 import 'package:helpfundus/features/fundraiser/domain/entities/fundraiser_campaign.dart';
+import 'package:helpfundus/features/fundraiser/presentation/performance/performance_screen.dart';
+import 'campaign_management_options_screen.dart';
 
 class CampaignManagementScreen extends StatelessWidget {
   const CampaignManagementScreen({super.key, required this.campaign});
-
   final FundraiserCampaign campaign;
-
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.appBackground,
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(child: _hero(context)),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 36),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    campaign.title,
-                    style: AppTextStyles.h2.copyWith(
-                      fontSize: 24,
-                      color: context.appTextPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  _summary(context),
-                  const SizedBox(height: 22),
-                  _heading(context, 'Campaign checklist'),
-                  const SizedBox(height: 12),
-                  _group(context, const [
-                    'Campaign story written',
-                    'Cover image / media uploaded',
-                    'Identity verification (KYC)',
-                    'Bank account linked',
-                    'Milestones added',
-                  ], checks: true),
-                  const SizedBox(height: 22),
-                  _heading(context, 'Campaign management'),
-                  const SizedBox(height: 12),
-                  _group(context, const [
-                    'Performance analytics|Donations, trends, reach',
-                    'Edit campaign|Story, media, goal, dates',
-                    'Milestones|2 milestones',
-                    'Documents|Upload supporting documents',
-                    'Request payout|No balance available',
-                  ]),
-                  const SizedBox(height: 22),
-                  Text(
-                    'DANGER ZONE',
-                    style: AppTextStyles.label.copyWith(
-                      fontSize: 15,
-                      color: context.appTextMuted,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  _group(context, const [
-                    'Pause campaign',
-                    'Close campaign permanently',
-                  ], danger: true),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _hero(BuildContext context) {
-    return Container(
-      height: 300,
-      padding: EdgeInsets.only(
-        top: MediaQuery.paddingOf(context).top + 14,
-        left: 16,
-        right: 16,
-        bottom: 16,
-      ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: campaign.gradientColorValues
-              .map((value) => Color(value))
-              .toList(),
-        ),
-      ),
-      child: Column(
-        children: [
-          Row(
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: context.appBackground,
+    body: Column(
+      children: [
+        SizedBox(
+          height: 332,
+          child: Stack(
             children: [
-              _round(
-                Icons.arrow_back_ios_new_rounded,
-                () => Navigator.of(context).pop(),
+              _hero(context),
+              Positioned(
+                top: MediaQuery.paddingOf(context).top + 14,
+                left: 16,
+                right: 16,
+                child: _heroActions(context),
               ),
-              const Spacer(),
-              _round(Icons.share_outlined, () {}),
-              const SizedBox(width: 10),
-              _round(Icons.open_in_new_rounded, () {}),
             ],
           ),
-          const Spacer(),
-          Text(campaign.icon, style: const TextStyle(fontSize: 70)),
-          const Spacer(),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(99),
-              ),
-              child: Text(
-                'Active',
-                style: AppTextStyles.buttonMd.copyWith(
-                  color: AppColors.primary,
+        ),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 24, 16, 36),
+            children: [
+              Text(
+                campaign.title,
+                style: AppTextStyles.h2.copyWith(
+                  fontSize: 21,
+                  color: context.appTextPrimary,
                 ),
               ),
-            ),
+              const SizedBox(height: 12),
+              _summary(context),
+              const SizedBox(height: 24),
+              Text(
+                'Launch Checklist',
+                style: AppTextStyles.buttonMd.copyWith(
+                  fontSize: 16,
+                  color: context.appTextPrimary,
+                ),
+              ),
+              const SizedBox(height: 10),
+              _launchChecklistCard(context),
+              const SizedBox(height: 24),
+              _managementHeading(context),
+              const SizedBox(height: 10),
+              _managementTools(context),
+            ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _round(IconData icon, VoidCallback onTap) {
-    return Material(
-      color: Colors.white.withValues(alpha: .25),
-      shape: const CircleBorder(),
-      child: InkWell(
-        onTap: onTap,
-        customBorder: const CircleBorder(),
-        child: SizedBox(
-          width: 52,
-          height: 52,
-          child: Icon(icon, color: Colors.white),
         ),
+      ],
+    ),
+  );
+  Widget _hero(BuildContext c) => Container(
+    height: 332,
+    padding: EdgeInsets.fromLTRB(16, MediaQuery.paddingOf(c).top + 14, 16, 16),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: campaign.gradientColorValues.map(Color.new).toList(),
       ),
-    );
-  }
-
-  Widget _heading(BuildContext context, String label) => Text(
-    label,
-    style: AppTextStyles.h3.copyWith(
-      fontSize: 20,
-      color: context.appTextPrimary,
+    ),
+    child: Column(
+      children: [
+        const SizedBox(height: 46),
+        const Spacer(),
+        Text(campaign.icon, style: const TextStyle(fontSize: 64)),
+        const Spacer(),
+        Align(
+          alignment: Alignment.center,
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+                child: Text(
+                  '●  Active',
+                  style: AppTextStyles.buttonMd.copyWith(
+                    fontSize: 13,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              Text(
+                'Urban Greening Initiative',
+                style: AppTextStyles.bodySm.copyWith(
+                  fontSize: 13,
+                  color: Colors.white.withValues(alpha: .9),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     ),
   );
 
-  Widget _summary(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: context.appSurface,
-        borderRadius: BorderRadius.circular(24),
+  Widget _heroActions(BuildContext context) => Row(
+    children: [
+      _round(
+        Icons.arrow_back_ios_new_rounded,
+        () => Navigator.of(context).pop(),
       ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Text(
-                '\$${campaign.amountRaised.toStringAsFixed(0)}',
-                style: AppTextStyles.h2.copyWith(
-                  fontSize: 28,
-                  color: AppColors.primary,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                'of \$${campaign.goal.toStringAsFixed(0)} goal',
-                style: AppTextStyles.bodyMd.copyWith(
-                  color: context.appTextSecondary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(99),
-            child: LinearProgressIndicator(
-              value: campaign.progress,
-              minHeight: 8,
-              color: AppColors.primary,
-              backgroundColor: context.isDarkTheme
-                  ? AppColors.dividerDark
-                  : const Color(0xFFE3E5EA),
+      const Spacer(),
+      _round(Icons.share_outlined, () => _showShareSheet(context)),
+      const SizedBox(width: 8),
+      _round(
+        Icons.open_in_new_rounded,
+        () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const CampaignDetailScreen(
+              campaign: CampaignCatalog.urbanTrees,
             ),
           ),
-          const SizedBox(height: 15),
-          Row(
-            children: [
-              _metric(context, '${campaign.donorCount}', 'Donors'),
-              _metric(
-                context,
-                '${(campaign.progress * 100).round()}%',
-                'Progress',
-              ),
-              _metric(context, '${campaign.daysRemaining}', 'Days left'),
-            ],
-          ),
-        ],
+        ),
       ),
-    );
-  }
+    ],
+  );
+  Widget _round(IconData i, VoidCallback tap) => Material(
+    color: Colors.white.withValues(alpha: .25),
+    shape: const CircleBorder(),
+    child: InkWell(
+      onTap: tap,
+      customBorder: const CircleBorder(),
+      child: SizedBox(
+        width: 46,
+        height: 46,
+        child: Icon(i, color: Colors.white, size: 20),
+      ),
+    ),
+  );
 
-  Widget _metric(BuildContext context, String value, String label) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            value,
-            style: AppTextStyles.h3.copyWith(
-              fontSize: 18,
-              color: context.appTextPrimary,
+  void _showShareSheet(BuildContext context) => showAppShareSheet(
+    context,
+    ShareSheetData(
+      title: campaign.title,
+      subtitle:
+          '${String.fromCharCode(36)}${campaign.amountRaised.toStringAsFixed(0)} raised · ${campaign.donorCount} donors',
+      emoji: campaign.icon,
+      link: 'https://helpfundus.app/c/${campaign.id}',
+      iconGradient: LinearGradient(
+        colors: campaign.gradientColorValues.map(Color.new).toList(),
+      ),
+    ),
+  );
+  Widget _summary(BuildContext c) => Container(
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      color: c.appSurface,
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Column(
+      children: [
+        Row(
+          children: [
+            Text(
+              '\$${campaign.amountRaised.toStringAsFixed(0)}',
+              style: AppTextStyles.h2.copyWith(
+                fontSize: 24,
+                color: AppColors.primary,
+              ),
+            ),
+            const Spacer(),
+            Text(
+              'of \$${campaign.goal.toStringAsFixed(0)} goal',
+              style: AppTextStyles.bodyMd.copyWith(
+                fontSize: 13,
+                color: c.appTextSecondary,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(99),
+          child: AnimatedProgressBar(
+            value: campaign.progress,
+            color: AppColors.primary,
+            backgroundColor: c.isDarkTheme
+                ? AppColors.dividerDark
+                : const Color(0xFFE3E5EA),
+            minHeight: 7,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            _metric(c, '${campaign.donorCount}', 'Donors'),
+            _metric(c, '${(campaign.progress * 100).round()}%', 'Progress'),
+            _metric(c, '${campaign.daysRemaining}', 'Days left'),
+          ],
+        ),
+      ],
+    ),
+  );
+  Widget _metric(BuildContext c, String value, String label) => Expanded(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          value,
+          style: AppTextStyles.h3.copyWith(
+            fontSize: 16,
+            color: c.appTextPrimary,
+          ),
+        ),
+        Text(
+          label,
+          style: AppTextStyles.caption.copyWith(
+            fontSize: 11,
+            color: c.appTextMuted,
+          ),
+        ),
+      ],
+    ),
+  );
+  Widget _launchChecklistCard(BuildContext context) => _managementCard(
+    context,
+    child: _managementTile(
+      context,
+      icon: Icons.check_circle_outline_rounded,
+      iconColor: AppColors.primary,
+      title: 'Campaign checklist',
+      subtitle: 'Tap to view and manage setup tasks',
+      trailing: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withValues(alpha: .1),
+          borderRadius: BorderRadius.circular(99),
+        ),
+        child: Text(
+          '3/5',
+          style: AppTextStyles.buttonMd.copyWith(
+            fontSize: 14,
+            color: AppColors.primary,
+          ),
+        ),
+      ),
+      onTap: () => _checklist(context),
+    ),
+  );
+
+  Widget _managementHeading(BuildContext context) => Row(
+    children: [
+      Text(
+        'Campaign management',
+        style: AppTextStyles.buttonMd.copyWith(
+          fontSize: 16,
+          color: context.appTextPrimary,
+        ),
+      ),
+      const Spacer(),
+      TextButton(
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => CampaignManagementOptionsScreen(campaign: campaign),
+          ),
+        ),
+        child: Text(
+          'More tools  ›',
+          style: AppTextStyles.buttonMd.copyWith(
+            fontSize: 14,
+            color: AppColors.primary,
+          ),
+        ),
+      ),
+    ],
+  );
+
+  Widget _managementTools(BuildContext context) => _managementCard(
+    context,
+    child: Column(
+      children: [
+        _managementTile(
+          context,
+          icon: Icons.trending_up_rounded,
+          iconColor: AppColors.primary,
+          title: 'Performance analytics',
+          subtitle: 'Donations, trends, reach',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => PerformanceScreen(campaign: campaign),
             ),
           ),
-          Text(
-            label,
-            style: AppTextStyles.caption.copyWith(color: context.appTextMuted),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        Divider(height: 1, color: context.appDivider),
+        _managementTile(
+          context,
+          icon: Icons.description_outlined,
+          iconColor: context.appTextSecondary,
+          title: 'Documents',
+          subtitle: 'Upload supporting documents',
+          onTap: () => _comingSoon(context, 'Document management'),
+        ),
+        Divider(height: 1, color: context.appDivider),
+        _managementTile(
+          context,
+          icon: Icons.account_balance_wallet_outlined,
+          iconColor: context.appTextSecondary,
+          title: 'Request payout',
+          subtitle: 'No balance available',
+          onTap: () => _comingSoon(context, 'Payout requests'),
+        ),
+      ],
+    ),
+  );
 
-  Widget _group(
-    BuildContext context,
-    List<String> rows, {
-    bool checks = false,
-    bool danger = false,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.appSurface,
-        borderRadius: BorderRadius.circular(22),
-      ),
-      child: Column(
-        children: List.generate(rows.length, (index) {
-          final parts = rows[index].split('|');
-          final color = danger
-              ? (index == 1 ? AppColors.danger : const Color(0xFFE17A00))
-              : context.appTextPrimary;
-          return Column(
-            children: [
-              ListTile(
-                leading: checks
-                    ? const CircleAvatar(
-                        backgroundColor: AppColors.primary,
-                        child: Icon(Icons.check, color: Colors.white, size: 18),
-                      )
-                    : Icon(Icons.chevron_right_rounded, color: color),
-                title: Text(
-                  parts.first,
+  Widget _managementCard(BuildContext context, {required Widget child}) =>
+      Container(
+        decoration: BoxDecoration(
+          color: context.appSurface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: context.appBorder),
+        ),
+        child: ClipRRect(borderRadius: BorderRadius.circular(20), child: child),
+      );
+
+  Widget _managementTile(
+    BuildContext context, {
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required String subtitle,
+    Widget? trailing,
+    required VoidCallback onTap,
+  }) => InkWell(
+    onTap: onTap,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: .1),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(icon, size: 22, color: iconColor),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
                   style: AppTextStyles.buttonMd.copyWith(
                     fontSize: 16,
-                    color: color,
+                    color: context.appTextPrimary,
                   ),
                 ),
-                subtitle: parts.length > 1
-                    ? Text(
-                        parts[1],
-                        style: AppTextStyles.bodySm.copyWith(
-                          color: context.appTextMuted,
-                        ),
-                      )
-                    : null,
-                trailing: checks
-                    ? null
-                    : Icon(Icons.chevron_right_rounded, color: color),
-              ),
-              if (index < rows.length - 1)
-                Divider(height: 1, color: context.appDivider),
-            ],
-          );
-        }),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: AppTextStyles.bodySm.copyWith(
+                    fontSize: 13,
+                    color: context.appTextMuted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (trailing case final Widget trailingWidget) trailingWidget,
+          const SizedBox(width: 8),
+          Icon(Icons.chevron_right_rounded, color: context.appTextMuted),
+        ],
       ),
-    );
-  }
+    ),
+  );
+
+  void _comingSoon(BuildContext context, String label) => ScaffoldMessenger.of(
+    context,
+  ).showSnackBar(SnackBar(content: Text('$label will be available soon.')));
+  void _checklist(BuildContext c) => showModalBottomSheet<void>(
+    context: c,
+    backgroundColor: c.appSurfaceElevated,
+    showDragHandle: true,
+    builder: (s) => SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Campaign checklist · 3/5',
+              style: AppTextStyles.h3.copyWith(
+                fontSize: 18,
+                color: s.appTextPrimary,
+              ),
+            ),
+            const SizedBox(height: 10),
+            ...[
+              'Campaign story written',
+              'Cover image / media uploaded',
+              'Identity verification (KYC)',
+              'Bank account linked',
+              'Milestones added',
+            ].asMap().entries.map(
+              (e) => ListTile(
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                leading: Icon(
+                  e.key < 3 ? Icons.check_circle : Icons.radio_button_unchecked,
+                  color: e.key < 3 ? AppColors.primary : s.appTextMuted,
+                ),
+                title: Text(
+                  e.value,
+                  style: AppTextStyles.buttonMd.copyWith(
+                    fontSize: 14,
+                    color: e.key < 3 ? s.appTextPrimary : s.appTextMuted,
+                  ),
+                ),
+                trailing: e.key < 3
+                    ? null
+                    : Text(
+                        'Fix →',
+                        style: AppTextStyles.buttonMd.copyWith(
+                          fontSize: 13,
+                          color: AppColors.primary,
+                        ),
+                      ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }

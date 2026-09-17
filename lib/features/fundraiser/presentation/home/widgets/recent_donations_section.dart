@@ -36,7 +36,7 @@ class RecentDonationsSection extends StatelessWidget {
             Text(
               'Recent donations',
               style: AppTextStyles.h3.copyWith(
-                fontSize: 20,
+                fontSize: 18,
                 color: context.appTextPrimary,
               ),
             ),
@@ -60,13 +60,14 @@ class RecentDonationsSection extends StatelessWidget {
 
   Widget _row(BuildContext context, _Donation donation) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 11),
+      padding: const EdgeInsets.symmetric(vertical: 9),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: context.appDivider)),
       ),
       child: Row(
         children: [
           CircleAvatar(
+            radius: 18,
             backgroundColor: donation.color,
             child: Text(
               donation.initials,
@@ -81,7 +82,7 @@ class RecentDonationsSection extends StatelessWidget {
                 Text(
                   donation.name,
                   style: AppTextStyles.buttonMd.copyWith(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: context.appTextPrimary,
                   ),
                 ),
@@ -89,7 +90,7 @@ class RecentDonationsSection extends StatelessWidget {
                   Text(
                     donation.message,
                     style: AppTextStyles.bodyMd.copyWith(
-                      fontSize: 13,
+                      fontSize: 12,
                       color: context.appTextSecondary,
                     ),
                   ),
@@ -103,13 +104,14 @@ class RecentDonationsSection extends StatelessWidget {
                 donation.amount,
                 style: AppTextStyles.buttonMd.copyWith(
                   color: AppColors.primary,
-                  fontSize: 16,
+                  fontSize: 15,
                 ),
               ),
               Text(
                 donation.time,
                 style: AppTextStyles.caption.copyWith(
                   color: context.appTextMuted,
+                  fontSize: 11,
                 ),
               ),
             ],

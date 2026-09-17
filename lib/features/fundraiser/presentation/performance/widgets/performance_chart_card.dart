@@ -44,14 +44,23 @@ class PerformanceChartCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: Align(
                         alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: values[index] / 2,
-                          decoration: BoxDecoration(
-                            color: index == values.length - 1
-                                ? AppColors.primary
-                                : AppColors.primary.withValues(alpha: .28),
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(3),
+                        child: TweenAnimationBuilder<double>(
+                          tween: Tween(begin: 0, end: 1),
+                          duration: const Duration(milliseconds: 900),
+                          curve: Interval(
+                            index * .045,
+                            (index * .045 + .52).clamp(0.0, 1.0),
+                            curve: Curves.easeOutCubic,
+                          ),
+                          builder: (context, animationValue, _) => Container(
+                            height: (values[index] / 2) * animationValue,
+                            decoration: BoxDecoration(
+                              color: index == values.length - 1
+                                  ? AppColors.primary
+                                  : AppColors.primary.withValues(alpha: .28),
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(3),
+                              ),
                             ),
                           ),
                         ),

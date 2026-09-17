@@ -10,7 +10,7 @@ class VerificationBadge extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
         decoration: BoxDecoration(
           color: AppColors.primary.withValues(alpha: .05),
           borderRadius: BorderRadius.circular(99),
@@ -21,13 +21,13 @@ class VerificationBadge extends StatelessWidget {
             const Icon(
               Icons.check_circle_outline,
               color: AppColors.primary,
-              size: 18,
+              size: 16,
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: 5),
             Text(
               'Identity verified',
               style: AppTextStyles.buttonMd.copyWith(
-                fontSize: 13,
+                fontSize: 12,
                 color: AppColors.primary,
               ),
             ),

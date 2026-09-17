@@ -3,6 +3,7 @@ import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/features/fundraiser/data/fundraiser_campaign_catalog.dart';
 import 'package:helpfundus/features/fundraiser/domain/entities/fundraiser_campaign.dart';
 import 'package:helpfundus/features/fundraiser/presentation/campaign_management/campaign_management_screen.dart';
+import 'package:helpfundus/features/fundraiser/presentation/performance/performance_screen.dart';
 import 'package:helpfundus/features/fundraiser/presentation/campaigns/widgets/campaign_filter_chips.dart';
 import 'package:helpfundus/features/fundraiser/presentation/campaigns/widgets/campaign_search_field.dart';
 import 'package:helpfundus/features/fundraiser/presentation/campaigns/widgets/campaigns_header.dart';
@@ -36,26 +37,35 @@ class _CampaignsScreenState extends State<CampaignsScreen> {
       builder: (_) => CampaignManagementScreen(campaign: campaign),
     ),
   );
+  void _openPerformance(FundraiserCampaign campaign) =>
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => PerformanceScreen(campaign: campaign),
+        ),
+      );
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: context.appBackground,
     body: SafeArea(
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 26, 20, 112),
+        padding: const EdgeInsets.fromLTRB(20, 24, 20, 112),
         children: [
           CampaignsHeader(onCreate: () {}),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
           CampaignSearchField(onChanged: (q) => setState(() => _query = q)),
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
           CampaignFilterChips(
             selected: _filter,
             counts: _counts,
             onSelected: (v) => setState(() => _filter = v),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
           ..._visible.map(
-            (c) =>
-                FundraiserCampaignCard(campaign: c, onManage: () => _manage(c)),
+            (c) => FundraiserCampaignCard(
+              campaign: c,
+              onManage: () => _manage(c),
+              onPerformance: () => _openPerformance(c),
+            ),
           ),
         ],
       ),

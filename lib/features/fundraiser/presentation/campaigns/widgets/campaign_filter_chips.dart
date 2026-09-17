@@ -25,7 +25,7 @@ class CampaignFilterChips extends StatelessWidget {
             onTap: () => onSelected(entry.key),
             borderRadius: BorderRadius.circular(999),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
               decoration: BoxDecoration(
                 color: active ? AppColors.primary : context.appSurface,
                 border: Border.all(
@@ -36,7 +36,7 @@ class CampaignFilterChips extends StatelessWidget {
               child: Text(
                 '${entry.key}  ${entry.value}',
                 style: AppTextStyles.buttonMd.copyWith(
-                  fontSize: 13,
+                  fontSize: 12,
                   color: active ? Colors.white : context.appTextSecondary,
                 ),
               ),

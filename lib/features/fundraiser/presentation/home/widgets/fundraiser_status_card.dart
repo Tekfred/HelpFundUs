@@ -12,6 +12,7 @@ class FundraiserStatusCard extends StatelessWidget {
     required this.backgroundColor,
     required this.accentColor,
     this.action,
+    this.onAction,
   });
 
   final IconData icon;
@@ -20,12 +21,13 @@ class FundraiserStatusCard extends StatelessWidget {
   final Color backgroundColor;
   final Color accentColor;
   final String? action;
+  final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(minHeight: 82),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+      constraints: const BoxConstraints(minHeight: 64),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
         color: context.isDarkTheme
             ? accentColor.withValues(alpha: .13)
@@ -36,8 +38,8 @@ class FundraiserStatusCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(icon, color: accentColor, size: 25),
-          const SizedBox(width: 14),
+          Icon(icon, color: accentColor, size: 22),
+          const SizedBox(width: 12),
           Expanded(
             child: Text.rich(
               TextSpan(
@@ -45,14 +47,14 @@ class FundraiserStatusCard extends StatelessWidget {
                   TextSpan(
                     text: leadingText,
                     style: AppTextStyles.buttonMd.copyWith(
-                      fontSize: 14,
+                      fontSize: 13,
                       color: context.appTextPrimary,
                     ),
                   ),
                   TextSpan(
                     text: ' $message',
                     style: AppTextStyles.bodyMd.copyWith(
-                      fontSize: 14,
+                      fontSize: 13,
                       color: context.appTextSecondary,
                     ),
                   ),
@@ -62,9 +64,19 @@ class FundraiserStatusCard extends StatelessWidget {
           ),
           if (action != null) ...[
             const SizedBox(width: 8),
-            Text(
-              action!,
-              style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary),
+            InkWell(
+              onTap: onAction,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 6),
+                child: Text(
+                  action!,
+                  style: AppTextStyles.buttonMd.copyWith(
+                    color: AppColors.primary,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
             ),
           ],
         ],

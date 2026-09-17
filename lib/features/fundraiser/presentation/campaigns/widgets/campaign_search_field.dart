@@ -8,11 +8,14 @@ class CampaignSearchField extends StatelessWidget {
   Widget build(BuildContext context) => TextField(
     onChanged: onChanged,
     decoration: InputDecoration(
-      prefixIcon: const Icon(Icons.search, color: Color(0xFF9AA4B5)),
+      prefixIcon: Icon(Icons.search, color: context.appTextMuted, size: 22),
       hintText: 'Search your campaigns...',
+      hintStyle: TextStyle(color: context.appTextMuted, fontSize: 16),
+      isDense: true,
       filled: true,
       fillColor: context.appInput,
-      contentPadding: const EdgeInsets.symmetric(vertical: 14),
+      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+      constraints: const BoxConstraints.tightFor(height: 50),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
         borderSide: BorderSide(color: context.appBorderStrong),

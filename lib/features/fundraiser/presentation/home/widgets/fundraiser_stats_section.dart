@@ -27,11 +27,11 @@ class FundraiserStatsSection extends StatelessWidget {
   }) {
     return Expanded(
       child: Container(
-        height: 116,
-        padding: const EdgeInsets.all(12),
+        height: 100,
+        padding: const EdgeInsets.all(11),
         decoration: BoxDecoration(
           color: primary ? AppColors.primary : context.appSurface,
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +40,7 @@ class FundraiserStatsSection extends StatelessWidget {
               value,
               maxLines: 1,
               style: AppTextStyles.h3.copyWith(
-                fontSize: 22,
+                fontSize: 20,
                 color: primary ? Colors.white : AppColors.primary,
               ),
             ),
@@ -48,7 +48,7 @@ class FundraiserStatsSection extends StatelessWidget {
             Text(
               label,
               style: AppTextStyles.bodyMd.copyWith(
-                fontSize: 12,
+                fontSize: 11,
                 color: primary ? Colors.white70 : context.appTextMuted,
               ),
             ),

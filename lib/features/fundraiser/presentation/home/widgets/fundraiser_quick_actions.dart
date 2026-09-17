@@ -16,14 +16,15 @@ class FundraiserQuickActions extends StatelessWidget {
       children: [
         Expanded(
           child: SizedBox(
-            height: 54,
+            height: 48,
             child: FilledButton.icon(
               onPressed: onNewCampaign,
-              icon: const Icon(Icons.add, size: 22),
+              icon: const Icon(Icons.add, size: 19),
               label: const Text(
                 'New Campaign',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 14),
               ),
             ),
           ),
@@ -31,14 +32,15 @@ class FundraiserQuickActions extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: SizedBox(
-            height: 54,
+            height: 48,
             child: OutlinedButton.icon(
               onPressed: onAllCampaigns,
-              icon: const Icon(Icons.grid_view_outlined, size: 21),
+              icon: const Icon(Icons.grid_view_outlined, size: 18),
               label: const Text(
                 'All Campaigns',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 14),
               ),
             ),
           ),
