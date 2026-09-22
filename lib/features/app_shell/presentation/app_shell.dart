@@ -81,14 +81,30 @@ class _AppShellState extends State<AppShell> {
     super.dispose();
   }
 
-  void _showGuestGate(LoginGatePurpose purpose) {
-    showLoginGate(
-      context,
-      purpose: purpose,
-      onSignIn: widget.onGuestSignIn ?? widget.onSignOut,
-      onCreateAccount: widget.onGuestCreateAccount ?? widget.onSignOut,
-    );
+  Future<void> _showGuestGate(LoginGatePurpose purpose) async {
+    final action = await showLoginGate(context, purpose: purpose);
+    if (!mounted) return;
+    switch (action) {
+      case LoginGateAction.signIn:
+        _dismissGuestDetailRoutes();
+        (widget.onGuestSignIn ?? widget.onSignOut)();
+        break;
+      case LoginGateAction.createAccount:
+        _dismissGuestDetailRoutes();
+        (widget.onGuestCreateAccount ?? widget.onSignOut)();
+        break;
+      case null:
+        break;
+    }
   }
+
+  /// Campaign detail routes are pushed above AppRoot. AppRoot's auth mode
+  /// would otherwise update underneath the detail route and only become
+  /// visible after Back is pressed.
+  void _dismissGuestDetailRoutes() => Navigator.of(
+    context,
+    rootNavigator: true,
+  ).popUntil((route) => route.isFirst);
 
   Widget get _body {
     if (widget.isGuest) {

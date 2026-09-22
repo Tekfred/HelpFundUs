@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/brand_logo.dart';
 
 /// NOTE: the product brief also mentions the splash being a short video
@@ -62,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -78,11 +79,18 @@ class _SplashScreenState extends State<SplashScreen>
                 position: _textOffset,
                 child: Column(
                   children: [
-                    Text('HelpFundUs', style: AppTextStyles.brand),
+                    Text(
+                      'HelpFundUs',
+                      style: AppTextStyles.brand.copyWith(
+                        color: context.appTextPrimary,
+                      ),
+                    ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Crowdfunding that cares',
-                      style: AppTextStyles.tagline,
+                      style: AppTextStyles.tagline.copyWith(
+                        color: context.appTextSecondary,
+                      ),
                     ),
                   ],
                 ),

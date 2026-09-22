@@ -45,7 +45,12 @@ class _AuthTextFieldState extends State<AuthTextField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.label.isNotEmpty) ...[
-          Text(widget.label, style: AppTextStyles.buttonMd),
+          Text(
+            widget.label,
+            style: AppTextStyles.buttonMd.copyWith(
+              color: context.appTextPrimary,
+            ),
+          ),
           const SizedBox(height: AppSpacing.xs),
         ],
         TextField(
@@ -54,7 +59,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
           keyboardType: widget.keyboardType,
           onChanged: widget.onChanged,
           autofocus: widget.autofocus,
-          style: AppTextStyles.bodyLg,
+          style: AppTextStyles.bodyLg.copyWith(color: context.appTextPrimary),
           decoration: InputDecoration(
             hintText: widget.hint,
             hintStyle: AppTextStyles.bodyLg.copyWith(

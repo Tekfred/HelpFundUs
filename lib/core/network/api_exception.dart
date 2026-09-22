@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 enum ApiErrorType {
+  configuration,
   cancelled,
   connectionTimeout,
   sendTimeout,

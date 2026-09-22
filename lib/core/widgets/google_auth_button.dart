@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/app_theme_colors.dart';
 
 class GoogleAuthButton extends StatelessWidget {
   const GoogleAuthButton({super.key, required this.label, this.onPressed});
@@ -15,7 +15,7 @@ class GoogleAuthButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColors.borderStrong, width: 1.4),
+          side: BorderSide(color: context.appBorderStrong, width: 1.4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.md),
           ),
@@ -29,7 +29,7 @@ class GoogleAuthButton extends StatelessWidget {
             Text(
               label,
               style: AppTextStyles.buttonLg.copyWith(
-                color: AppColors.textPrimary,
+                color: context.appTextPrimary,
               ),
             ),
           ],
@@ -65,12 +65,17 @@ class OrDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(child: Divider(color: AppColors.border)),
+        Expanded(child: Divider(color: context.appDivider)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-          child: Text('or', style: AppTextStyles.bodyMd),
+          child: Text(
+            'or',
+            style: AppTextStyles.bodyMd.copyWith(
+              color: context.appTextSecondary,
+            ),
+          ),
         ),
-        const Expanded(child: Divider(color: AppColors.border)),
+        Expanded(child: Divider(color: context.appDivider)),
       ],
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 
 class OnboardingCategoryCard extends StatelessWidget {
   const OnboardingCategoryCard({
@@ -20,7 +21,7 @@ class OnboardingCategoryCard extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: DecoratedBox(
-        decoration: const BoxDecoration(color: Colors.white),
+        decoration: BoxDecoration(color: context.appSurface),
         child: Column(
           children: [
             Expanded(
@@ -40,12 +41,18 @@ class OnboardingCategoryCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: AppTextStyles.buttonMd.copyWith(fontSize: 15),
+                      style: AppTextStyles.buttonMd.copyWith(
+                        fontSize: 15,
+                        color: context.appTextPrimary,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       campaignCount,
-                      style: AppTextStyles.bodySm.copyWith(fontSize: 12),
+                      style: AppTextStyles.bodySm.copyWith(
+                        fontSize: 12,
+                        color: context.appTextMuted,
+                      ),
                     ),
                   ],
                 ),

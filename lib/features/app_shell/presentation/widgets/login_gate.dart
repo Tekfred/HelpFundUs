@@ -5,19 +5,19 @@ import '../../../../core/widgets/app_button.dart';
 
 enum LoginGatePurpose { donate, campaign }
 
+enum LoginGateAction { signIn, createAccount }
+
 /// The guest auth boundary. Payment and campaign creation always start from
 /// an authenticated session, while the rest of the public browser stays open.
-Future<void> showLoginGate(
+Future<LoginGateAction?> showLoginGate(
   BuildContext context, {
   required LoginGatePurpose purpose,
-  required VoidCallback onSignIn,
-  required VoidCallback onCreateAccount,
 }) {
   final action = purpose == LoginGatePurpose.donate
       ? 'donate to this campaign'
       : 'start a fundraiser';
 
-  return showModalBottomSheet<void>(
+  return showModalBottomSheet<LoginGateAction>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
@@ -73,22 +73,27 @@ Future<void> showLoginGate(
             PrimaryButton(
               label: 'Sign In',
               onPressed: () {
-                Navigator.of(sheetContext).pop();
-                onSignIn();
+                Navigator.of(
+                  sheetContext,
+                  rootNavigator: true,
+                ).pop(LoginGateAction.signIn);
               },
             ),
             const SizedBox(height: 12),
             SecondaryButton(
               label: 'Create Free Account',
               onPressed: () {
-                Navigator.of(sheetContext).pop();
-                onCreateAccount();
+                Navigator.of(
+                  sheetContext,
+                  rootNavigator: true,
+                ).pop(LoginGateAction.createAccount);
               },
             ),
             const SizedBox(height: 8),
             TextLinkButton(
               label: 'Continue browsing as guest',
-              onPressed: () => Navigator.of(sheetContext).pop(),
+              onPressed: () =>
+                  Navigator.of(sheetContext, rootNavigator: true).pop(),
             ),
           ],
         ),

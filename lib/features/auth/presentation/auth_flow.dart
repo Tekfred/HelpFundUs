@@ -43,6 +43,8 @@ class AuthFlow extends StatefulWidget {
 class _AuthFlowState extends State<AuthFlow> {
   AuthController get _controller => widget.controller;
   String _pendingDestination = 'jane@example.com';
+  String _pendingPhone = '';
+  String? _pendingVerificationId;
 
   @override
   void initState() {
@@ -95,15 +97,19 @@ class _AuthFlowState extends State<AuthFlow> {
         return CreateAccountScreen(
           onBack: _goBack,
           onSignIn: () => _controller.goTo(AuthStep.signIn),
-          onCreated: () {
-            _pendingDestination = 'jane@example.com';
+          onCreated: (email, phone, verificationId) {
+            _pendingDestination = email;
+            _pendingPhone = phone;
+            _pendingVerificationId = verificationId;
             _controller.goTo(AuthStep.verifyRegistrationOtp);
           },
         );
 
       case AuthStep.verifyRegistrationOtp:
         return VerifyRegistrationOtpScreen(
-          destination: _mask(_pendingDestination),
+          destination: _pendingDestination,
+          phone: _pendingPhone,
+          verificationId: _pendingVerificationId!,
           onBack: _goBack,
           onVerified: () => _controller.goTo(AuthStep.registrationSuccess),
           onChangeDestination: _controller.back,

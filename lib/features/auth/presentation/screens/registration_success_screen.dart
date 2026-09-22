@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/app_button.dart';
 
 class RegistrationSuccessScreen extends StatefulWidget {
@@ -38,7 +39,7 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -97,14 +98,16 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen>
               const SizedBox(height: AppSpacing.xl),
               Text(
                 "You're all set!",
-                style: AppTextStyles.h1,
+                style: AppTextStyles.h1.copyWith(color: context.appTextPrimary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 'Your account has been verified. Welcome to a community that funds what matters.',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMd,
+                style: AppTextStyles.bodyMd.copyWith(
+                  color: context.appTextSecondary,
+                ),
               ),
               const SizedBox(height: AppSpacing.xl),
               _PromptCard(
@@ -157,9 +160,9 @@ class _PromptCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.appSurface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: Border.all(color: AppColors.borderStrong),
+          border: Border.all(color: context.appBorderStrong),
         ),
         child: Row(
           children: [
@@ -177,13 +180,23 @@ class _PromptCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: AppTextStyles.buttonMd),
+                  Text(
+                    title,
+                    style: AppTextStyles.buttonMd.copyWith(
+                      color: context.appTextPrimary,
+                    ),
+                  ),
                   const SizedBox(height: 2),
-                  Text(subtitle, style: AppTextStyles.bodySm),
+                  Text(
+                    subtitle,
+                    style: AppTextStyles.bodySm.copyWith(
+                      color: context.appTextMuted,
+                    ),
+                  ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: AppColors.textMuted),
+            Icon(Icons.chevron_right, color: context.appTextMuted),
           ],
         ),
       ),

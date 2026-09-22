@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/auth_text_field.dart';
@@ -54,11 +55,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           const SizedBox(height: AppSpacing.xl),
           const Icon(Icons.link_off, size: 48, color: AppColors.danger),
           const SizedBox(height: AppSpacing.md),
-          Text('This link has expired', style: AppTextStyles.h2),
+          Text(
+            'This link has expired',
+            style: AppTextStyles.h2.copyWith(color: context.appTextPrimary),
+          ),
           const SizedBox(height: AppSpacing.sm),
           Text(
             'Password reset links are only valid for a short time. Request a new one to continue.',
-            style: AppTextStyles.bodyMd,
+            style: AppTextStyles.bodyMd.copyWith(
+              color: context.appTextSecondary,
+            ),
           ),
           const SizedBox(height: AppSpacing.lg),
           PrimaryButton(label: 'Request a New Link', onPressed: widget.onBack),
@@ -83,11 +89,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             child: const Icon(Icons.check, color: AppColors.surface, size: 30),
           ),
           const SizedBox(height: AppSpacing.md),
-          Text('Password updated', style: AppTextStyles.h2),
+          Text(
+            'Password updated',
+            style: AppTextStyles.h2.copyWith(color: context.appTextPrimary),
+          ),
           const SizedBox(height: AppSpacing.sm),
           Text(
             'Your password has been reset. Sign in with your new password to continue.',
-            style: AppTextStyles.bodyMd,
+            style: AppTextStyles.bodyMd.copyWith(
+              color: context.appTextSecondary,
+            ),
           ),
           const SizedBox(height: AppSpacing.lg),
           PrimaryButton(label: 'Sign In', onPressed: widget.onReset),
@@ -130,7 +141,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             onTap: () => setState(() => _tokenExpiredDemo = true),
             child: Text(
               'Demo: preview expired-link state',
-              style: AppTextStyles.bodySm,
+              style: AppTextStyles.bodySm.copyWith(color: context.appTextMuted),
             ),
           ),
         ),

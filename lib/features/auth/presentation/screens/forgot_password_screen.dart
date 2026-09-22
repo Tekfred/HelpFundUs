@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/auth_text_field.dart';
@@ -37,11 +38,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       children: [
         const SizedBox(height: AppSpacing.lg),
         if (!_sent) ...[
-          Text('Forgot your password?', style: AppTextStyles.h1),
+          Text(
+            'Forgot your password?',
+            style: AppTextStyles.h1.copyWith(color: context.appTextPrimary),
+          ),
           const SizedBox(height: AppSpacing.sm),
           Text(
             "Enter your email or phone number and we'll send instructions to reset your password.",
-            style: AppTextStyles.bodyMd,
+            style: AppTextStyles.bodyMd.copyWith(
+              color: context.appTextSecondary,
+            ),
           ),
           const SizedBox(height: AppSpacing.lg),
           AuthTextField(
@@ -74,12 +80,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          Text('Check your inbox', style: AppTextStyles.h1),
+          Text(
+            'Check your inbox',
+            style: AppTextStyles.h1.copyWith(color: context.appTextPrimary),
+          ),
           const SizedBox(height: AppSpacing.sm),
           Text(
             "If an account matches ${_identifier.text.isEmpty ? 'what you entered' : _identifier.text}, "
             "we've sent instructions to reset the password. It can take a few minutes to arrive.",
-            style: AppTextStyles.bodyMd,
+            style: AppTextStyles.bodyMd.copyWith(
+              color: context.appTextSecondary,
+            ),
           ),
         ],
         const SizedBox(height: AppSpacing.xl),
@@ -89,16 +100,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                Icon(
                   Icons.arrow_back,
                   size: 16,
-                  color: AppColors.textSecondary,
+                  color: context.appTextSecondary,
                 ),
                 const SizedBox(width: 6),
                 Text(
                   'Back to Sign In',
                   style: AppTextStyles.buttonMd.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.appTextSecondary,
                   ),
                 ),
               ],

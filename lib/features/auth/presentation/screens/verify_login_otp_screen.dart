@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_error_prompt.dart';
 import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/otp_input.dart';
 
@@ -52,9 +54,15 @@ class _VerifyLoginOtpScreenState extends State<VerifyLoginOtpScreen> {
       onBack: widget.onBack,
       children: [
         const SizedBox(height: AppSpacing.md),
-        Text('We sent a login code to', style: AppTextStyles.bodyMd),
+        Text(
+          'We sent a login code to',
+          style: AppTextStyles.bodyMd.copyWith(color: context.appTextSecondary),
+        ),
         const SizedBox(height: 2),
-        Text(widget.destination, style: AppTextStyles.h3),
+        Text(
+          widget.destination,
+          style: AppTextStyles.h3.copyWith(color: context.appTextPrimary),
+        ),
         const SizedBox(height: AppSpacing.xl),
         OtpInput(
           key: _otpKey,
@@ -63,21 +71,9 @@ class _VerifyLoginOtpScreenState extends State<VerifyLoginOtpScreen> {
         ),
         if (_error != null) ...[
           const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              const Icon(
-                Icons.error_outline,
-                size: 16,
-                color: AppColors.danger,
-              ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  _error!,
-                  style: AppTextStyles.bodySm.copyWith(color: AppColors.danger),
-                ),
-              ),
-            ],
+          AppErrorPrompt(
+            message: _error!,
+            onDismiss: () => setState(() => _error = null),
           ),
         ],
         const SizedBox(height: AppSpacing.lg),
@@ -108,7 +104,7 @@ class _VerifyLoginOtpScreenState extends State<VerifyLoginOtpScreen> {
               _requireMfaDemo
                   ? 'Demo: will redirect to MFA next'
                   : 'This account requires extra verification?',
-              style: AppTextStyles.bodySm,
+              style: AppTextStyles.bodySm.copyWith(color: context.appTextMuted),
             ),
           ),
         ),

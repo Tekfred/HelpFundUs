@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/app_theme_colors.dart';
 
 enum PasswordStrength { empty, weak, fair, strong }
 
@@ -73,7 +74,7 @@ class PasswordStrengthMeter extends StatelessWidget {
                 margin: EdgeInsets.only(right: i < 2 ? 6 : 0),
                 height: 5,
                 decoration: BoxDecoration(
-                  color: active ? _colorFor(strength) : AppColors.border,
+                  color: active ? _colorFor(strength) : context.appBorder,
                   borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
               ),
@@ -98,15 +99,15 @@ class PasswordStrengthMeter extends StatelessWidget {
                   Icon(
                     met ? Icons.check_circle : Icons.circle_outlined,
                     size: 14,
-                    color: met ? AppColors.primary : AppColors.textMuted,
+                    color: met ? AppColors.primary : context.appTextMuted,
                   ),
                   const SizedBox(width: 6),
                   Text(
                     r.$1,
                     style: AppTextStyles.bodySm.copyWith(
                       color: met
-                          ? AppColors.textSecondary
-                          : AppColors.textMuted,
+                          ? context.appTextSecondary
+                          : context.appTextMuted,
                     ),
                   ),
                 ],

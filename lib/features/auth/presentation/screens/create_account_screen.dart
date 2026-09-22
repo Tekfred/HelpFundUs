@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_exception.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_error_prompt.dart';
 import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/auth_text_field.dart';
 import '../../../../core/widgets/country_code_selector.dart';
@@ -24,7 +26,8 @@ class CreateAccountScreen extends StatefulWidget {
     this.authRepository,
   });
   final VoidCallback onBack;
-  final VoidCallback onCreated;
+  final void Function(String email, String phone, String verificationId)
+  onCreated;
   final VoidCallback onSignIn;
   final AuthRepository? authRepository;
 
@@ -43,11 +46,25 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   String _passwordValue = '';
   late final AuthRepository _authRepository;
   bool _submitting = false;
+  String? _requestError;
+
+  static final RegExp _gmailAddressPattern = RegExp(
+    r"^[A-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@gmail\.com$",
+    caseSensitive: false,
+  );
+
+  bool get _hasValidGmailAddress =>
+      _gmailAddressPattern.hasMatch(_email.text.trim());
+
+  String? get _emailError {
+    if (_email.text.isEmpty || _hasValidGmailAddress) return null;
+    return 'Use a valid email address ending in @gmail.com.';
+  }
 
   bool get _canSubmit =>
       _firstName.text.isNotEmpty &&
       _lastName.text.isNotEmpty &&
-      _email.text.isNotEmpty &&
+      _hasValidGmailAddress &&
       _phone.text.isNotEmpty &&
       scorePassword(_passwordValue) != PasswordStrength.empty &&
       _agreed;
@@ -65,7 +82,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
     setState(() => _submitting = true);
     try {
-      await _authRepository.register(
+      final result = await _authRepository.register(
         RegisterRequest(
           firstName: _firstName.text.trim(),
           lastName: _lastName.text.trim(),
@@ -77,7 +94,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           password: _password.text,
         ),
       );
-      if (mounted) widget.onCreated();
+      if (mounted) {
+        widget.onCreated(
+          _email.text.trim(),
+          '${_country.dialCode}${_phone.text.trim()}'.replaceAll(
+            RegExp(r'\s+'),
+            '',
+          ),
+          result.verificationId,
+        );
+      }
     } on ApiException catch (error) {
       if (mounted) _showRequestError(error.message);
     } catch (_) {
@@ -90,9 +116,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   }
 
   void _showRequestError(String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+    setState(() => _requestError = message);
   }
 
   @override
@@ -111,6 +135,19 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       title: 'Create Account',
       onBack: widget.onBack,
       children: [
+        AnimatedSwitcher(
+          duration: AppMotion.fast,
+          child: _requestError == null
+              ? const SizedBox.shrink()
+              : Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  child: AppErrorPrompt(
+                    key: const ValueKey('registration-error'),
+                    message: _requestError!,
+                    onDismiss: () => setState(() => _requestError = null),
+                  ),
+                ),
+        ),
         Row(
           children: [
             Expanded(
@@ -118,7 +155,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 label: 'First name',
                 controller: _firstName,
                 hint: 'Jane',
-                onChanged: (_) => setState(() {}),
+                onChanged: (_) => setState(() => _requestError = null),
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
@@ -127,7 +164,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 label: 'Last name',
                 controller: _lastName,
                 hint: 'Doe',
-                onChanged: (_) => setState(() {}),
+                onChanged: (_) => setState(() => _requestError = null),
               ),
             ),
           ],
@@ -138,10 +175,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           controller: _email,
           hint: 'jane@example.com',
           keyboardType: TextInputType.emailAddress,
-          onChanged: (_) => setState(() {}),
+          errorText: _emailError,
+          onChanged: (_) => setState(() => _requestError = null),
         ),
         const SizedBox(height: AppSpacing.md),
-        Text('Phone number', style: AppTextStyles.buttonMd),
+        Text(
+          'Phone number',
+          style: AppTextStyles.buttonMd.copyWith(color: context.appTextPrimary),
+        ),
         const SizedBox(height: AppSpacing.xs),
         Row(
           children: [
@@ -156,7 +197,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 controller: _phone,
                 hint: '(555) 000-0000',
                 keyboardType: TextInputType.phone,
-                onChanged: (_) => setState(() {}),
+                onChanged: (_) => setState(() => _requestError = null),
               ),
             ),
           ],
@@ -167,7 +208,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           controller: _password,
           hint: 'Create a strong password',
           togglableObscure: true,
-          onChanged: (v) => setState(() => _passwordValue = v),
+          onChanged: (v) => setState(() {
+            _passwordValue = v;
+            _requestError = null;
+          }),
         ),
         const SizedBox(height: AppSpacing.sm),
         PasswordStrengthMeter(password: _passwordValue),
@@ -183,10 +227,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 height: 22,
                 margin: const EdgeInsets.only(top: 2),
                 decoration: BoxDecoration(
-                  color: _agreed ? AppColors.primary : AppColors.surface,
+                  color: _agreed ? AppColors.primary : context.appSurface,
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: _agreed ? AppColors.primary : AppColors.borderStrong,
+                    color: _agreed
+                        ? AppColors.primary
+                        : context.appBorderStrong,
                     width: 1.4,
                   ),
                 ),
@@ -202,7 +248,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               Expanded(
                 child: Text.rich(
                   TextSpan(
-                    style: AppTextStyles.bodyMd,
+                    style: AppTextStyles.bodyMd.copyWith(
+                      color: context.appTextSecondary,
+                    ),
                     children: [
                       const TextSpan(text: 'I agree to the '),
                       TextSpan(
@@ -244,7 +292,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           child: Wrap(
             alignment: WrapAlignment.center,
             children: [
-              Text('Already have an account? ', style: AppTextStyles.bodyMd),
+              Text(
+                'Already have an account? ',
+                style: AppTextStyles.bodyMd.copyWith(
+                  color: context.appTextSecondary,
+                ),
+              ),
               GestureDetector(
                 onTap: widget.onSignIn,
                 child: Text(

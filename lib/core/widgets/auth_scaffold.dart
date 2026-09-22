@@ -43,7 +43,13 @@ class AuthScaffold extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: CircularBackButton(onPressed: onBack),
                       ),
-                    if (title != null) Text(title!, style: AppTextStyles.h3),
+                    if (title != null)
+                      Text(
+                        title!,
+                        style: AppTextStyles.h3.copyWith(
+                          color: context.appTextPrimary,
+                        ),
+                      ),
                   ],
                 ),
               ),

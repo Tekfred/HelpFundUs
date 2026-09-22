@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/app_button.dart';
 
 class SessionExpiredScreen extends StatefulWidget {
@@ -40,7 +41,7 @@ class _SessionExpiredScreenState extends State<SessionExpiredScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -73,7 +74,7 @@ class _SessionExpiredScreenState extends State<SessionExpiredScreen>
               const SizedBox(height: AppSpacing.xl),
               Text(
                 'Your session has expired',
-                style: AppTextStyles.h1,
+                style: AppTextStyles.h1.copyWith(color: context.appTextPrimary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -81,14 +82,16 @@ class _SessionExpiredScreenState extends State<SessionExpiredScreen>
                 "For your security, you've been signed out after a period of inactivity. "
                 'Sign in again to pick up where you left off.',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMd,
+                style: AppTextStyles.bodyMd.copyWith(
+                  color: context.appTextSecondary,
+                ),
               ),
               if (widget.hadUnsavedProgress) ...[
                 const SizedBox(height: AppSpacing.md),
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: AppColors.surface,
+                    color: context.appSurface,
                     borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
                   child: Row(
@@ -102,7 +105,9 @@ class _SessionExpiredScreenState extends State<SessionExpiredScreen>
                       Expanded(
                         child: Text(
                           'Your unsaved changes were kept as a draft.',
-                          style: AppTextStyles.bodySm,
+                          style: AppTextStyles.bodySm.copyWith(
+                            color: context.appTextMuted,
+                          ),
                         ),
                       ),
                     ],

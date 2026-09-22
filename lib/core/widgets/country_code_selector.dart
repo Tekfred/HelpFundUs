@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/app_theme_colors.dart';
 
 class Country {
   const Country(this.flag, this.dialCode, this.name);
@@ -33,7 +33,7 @@ class CountryCodeSelector extends StatelessWidget {
   Future<void> _openPicker(BuildContext context) async {
     final choice = await showModalBottomSheet<Country>(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: context.appSurfaceElevated,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
       ),
@@ -47,7 +47,7 @@ class CountryCodeSelector extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.border,
+                  color: context.appBorder,
                   borderRadius: BorderRadius.circular(99),
                 ),
               ),
@@ -55,8 +55,18 @@ class CountryCodeSelector extends StatelessWidget {
               for (final c in kCountries)
                 ListTile(
                   leading: Text(c.flag, style: const TextStyle(fontSize: 22)),
-                  title: Text(c.name, style: AppTextStyles.bodyLg),
-                  trailing: Text(c.dialCode, style: AppTextStyles.bodyMd),
+                  title: Text(
+                    c.name,
+                    style: AppTextStyles.bodyLg.copyWith(
+                      color: context.appTextPrimary,
+                    ),
+                  ),
+                  trailing: Text(
+                    c.dialCode,
+                    style: AppTextStyles.bodyMd.copyWith(
+                      color: context.appTextSecondary,
+                    ),
+                  ),
                   onTap: () => Navigator.of(context).pop(c),
                 ),
               const SizedBox(height: AppSpacing.md),
@@ -76,21 +86,26 @@ class CountryCodeSelector extends StatelessWidget {
         height: 56,
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.appInput,
           borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(color: AppColors.borderStrong),
+          border: Border.all(color: context.appBorderStrong),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(selected.flag, style: const TextStyle(fontSize: 18)),
             const SizedBox(width: 6),
-            Text(selected.dialCode, style: AppTextStyles.buttonMd),
+            Text(
+              selected.dialCode,
+              style: AppTextStyles.buttonMd.copyWith(
+                color: context.appTextPrimary,
+              ),
+            ),
             const SizedBox(width: 2),
-            const Icon(
+            Icon(
               Icons.keyboard_arrow_down,
               size: 18,
-              color: AppColors.textMuted,
+              color: context.appTextMuted,
             ),
           ],
         ),

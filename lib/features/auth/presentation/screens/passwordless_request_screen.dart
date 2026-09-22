@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_error_prompt.dart';
 import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/auth_text_field.dart';
 import '../../../../core/widgets/otp_input.dart';
@@ -81,16 +83,24 @@ class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
           Text(
             "We'll text or email you a one-time code — no password needed. "
             'The code expires a few minutes after it\'s sent.',
-            style: AppTextStyles.bodyMd,
+            style: AppTextStyles.bodyMd.copyWith(
+              color: context.appTextSecondary,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.lg),
+          if (_error != null) ...[
+            AppErrorPrompt(
+              message: _error!,
+              onDismiss: () => setState(() => _error = null),
+            ),
+            const SizedBox(height: AppSpacing.md),
+          ],
           AuthTextField(
             label: 'Email or phone number',
             controller: _identifier,
             hint: 'jane@example.com',
             keyboardType: TextInputType.emailAddress,
-            errorText: _error,
             onChanged: (_) {
               if (_error != null) setState(() => _error = null);
             },
@@ -116,8 +126,20 @@ class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          Center(child: Text('Code sent to', style: AppTextStyles.bodyMd)),
-          Center(child: Text(_identifier.text, style: AppTextStyles.h3)),
+          Center(
+            child: Text(
+              'Code sent to',
+              style: AppTextStyles.bodyMd.copyWith(
+                color: context.appTextSecondary,
+              ),
+            ),
+          ),
+          Center(
+            child: Text(
+              _identifier.text,
+              style: AppTextStyles.h3.copyWith(color: context.appTextPrimary),
+            ),
+          ),
           const SizedBox(height: AppSpacing.lg),
           Center(child: ResendCountdown(seconds: 45, onResend: () {})),
           const SizedBox(height: AppSpacing.lg),

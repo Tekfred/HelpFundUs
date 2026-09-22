@@ -3,6 +3,7 @@ import '../../../../core/animation/reveal_on_enter.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/circular_back_button.dart';
 import '../widgets/journey_card.dart';
@@ -35,7 +36,7 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -53,7 +54,9 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
                 blurSigma: 8,
                 child: Text(
                   'How would you\nlike to start?',
-                  style: AppTextStyles.h1,
+                  style: AppTextStyles.h1.copyWith(
+                    color: context.appTextPrimary,
+                  ),
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -61,7 +64,9 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
                 index: 2,
                 child: Text(
                   'One account supports both — you can always switch later.',
-                  style: AppTextStyles.bodyMd,
+                  style: AppTextStyles.bodyMd.copyWith(
+                    color: context.appTextSecondary,
+                  ),
                 ),
               ),
               const SizedBox(height: 18),
@@ -95,23 +100,25 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.surface,
+                    color: context.appSurface,
                     borderRadius: BorderRadius.circular(AppRadius.lg),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.people_outline,
                         size: 16,
-                        color: AppColors.textMuted,
+                        color: context.appTextMuted,
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
                           'A single account lets you donate and create campaigns — your choice here '
                           'only personalises your start.',
-                          style: AppTextStyles.bodySm,
+                          style: AppTextStyles.bodySm.copyWith(
+                            color: context.appTextMuted,
+                          ),
                         ),
                       ),
                     ],
@@ -141,7 +148,7 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
                   child: Text(
                     'Browse campaigns first',
                     style: AppTextStyles.buttonMd.copyWith(
-                      color: AppColors.textPrimary,
+                      color: context.appTextPrimary,
                     ),
                   ),
                 ),
@@ -152,7 +159,9 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
                   children: [
                     Text(
                       'Already have an account? ',
-                      style: AppTextStyles.bodyMd,
+                      style: AppTextStyles.bodyMd.copyWith(
+                        color: context.appTextSecondary,
+                      ),
                     ),
                     TextButton(
                       onPressed: widget.onSignIn,

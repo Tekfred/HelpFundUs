@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 
 class TimelineStep extends StatelessWidget {
   const TimelineStep({
@@ -38,7 +39,7 @@ class TimelineStep extends StatelessWidget {
                   child: Text(
                     '$number',
                     style: AppTextStyles.buttonMd.copyWith(
-                      color: Colors.white,
+                      color: AppColors.surface,
                       fontSize: 14,
                     ),
                   ),
@@ -48,7 +49,7 @@ class TimelineStep extends StatelessWidget {
                     child: Container(
                       width: 2,
                       margin: const EdgeInsets.symmetric(vertical: 4),
-                      color: AppColors.borderStrong,
+                      color: context.appBorderStrong,
                     ),
                   ),
               ],
@@ -61,14 +62,20 @@ class TimelineStep extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: AppTextStyles.buttonMd.copyWith(fontSize: 16),
+                  style: AppTextStyles.buttonMd.copyWith(
+                    fontSize: 16,
+                    color: context.appTextPrimary,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   description,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.bodySm.copyWith(fontSize: 13),
+                  style: AppTextStyles.bodySm.copyWith(
+                    fontSize: 13,
+                    color: context.appTextMuted,
+                  ),
                 ),
               ],
             ),

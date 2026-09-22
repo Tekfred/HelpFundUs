@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/app_theme_colors.dart';
 
 /// Six-box OTP entry. Each box springs in on focus and shows a blinking
 /// text cursor while empty and active. Calls [onCompleted] once all boxes
@@ -133,7 +134,6 @@ class _OtpBoxState extends State<_OtpBox> {
 
   @override
   Widget build(BuildContext context) {
-    final filled = widget.controller.text.isNotEmpty;
     final focused = widget.node.hasFocus;
     return AnimatedContainer(
       duration: AppMotion.fast,
@@ -141,14 +141,14 @@ class _OtpBoxState extends State<_OtpBox> {
       width: 46,
       height: 56,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.appInput,
         borderRadius: BorderRadius.circular(AppRadius.md),
         border: Border.all(
           color: widget.hasError
               ? AppColors.danger
               : focused
               ? AppColors.primary
-              : AppColors.borderStrong,
+              : context.appBorderStrong,
           width: focused || widget.hasError ? 1.8 : 1.2,
         ),
         boxShadow: focused
@@ -177,7 +177,7 @@ class _OtpBoxState extends State<_OtpBox> {
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
           maxLength: 1,
-          style: AppTextStyles.h3,
+          style: AppTextStyles.h3.copyWith(color: context.appTextPrimary),
           showCursor: true,
           cursorColor: AppColors.primary,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -196,8 +196,14 @@ class _OtpBoxState extends State<_OtpBox> {
 /// "Resend code" link once it hits zero. Call [reset] after a successful
 /// resend to restart the countdown.
 class ResendCountdown extends StatefulWidget {
-  const ResendCountdown({super.key, required this.onResend, this.seconds = 60});
+  const ResendCountdown({
+    super.key,
+    required this.onResend,
+    this.onResendAsync,
+    this.seconds = 60,
+  });
   final VoidCallback onResend;
+  final Future<bool> Function()? onResendAsync;
   final int seconds;
 
   @override
@@ -207,6 +213,7 @@ class ResendCountdown extends StatefulWidget {
 class _ResendCountdownState extends State<ResendCountdown> {
   late int _remaining = widget.seconds;
   Timer? _timer;
+  bool _isResending = false;
 
   @override
   void initState() {
@@ -232,22 +239,39 @@ class _ResendCountdownState extends State<ResendCountdown> {
     super.dispose();
   }
 
+  Future<void> _resend() async {
+    if (_isResending || _remaining != 0) return;
+
+    setState(() => _isResending = true);
+    final succeeded =
+        await (widget.onResendAsync?.call() ?? Future.value(true));
+    if (!mounted) return;
+
+    setState(() => _isResending = false);
+    if (succeeded) {
+      widget.onResend();
+      setState(_start);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (_remaining == 0) {
-      return GestureDetector(
-        onTap: () {
-          widget.onResend();
-          setState(_start);
-        },
-        child: Text(
-          'Resend code',
-          style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary),
-        ),
-      );
-    }
     final m = _remaining ~/ 60;
     final s = (_remaining % 60).toString().padLeft(2, '0');
-    return Text('Resend code in $m:$s', style: AppTextStyles.bodyMd);
+    final canResend = _remaining == 0 && !_isResending;
+
+    return TextButton(
+      onPressed: canResend ? _resend : null,
+      child: Text(
+        _isResending
+            ? 'Sending code…'
+            : canResend
+            ? 'Resend code'
+            : 'Resend code in $m:$s',
+        style: AppTextStyles.buttonMd.copyWith(
+          color: canResend ? AppColors.primary : context.appTextMuted,
+        ),
+      ),
+    );
   }
 }

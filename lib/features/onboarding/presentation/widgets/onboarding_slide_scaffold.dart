@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/animation/reveal_on_enter.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/circular_back_button.dart';
 import '../../../../core/widgets/dot_indicator.dart';
 
@@ -48,7 +48,7 @@ class OnboardingSlideScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final tailIndex = 1 + contentRevealCount;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -66,7 +66,7 @@ class OnboardingSlideScaffold extends StatelessWidget {
                       child: Text(
                         'Skip',
                         style: AppTextStyles.bodyMd.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.appTextSecondary,
                         ),
                       ),
                     ),
@@ -87,7 +87,9 @@ class OnboardingSlideScaffold extends StatelessWidget {
                 child: Text(
                   headline,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.h1,
+                  style: AppTextStyles.h1.copyWith(
+                    color: context.appTextPrimary,
+                  ),
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -96,7 +98,9 @@ class OnboardingSlideScaffold extends StatelessWidget {
                 child: Text(
                   body,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.bodyMd,
+                  style: AppTextStyles.bodyMd.copyWith(
+                    color: context.appTextSecondary,
+                  ),
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),

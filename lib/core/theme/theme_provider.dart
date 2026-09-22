@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Owns the one global, explicitly selected application theme.
+/// Owns the application's selected appearance, including the device setting.
 class ThemeProvider extends ChangeNotifier {
   static const _storageKey = 'helpfundus_theme_mode';
 
@@ -9,15 +9,18 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeMode get themeMode => _themeMode;
   bool get isDarkMode => _themeMode == ThemeMode.dark;
+  bool get followsSystem => _themeMode == ThemeMode.system;
 
   Future<void> load() async {
     final preferences = await SharedPreferences.getInstance();
     final savedMode = preferences.getString(_storageKey);
     if (savedMode == null) return;
 
-    final mode = savedMode == ThemeMode.dark.name
-        ? ThemeMode.dark
-        : ThemeMode.light;
+    final mode = switch (savedMode) {
+      'dark' => ThemeMode.dark,
+      'system' => ThemeMode.system,
+      _ => ThemeMode.light,
+    };
     if (mode != _themeMode) {
       _themeMode = mode;
       notifyListeners();

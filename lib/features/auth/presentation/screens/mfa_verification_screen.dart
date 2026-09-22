@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_error_prompt.dart';
 import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/otp_input.dart';
 
@@ -69,7 +71,7 @@ class _MfaVerificationScreenState extends State<MfaVerificationScreen> {
           _method == MfaMethod.authenticator
               ? 'Enter the 6-digit code from your authenticator app.'
               : "Enter the 6-digit code we just emailed to you.",
-          style: AppTextStyles.bodyMd,
+          style: AppTextStyles.bodyMd.copyWith(color: context.appTextSecondary),
         ),
         const SizedBox(height: AppSpacing.lg),
         OtpInput(
@@ -79,19 +81,9 @@ class _MfaVerificationScreenState extends State<MfaVerificationScreen> {
         ),
         if (_error != null) ...[
           const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              const Icon(
-                Icons.error_outline,
-                size: 16,
-                color: AppColors.danger,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                _error!,
-                style: AppTextStyles.bodySm.copyWith(color: AppColors.danger),
-              ),
-            ],
+          AppErrorPrompt(
+            message: _error!,
+            onDismiss: () => setState(() => _error = null),
           ),
         ],
         if (_method == MfaMethod.email) ...[
@@ -113,12 +105,12 @@ class _MfaVerificationScreenState extends State<MfaVerificationScreen> {
                 width: 22,
                 height: 22,
                 decoration: BoxDecoration(
-                  color: _trustDevice ? AppColors.primary : AppColors.surface,
+                  color: _trustDevice ? AppColors.primary : context.appSurface,
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
                     color: _trustDevice
                         ? AppColors.primary
-                        : AppColors.borderStrong,
+                        : context.appBorderStrong,
                     width: 1.4,
                   ),
                 ),
@@ -134,7 +126,9 @@ class _MfaVerificationScreenState extends State<MfaVerificationScreen> {
               Expanded(
                 child: Text(
                   'Trust this device for 30 days',
-                  style: AppTextStyles.bodyMd,
+                  style: AppTextStyles.bodyMd.copyWith(
+                    color: context.appTextSecondary,
+                  ),
                 ),
               ),
             ],
@@ -159,7 +153,7 @@ class _MfaVerificationScreenState extends State<MfaVerificationScreen> {
         Center(
           child: Text(
             'Having trouble? Contact security support',
-            style: AppTextStyles.bodySm,
+            style: AppTextStyles.bodySm.copyWith(color: context.appTextMuted),
           ),
         ),
       ],
@@ -186,17 +180,17 @@ class _MethodTab extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 12),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: selected ? AppColors.primary : AppColors.surface,
+          color: selected ? AppColors.primary : context.appSurface,
           borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(
-            color: selected ? AppColors.primary : AppColors.borderStrong,
+            color: selected ? AppColors.primary : context.appBorderStrong,
           ),
         ),
         child: Text(
           label,
           textAlign: TextAlign.center,
           style: AppTextStyles.buttonMd.copyWith(
-            color: selected ? AppColors.surface : AppColors.textPrimary,
+            color: selected ? AppColors.surface : context.appTextPrimary,
           ),
         ),
       ),

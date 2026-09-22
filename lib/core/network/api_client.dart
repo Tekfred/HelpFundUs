@@ -96,6 +96,14 @@ class ApiClient {
     Options? options,
     CancelToken? cancelToken,
   }) async {
+    if (_dio.options.baseUrl.trim().isEmpty) {
+      throw const ApiException(
+        type: ApiErrorType.configuration,
+        message:
+            'The API address is not configured. Relaunch the app with API_BASE_URL.',
+      );
+    }
+
     try {
       return await _dio.request<T>(
         path,

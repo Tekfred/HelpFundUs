@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 
 class SecurityFeatureRow extends StatelessWidget {
   const SecurityFeatureRow({
@@ -18,7 +19,7 @@ class SecurityFeatureRow extends StatelessWidget {
       height: 62,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
@@ -38,7 +39,10 @@ class SecurityFeatureRow extends StatelessWidget {
               label,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.buttonMd.copyWith(fontSize: 15),
+              style: AppTextStyles.buttonMd.copyWith(
+                fontSize: 15,
+                color: context.appTextPrimary,
+              ),
             ),
           ),
         ],

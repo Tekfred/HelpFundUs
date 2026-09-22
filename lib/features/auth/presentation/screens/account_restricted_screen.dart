@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../state/auth_controller.dart';
 
@@ -75,7 +76,7 @@ class _AccountRestrictedScreenState extends State<AccountRestrictedScreen> {
   Widget build(BuildContext context) {
     final copy = _copy[widget.reason]!;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.appBackground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -102,14 +103,16 @@ class _AccountRestrictedScreenState extends State<AccountRestrictedScreen> {
               const SizedBox(height: AppSpacing.xl),
               Text(
                 copy.title,
-                style: AppTextStyles.h1,
+                style: AppTextStyles.h1.copyWith(color: context.appTextPrimary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 copy.body,
                 textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMd,
+                style: AppTextStyles.bodyMd.copyWith(
+                  color: context.appTextSecondary,
+                ),
               ),
               const Spacer(),
               PrimaryButton(
@@ -144,12 +147,12 @@ class _AccountRestrictedScreenState extends State<AccountRestrictedScreen> {
                         decoration: BoxDecoration(
                           color: selected
                               ? AppColors.primary.withValues(alpha: 0.12)
-                              : AppColors.surface,
+                              : context.appSurface,
                           borderRadius: BorderRadius.circular(AppRadius.pill),
                           border: Border.all(
                             color: selected
                                 ? AppColors.primary
-                                : AppColors.border,
+                                : context.appBorder,
                           ),
                         ),
                         child: Text(
@@ -161,7 +164,7 @@ class _AccountRestrictedScreenState extends State<AccountRestrictedScreen> {
                           style: AppTextStyles.bodySm.copyWith(
                             color: selected
                                 ? AppColors.primary
-                                : AppColors.textSecondary,
+                                : context.appTextSecondary,
                           ),
                         ),
                       ),

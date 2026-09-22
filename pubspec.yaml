@@ -49,6 +49,8 @@ flutter:
 
   assets:
     - assets/images/adaptive-foreground.png
+    - assets/images/image (3).png
+    - assets/images/image (5).png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

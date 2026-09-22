@@ -2,21 +2,32 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_error_prompt.dart';
 import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/otp_input.dart';
+import '../../data/datasources/auth_remote_data_source.dart';
+import '../../data/models/resend_otp_request.dart';
+import '../../data/repositories/auth_repository.dart';
+import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_exception.dart';
 
 class VerifyRegistrationOtpScreen extends StatefulWidget {
   const VerifyRegistrationOtpScreen({
     super.key,
     required this.destination,
+    required this.phone,
+    required this.verificationId,
     required this.onBack,
     required this.onVerified,
     required this.onChangeDestination,
   });
 
-  /// Already-masked value, e.g. "j•••e@example.com" or "+233 •• •• 4821".
+  /// Registration email address used to receive the verification code.
   final String destination;
+  final String phone;
+  final String verificationId;
   final VoidCallback onBack;
   final VoidCallback onVerified;
   final VoidCallback onChangeDestination;
@@ -30,19 +41,58 @@ class _VerifyRegistrationOtpScreenState
     extends State<VerifyRegistrationOtpScreen> {
   final _otpKey = GlobalKey<OtpInputState>();
   String? _error;
-  bool _expiredDemo = false;
+  String _code = '';
+  bool _verifying = false;
+  late final AuthRepository _authRepository;
 
-  void _handleSubmit(String code) {
+  @override
+  void initState() {
+    super.initState();
+    _authRepository = AuthRepository(AuthRemoteDataSource(ApiClient()));
+  }
+
+  Future<void> _handleSubmit(String code) async {
+    if (code.length != 6 || _verifying) return;
+
     setState(() {
-      if (_expiredDemo) {
-        _error = 'This code has expired. Request a new one to continue.';
-      } else if (code != '123456') {
-        _error = "That code doesn't match. Check it and try again.";
-      } else {
-        _error = null;
-      }
+      _verifying = true;
+      _error = null;
     });
-    if (_error == null) widget.onVerified();
+    try {
+      await _authRepository.verifyOtp(id: widget.verificationId, otp: code);
+      if (mounted) widget.onVerified();
+    } on ApiException catch (error) {
+      if (mounted) setState(() => _error = error.message);
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => _error = 'Unable to verify this code. Please try again.',
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _verifying = false);
+    }
+  }
+
+  Future<bool> _resendOtp() async {
+    try {
+      await _authRepository.resendOtp(
+        ResendOtpRequest(
+          identifier: widget.destination,
+          email: widget.destination,
+          phone: widget.phone,
+        ),
+      );
+      return true;
+    } on ApiException catch (error) {
+      if (mounted) setState(() => _error = error.message);
+      return false;
+    } catch (_) {
+      if (mounted) {
+        setState(() => _error = 'Unable to resend the code. Please try again.');
+      }
+      return false;
+    }
   }
 
   @override
@@ -52,47 +102,54 @@ class _VerifyRegistrationOtpScreenState
       onBack: widget.onBack,
       children: [
         const SizedBox(height: AppSpacing.md),
-        Text('We sent a 6-digit code to', style: AppTextStyles.bodyMd),
+        Text(
+          'We sent a 6-digit code to',
+          style: AppTextStyles.bodyMd.copyWith(color: context.appTextSecondary),
+        ),
         const SizedBox(height: 2),
-        Text(widget.destination, style: AppTextStyles.h3),
+        Text(
+          widget.destination,
+          style: AppTextStyles.h3.copyWith(color: context.appTextPrimary),
+        ),
         const SizedBox(height: AppSpacing.xl),
         OtpInput(
           key: _otpKey,
           hasError: _error != null,
-          onCompleted: _handleSubmit,
+          onChanged: (code) {
+            if (_code != code || _error != null) {
+              setState(() {
+                _code = code;
+                _error = null;
+              });
+            }
+          },
+          onCompleted: (_) {},
         ),
         if (_error != null) ...[
           const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              const Icon(
-                Icons.error_outline,
-                size: 16,
-                color: AppColors.danger,
-              ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  _error!,
-                  style: AppTextStyles.bodySm.copyWith(color: AppColors.danger),
-                ),
-              ),
-            ],
+          AppErrorPrompt(
+            message: _error!,
+            onDismiss: () => setState(() => _error = null),
           ),
         ],
         const SizedBox(height: AppSpacing.lg),
         PrimaryButton(
           label: 'Verify',
-          onPressed: () => _handleSubmit(_otpKey.currentState?.value ?? ''),
+          onPressed: _code.length == 6 && !_verifying
+              ? () => _handleSubmit(_code)
+              : null,
+          isLoading: _verifying,
         ),
         const SizedBox(height: AppSpacing.lg),
         Center(
           child: ResendCountdown(
+            seconds: 60,
+            onResendAsync: _resendOtp,
             onResend: () {
               _otpKey.currentState?.clear();
               setState(() {
+                _code = '';
                 _error = null;
-                _expiredDemo = false;
               });
             },
           ),
@@ -109,16 +166,9 @@ class _VerifyRegistrationOtpScreenState
         ),
         const SizedBox(height: AppSpacing.xl),
         Center(
-          child: GestureDetector(
-            // Demo affordance only — lets you preview the expired-code state
-            // without wiring a real backend yet.
-            onTap: () => setState(() => _expiredDemo = !_expiredDemo),
-            child: Text(
-              _expiredDemo
-                  ? 'Demo: expired-code state ON — enter any code'
-                  : 'Need help? Contact support',
-              style: AppTextStyles.bodySm,
-            ),
+          child: Text(
+            'Need help? Contact support',
+            style: AppTextStyles.bodySm.copyWith(color: context.appTextMuted),
           ),
         ),
         const SizedBox(height: AppSpacing.md),

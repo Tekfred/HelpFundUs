@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_error_prompt.dart';
 import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/auth_text_field.dart';
 import '../../../../core/widgets/google_auth_button.dart';
@@ -61,7 +63,7 @@ class _SignInScreenState extends State<SignInScreen> {
       setState(() => _showEmptyCredentialsPrompt = true);
     }
 
-    _credentialsPromptTimer = Timer(const Duration(seconds: 3), () {
+    _credentialsPromptTimer = Timer(const Duration(seconds: 8), () {
       if (mounted) {
         setState(() => _showEmptyCredentialsPrompt = false);
       }
@@ -107,10 +109,15 @@ class _SignInScreenState extends State<SignInScreen> {
             );
           },
           child: _showEmptyCredentialsPrompt
-              ? const Column(
+              ? Column(
                   key: ValueKey('incomplete-credentials-prompt'),
                   children: [
-                    _EmptyCredentialsPrompt(),
+                    _EmptyCredentialsPrompt(
+                      onDismiss: () {
+                        _credentialsPromptTimer?.cancel();
+                        setState(() => _showEmptyCredentialsPrompt = false);
+                      },
+                    ),
                     SizedBox(height: AppSpacing.lg),
                   ],
                 )
@@ -149,7 +156,9 @@ class _SignInScreenState extends State<SignInScreen> {
             onPressed: widget.onPasswordless,
             child: Text(
               'Sign in with a one-time code instead',
-              style: AppTextStyles.bodyMd,
+              style: AppTextStyles.bodyMd.copyWith(
+                color: context.appTextSecondary,
+              ),
             ),
           ),
         ),
@@ -162,7 +171,12 @@ class _SignInScreenState extends State<SignInScreen> {
           child: Wrap(
             alignment: WrapAlignment.center,
             children: [
-              Text('New to HelpFundUs? ', style: AppTextStyles.bodyMd),
+              Text(
+                'New to HelpFundUs? ',
+                style: AppTextStyles.bodyMd.copyWith(
+                  color: context.appTextSecondary,
+                ),
+              ),
               GestureDetector(
                 onTap: widget.onCreateAccount,
                 child: Text(
@@ -182,37 +196,15 @@ class _SignInScreenState extends State<SignInScreen> {
 }
 
 class _EmptyCredentialsPrompt extends StatelessWidget {
-  const _EmptyCredentialsPrompt();
+  const _EmptyCredentialsPrompt({required this.onDismiss});
+
+  final VoidCallback onDismiss;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: 10,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.danger.withValues(alpha: 0.05),
-        border: Border.all(color: AppColors.danger.withValues(alpha: 0.35)),
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-      ),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.error_outline_rounded,
-            color: AppColors.danger,
-            size: 23,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              'Please enter your email and password.',
-              style: AppTextStyles.bodyMd.copyWith(color: AppColors.danger),
-            ),
-          ),
-        ],
-      ),
+    return AppErrorPrompt(
+      message: 'Please enter your email and password.',
+      onDismiss: onDismiss,
     );
   }
 }
