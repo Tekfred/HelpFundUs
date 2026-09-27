@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_text_styles.dart';
@@ -15,6 +16,12 @@ class AuthTextField extends StatefulWidget {
     this.obscure = false,
     this.togglableObscure = false,
     this.keyboardType,
+    this.textInputAction,
+    this.textCapitalization = TextCapitalization.none,
+    this.autocorrect = false,
+    this.enableSuggestions = false,
+    this.inputFormatters,
+    this.onSubmitted,
     this.errorText,
     this.prefix,
     this.onChanged,
@@ -27,6 +34,12 @@ class AuthTextField extends StatefulWidget {
   final bool obscure;
   final bool togglableObscure;
   final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final TextCapitalization textCapitalization;
+  final bool autocorrect;
+  final bool enableSuggestions;
+  final List<TextInputFormatter>? inputFormatters;
+  final ValueChanged<String>? onSubmitted;
   final String? errorText;
   final Widget? prefix;
   final ValueChanged<String>? onChanged;
@@ -57,7 +70,15 @@ class _AuthTextFieldState extends State<AuthTextField> {
           controller: widget.controller,
           obscureText: widget.togglableObscure ? _obscure : widget.obscure,
           keyboardType: widget.keyboardType,
+          textInputAction: widget.textInputAction,
+          textCapitalization: widget.textCapitalization,
+          autocorrect: widget.autocorrect,
+          enableSuggestions: widget.enableSuggestions,
+          smartDashesType: SmartDashesType.disabled,
+          smartQuotesType: SmartQuotesType.disabled,
+          inputFormatters: widget.inputFormatters,
           onChanged: widget.onChanged,
+          onSubmitted: widget.onSubmitted,
           autofocus: widget.autofocus,
           style: AppTextStyles.bodyLg.copyWith(color: context.appTextPrimary),
           decoration: InputDecoration(

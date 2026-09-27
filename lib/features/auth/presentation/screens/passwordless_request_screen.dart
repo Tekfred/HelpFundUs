@@ -101,6 +101,7 @@ class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
             controller: _identifier,
             hint: 'jane@example.com',
             keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.done,
             onChanged: (_) {
               if (_error != null) setState(() => _error = null);
             },

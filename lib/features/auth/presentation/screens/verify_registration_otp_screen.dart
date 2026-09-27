@@ -18,19 +18,24 @@ class VerifyRegistrationOtpScreen extends StatefulWidget {
     super.key,
     required this.destination,
     required this.phone,
-    required this.verificationId,
+    this.verificationId,
     required this.onBack,
     required this.onVerified,
     required this.onChangeDestination,
+    this.allowImmediateResend = false,
   });
 
   /// Registration email address used to receive the verification code.
   final String destination;
   final String phone;
-  final String verificationId;
+
+  /// Provided by registration. The unverified-login response currently does
+  /// not expose this backend identifier.
+  final String? verificationId;
   final VoidCallback onBack;
   final VoidCallback onVerified;
   final VoidCallback onChangeDestination;
+  final bool allowImmediateResend;
 
   @override
   State<VerifyRegistrationOtpScreen> createState() =>
@@ -54,12 +59,21 @@ class _VerifyRegistrationOtpScreenState
   Future<void> _handleSubmit(String code) async {
     if (code.length != 6 || _verifying) return;
 
+    final verificationId = widget.verificationId;
+    if (verificationId == null || verificationId.isEmpty) {
+      setState(() {
+        _error =
+            'Request a new code to continue. Verification will be available once the account identifier is provided.';
+      });
+      return;
+    }
+
     setState(() {
       _verifying = true;
       _error = null;
     });
     try {
-      await _authRepository.verifyOtp(id: widget.verificationId, otp: code);
+      await _authRepository.verifyOtp(id: verificationId, otp: code);
       if (mounted) widget.onVerified();
     } on ApiException catch (error) {
       if (mounted) setState(() => _error = error.message);
@@ -143,7 +157,7 @@ class _VerifyRegistrationOtpScreenState
         const SizedBox(height: AppSpacing.lg),
         Center(
           child: ResendCountdown(
-            seconds: 60,
+            seconds: widget.allowImmediateResend ? 0 : 60,
             onResendAsync: _resendOtp,
             onResend: () {
               _otpKey.currentState?.clear();

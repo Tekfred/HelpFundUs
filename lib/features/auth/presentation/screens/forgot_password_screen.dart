@@ -55,6 +55,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             controller: _identifier,
             hint: 'jane@example.com',
             keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.done,
             onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: AppSpacing.lg),

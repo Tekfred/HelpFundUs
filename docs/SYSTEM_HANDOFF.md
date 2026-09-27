@@ -208,6 +208,102 @@ The explicit `double.infinity` is important. Without it, `FilledButton` uses its
 - Connect `CampaignApi` and `CampaignRepositoryImpl` to a real backend without importing presentation code into domain/data.
 - Replace local checkout simulation with provider-specific payment status handling and secure server-side validation.
 
+## Current authentication API integration (September 2026)
+
+The staging API base URL is saved in `env/staging.json`:
+
+```text
+https://staging-api.helpfundus.org
+```
+
+Use the VS Code **HelpFundUs (Staging)** launch profile, or run:
+
+```bash
+flutter run --dart-define-from-file=env/staging.json
+```
+
+### Implemented endpoints
+
+Authentication networking follows this chain:
+
+```text
+presentation screen
+  → AuthRepository
+  → AuthRemoteDataSource
+  → ApiClient / Dio
+  → ApiEndpoints
+```
+
+Implemented requests:
+
+- `POST /api/v1/auth/register`
+  - `RegisterRequest` sends `firstName`, `lastName`, `email`, `phone`,
+    `password`, `role: USER`, and `accountType: INDIVIDUAL`.
+  - `CreateAccountScreen` only enables submission for a valid `@gmail.com`
+    address.
+  - `RegistrationResult` currently accepts common returned identifier shapes:
+    `id`, `userId`, `verificationId`, `data.id`, or `user.id`.
+- `POST /api/v1/auth/verify-otp/{id}`
+  - `VerifyOtpRequest` sends `{ "otp": "123456" }`.
+  - The registration OTP screen uses the ID returned by registration and no
+    longer contains the earlier mock OTP success rule.
+- `POST /api/v1/auth/resend-otp`
+  - `ResendOtpRequest` sends `identifier`, `email`, and `phone`.
+  - The one-minute resend countdown restarts only after a successful request.
+- `POST /api/v1/auth/login`
+  - `LoginRequest` sends `identifier`, `password`, and a stable locally saved
+    `deviceId` from `core/device/device_identifier.dart`.
+  - The Sign In button now uses the API, shows loading state, and surfaces
+    failures through the shared inline error prompt.
+
+### Verified staging login response
+
+A staging login probe for an existing but unverified account returned HTTP
+`403` with:
+
+```json
+{
+  "success": false,
+  "message": "Please verify your account first",
+  "isVerified": false,
+  "isActive": true,
+  "isSuspended": false,
+  "mfaEnabled": false
+}
+```
+
+Do **not** redirect based only on `isVerified: false`: invalid credentials also
+return `isVerified: false`. The safe redirect condition is a `403` plus the
+explicit verification-required message (or an equivalent documented server
+field).
+
+### Blocking detail for login → verification routing
+
+The unverified-login response does not return the `{id}` required by
+`/api/v1/auth/verify-otp/{id}`. Before implementing this redirect for an
+account registered on a different device/session, confirm one of the
+following with the backend:
+
+1. The email identifier is valid as `{id}`, or
+2. The unverified-login response includes a user/verification ID field, or
+3. Another lookup endpoint provides that ID.
+
+The in-memory registration flow already passes its returned verification ID to
+the OTP screen, so registration → verification works when the register
+response includes a supported ID field.
+
+### Shared auth UI behavior
+
+- `AppErrorPrompt` (`core/widgets/app_error_prompt.dart`) is the common compact
+  red error banner. It auto-dismisses after eight seconds; registration,
+  sign-in, passwordless, OTP, and MFA error states use it.
+- Registration OTP Verify is disabled until six digits are entered.
+- Registration OTP Resend is disabled for one minute and displays the time
+  remaining; it shows `Sending code…` while the resend API call runs.
+- Login token persistence and protected request bearer injection are not
+  complete because the documented login success response has not supplied
+  access/refresh token field names.
+
 ## Validation
 
 Run after changes:

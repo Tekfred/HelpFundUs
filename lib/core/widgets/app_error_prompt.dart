@@ -12,11 +12,15 @@ class AppErrorPrompt extends StatefulWidget {
     super.key,
     required this.message,
     this.onDismiss,
+    this.actionLabel,
+    this.onAction,
     this.autoDismissAfter = const Duration(seconds: 8),
   });
 
   final String message;
   final VoidCallback? onDismiss;
+  final String? actionLabel;
+  final VoidCallback? onAction;
   final Duration autoDismissAfter;
 
   @override
@@ -78,6 +82,23 @@ class _AppErrorPromptState extends State<AppErrorPrompt> {
               style: AppTextStyles.bodyMd.copyWith(color: AppColors.danger),
             ),
           ),
+          if (widget.actionLabel != null && widget.onAction != null) ...[
+            const SizedBox(width: AppSpacing.xs),
+            TextButton(
+              onPressed: widget.onAction,
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                visualDensity: VisualDensity.compact,
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+              ),
+              child: Text(
+                widget.actionLabel!,
+                style: AppTextStyles.buttonMd.copyWith(
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ],
           if (widget.onDismiss != null) ...[
             const SizedBox(width: AppSpacing.xs),
             IconButton(

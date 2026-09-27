@@ -48,23 +48,22 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   bool _submitting = false;
   String? _requestError;
 
-  static final RegExp _gmailAddressPattern = RegExp(
-    r"^[A-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@gmail\.com$",
+  static final RegExp _emailAddressPattern = RegExp(
+    r"^[A-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?(?:\.[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?)+$",
     caseSensitive: false,
   );
 
-  bool get _hasValidGmailAddress =>
-      _gmailAddressPattern.hasMatch(_email.text.trim());
+  bool get _hasValidEmail => _emailAddressPattern.hasMatch(_email.text.trim());
 
   String? get _emailError {
-    if (_email.text.isEmpty || _hasValidGmailAddress) return null;
-    return 'Use a valid email address ending in @gmail.com.';
+    if (_email.text.isEmpty || _hasValidEmail) return null;
+    return 'Enter a valid email address.';
   }
 
   bool get _canSubmit =>
       _firstName.text.isNotEmpty &&
       _lastName.text.isNotEmpty &&
-      _hasValidGmailAddress &&
+      _hasValidEmail &&
       _phone.text.isNotEmpty &&
       scorePassword(_passwordValue) != PasswordStrength.empty &&
       _agreed;
@@ -155,6 +154,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 label: 'First name',
                 controller: _firstName,
                 hint: 'Jane',
+                textCapitalization: TextCapitalization.words,
+                textInputAction: TextInputAction.next,
                 onChanged: (_) => setState(() => _requestError = null),
               ),
             ),
@@ -164,6 +165,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 label: 'Last name',
                 controller: _lastName,
                 hint: 'Doe',
+                textCapitalization: TextCapitalization.words,
+                textInputAction: TextInputAction.next,
                 onChanged: (_) => setState(() => _requestError = null),
               ),
             ),
@@ -175,6 +178,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           controller: _email,
           hint: 'jane@example.com',
           keyboardType: TextInputType.emailAddress,
+          textInputAction: TextInputAction.next,
           errorText: _emailError,
           onChanged: (_) => setState(() => _requestError = null),
         ),
@@ -197,6 +201,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 controller: _phone,
                 hint: '(555) 000-0000',
                 keyboardType: TextInputType.phone,
+                textInputAction: TextInputAction.next,
                 onChanged: (_) => setState(() => _requestError = null),
               ),
             ),
@@ -208,13 +213,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           controller: _password,
           hint: 'Create a strong password',
           togglableObscure: true,
+          textInputAction: TextInputAction.done,
           onChanged: (v) => setState(() {
             _passwordValue = v;
             _requestError = null;
           }),
         ),
         const SizedBox(height: AppSpacing.sm),
-        PasswordStrengthMeter(password: _passwordValue),
+        PasswordCreationFeedback(password: _passwordValue),
         const SizedBox(height: AppSpacing.md),
         GestureDetector(
           onTap: () => setState(() => _agreed = !_agreed),

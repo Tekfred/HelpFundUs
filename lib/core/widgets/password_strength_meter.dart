@@ -6,6 +6,69 @@ import '../theme/app_theme_colors.dart';
 
 enum PasswordStrength { empty, weak, fair, strong }
 
+/// The compact Create Account feedback has one level per quality evaluated by
+/// the existing password meter. It reads the password only; it never formats
+/// or otherwise changes the text the user is entering.
+enum PasswordFeedbackStrength { empty, weak, fair, good, strong }
+
+class PasswordFeedbackResult {
+  const PasswordFeedbackResult({
+    required this.strength,
+    required this.score,
+    required this.nextSuggestion,
+  });
+
+  final PasswordFeedbackStrength strength;
+  final int score;
+  final String nextSuggestion;
+}
+
+/// Evaluates the same four password qualities that the existing strength
+/// meter uses. This is intentionally separate from submit validation.
+PasswordFeedbackResult evaluatePasswordFeedback(String password) {
+  if (password.isEmpty) {
+    return const PasswordFeedbackResult(
+      strength: PasswordFeedbackStrength.empty,
+      score: 0,
+      nextSuggestion: '',
+    );
+  }
+
+  final hasMinLength = password.length >= 8;
+  final hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
+  final hasNumber = RegExp(r'[0-9]').hasMatch(password);
+  final hasSymbol = RegExp(r'[!@#\$%^&*(),.?":{}|<>]').hasMatch(password);
+  final score = [
+    hasMinLength,
+    hasUppercase,
+    hasNumber,
+    hasSymbol,
+  ].where((met) => met).length;
+
+  final suggestion = !hasMinLength
+      ? 'Add ${8 - password.length} more ${8 - password.length == 1 ? 'character' : 'characters'}'
+      : !hasUppercase
+      ? 'Add an uppercase letter'
+      : !hasNumber
+      ? 'Add a number'
+      : !hasSymbol
+      ? 'Add a symbol'
+      : 'Password looks strong';
+
+  final strength = switch (score) {
+    0 || 1 => PasswordFeedbackStrength.weak,
+    2 => PasswordFeedbackStrength.fair,
+    3 => PasswordFeedbackStrength.good,
+    _ => PasswordFeedbackStrength.strong,
+  };
+
+  return PasswordFeedbackResult(
+    strength: strength,
+    score: score,
+    nextSuggestion: suggestion,
+  );
+}
+
 PasswordStrength scorePassword(String value) {
   if (value.isEmpty) return PasswordStrength.empty;
   var score = 0;
@@ -16,6 +79,105 @@ PasswordStrength scorePassword(String value) {
   if (score <= 1) return PasswordStrength.weak;
   if (score <= 2) return PasswordStrength.fair;
   return PasswordStrength.strong;
+}
+
+/// A compact, real-time password-strength indicator for password creation.
+/// It deliberately consumes a String value so it cannot alter controller text
+/// or the current cursor/selection state.
+class PasswordCreationFeedback extends StatelessWidget {
+  const PasswordCreationFeedback({super.key, required this.password});
+
+  final String password;
+
+  Color _colorFor(PasswordFeedbackStrength strength) => switch (strength) {
+    PasswordFeedbackStrength.empty => AppColors.border,
+    PasswordFeedbackStrength.weak => AppColors.danger,
+    PasswordFeedbackStrength.fair => AppColors.warning,
+    PasswordFeedbackStrength.good => AppColors.gold,
+    PasswordFeedbackStrength.strong => AppColors.primary,
+  };
+
+  String _labelFor(PasswordFeedbackStrength strength) => switch (strength) {
+    PasswordFeedbackStrength.empty => '',
+    PasswordFeedbackStrength.weak => 'Weak',
+    PasswordFeedbackStrength.fair => 'Fair',
+    PasswordFeedbackStrength.good => 'Good',
+    PasswordFeedbackStrength.strong => 'Strong',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final result = evaluatePasswordFeedback(password);
+    final color = _colorFor(result.strength);
+    final label = _labelFor(result.strength);
+    final activeSegments = switch (result.strength) {
+      PasswordFeedbackStrength.empty => 0,
+      PasswordFeedbackStrength.weak => 1,
+      PasswordFeedbackStrength.fair => 2,
+      PasswordFeedbackStrength.good => 3,
+      PasswordFeedbackStrength.strong => 4,
+    };
+
+    return Semantics(
+      label: result.strength == PasswordFeedbackStrength.empty
+          ? 'Password strength not yet evaluated'
+          : 'Password strength: $label. ${result.nextSuggestion}',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: List.generate(4, (index) {
+              final active = index < activeSegments;
+              return Expanded(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOutCubic,
+                  margin: EdgeInsets.only(right: index < 3 ? 6 : 0),
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: active ? color : context.appBorder,
+                    borderRadius: BorderRadius.circular(AppRadius.pill),
+                  ),
+                ),
+              );
+            }),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: result.strength == PasswordFeedbackStrength.empty
+                ? const SizedBox(key: ValueKey('empty-password-feedback'))
+                : Row(
+                    key: ValueKey(result.strength),
+                    children: [
+                      Flexible(
+                        child: Text(
+                          label,
+                          style: AppTextStyles.bodySm.copyWith(
+                            color: color,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: Text(
+                          result.nextSuggestion,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.right,
+                          style: AppTextStyles.bodySm.copyWith(
+                            color: context.appTextSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// Three-segment animated bar + label + a small checklist of requirements —

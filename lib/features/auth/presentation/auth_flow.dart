@@ -45,6 +45,7 @@ class _AuthFlowState extends State<AuthFlow> {
   String _pendingDestination = 'jane@example.com';
   String _pendingPhone = '';
   String? _pendingVerificationId;
+  bool _allowImmediateOtpResend = false;
 
   @override
   void initState() {
@@ -101,6 +102,7 @@ class _AuthFlowState extends State<AuthFlow> {
             _pendingDestination = email;
             _pendingPhone = phone;
             _pendingVerificationId = verificationId;
+            _allowImmediateOtpResend = false;
             _controller.goTo(AuthStep.verifyRegistrationOtp);
           },
         );
@@ -109,7 +111,8 @@ class _AuthFlowState extends State<AuthFlow> {
         return VerifyRegistrationOtpScreen(
           destination: _pendingDestination,
           phone: _pendingPhone,
-          verificationId: _pendingVerificationId!,
+          verificationId: _pendingVerificationId,
+          allowImmediateResend: _allowImmediateOtpResend,
           onBack: _goBack,
           onVerified: () => _controller.goTo(AuthStep.registrationSuccess),
           onChangeDestination: _controller.back,
@@ -132,6 +135,13 @@ class _AuthFlowState extends State<AuthFlow> {
           onAccountRestricted: () {
             _controller.restrictedReason = RestrictedReason.suspended;
             _controller.goTo(AuthStep.accountRestricted);
+          },
+          onVerifyAccount: (identifier) {
+            _pendingDestination = identifier;
+            _pendingPhone = identifier.contains('@') ? '' : identifier;
+            _pendingVerificationId = null;
+            _allowImmediateOtpResend = true;
+            _controller.goTo(AuthStep.verifyRegistrationOtp);
           },
         );
 

@@ -4,6 +4,7 @@ abstract final class ApiEndpoints {
   static const String apiV1 = '/api/v1';
   static const String auth = '$apiV1/auth';
   static const String register = '$auth/register';
+  static const String login = '$auth/login';
   static String verifyOtp(String id) => '$auth/verify-otp/$id';
   static const String resendOtp = '$auth/resend-otp';
   static const String campaigns = '/campaigns';
