@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
@@ -12,6 +11,9 @@ import '../../../../core/widgets/app_error_prompt.dart';
 import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/auth_text_field.dart';
 import '../../../../core/widgets/google_auth_button.dart';
+import '../../../account/data/datasources/profile_remote_data_source.dart';
+import '../../../account/data/models/user_profile.dart';
+import '../../../account/data/repositories/profile_repository.dart';
 import '../../data/datasources/auth_remote_data_source.dart';
 import '../../data/models/login_request.dart';
 import '../../data/repositories/auth_repository.dart';
@@ -30,7 +32,7 @@ class SignInScreen extends StatefulWidget {
   });
 
   final VoidCallback onBack;
-  final VoidCallback onSignedIn;
+  final ValueChanged<UserProfile> onSignedIn;
   final VoidCallback onForgotPassword;
   final VoidCallback onPasswordless;
   final VoidCallback onCreateAccount;
@@ -81,16 +83,20 @@ class _SignInScreenState extends State<SignInScreen> {
       _prompt = null;
     });
     try {
-      await _authRepository.login(
+      final loginResult = await _authRepository.login(
         LoginRequest(
           identifier: _identifier.text.trim(),
           password: _password.text,
           deviceId: await DeviceIdentifier.getOrCreate(),
         ),
       );
-      if (mounted) widget.onSignedIn();
+      final profile = await ProfileRepository(
+        ProfileRemoteDataSource(
+          ApiClient(tokenProvider: () => loginResult.accessToken),
+        ),
+      ).fetchProfile();
+      if (mounted) widget.onSignedIn(profile);
     } on ApiException catch (error) {
-      _logLoginFailure(error);
       if (mounted) {
         _showPrompt(_classifyFailure(error));
       }
@@ -155,23 +161,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _clearPrompt() {
     if (mounted) setState(() => _prompt = null);
-  }
-
-  void _logLoginFailure(ApiException error) {
-    if (!kDebugMode) return;
-
-    final data = error.data;
-    final response = data is Map ? data : const <Object?, Object?>{};
-    debugPrint(
-      'Login failure: status=${error.statusCode}, '
-      'message=${error.message}, '
-      'code=${response['code'] ?? response['errorCode'] ?? response['type']}, '
-      'success=${response['success']}, '
-      'isVerified=${response['isVerified']}, '
-      'isActive=${response['isActive']}, '
-      'isSuspended=${response['isSuspended']}, '
-      'mfaEnabled=${response['mfaEnabled']}',
-    );
   }
 
   void _onCredentialsChanged(String _) {

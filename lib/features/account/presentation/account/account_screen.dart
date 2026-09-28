@@ -4,15 +4,18 @@ import 'package:helpfundus/core/theme/app_dimens.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/features/app_shell/state/app_shell_controller.dart';
+import 'package:helpfundus/features/account/data/models/user_profile.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({
     super.key,
     required this.controller,
     required this.onSignOut,
+    this.profile,
   });
   final AppShellController controller;
   final VoidCallback onSignOut;
+  final UserProfile? profile;
   @override
   Widget build(BuildContext context) => ListView(
     padding: const EdgeInsets.fromLTRB(24, 30, 24, 112),
@@ -22,11 +25,13 @@ class AccountScreen extends StatelessWidget {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 36,
                 backgroundColor: AppColors.primary,
                 child: Text(
-                  'JD',
+                  profile?.initials.isNotEmpty == true
+                      ? profile!.initials
+                      : 'JD',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 27,
@@ -55,19 +60,24 @@ class AccountScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Jane Doe',
+                profile?.displayName.isNotEmpty == true
+                    ? profile!.displayName
+                    : 'Jane Doe',
                 style: AppTextStyles.h2.copyWith(
                   fontSize: 24,
                   color: context.appTextPrimary,
                 ),
               ),
-              Text(
-                'jane@example.com',
-                style: AppTextStyles.bodyMd.copyWith(
-                  fontSize: 15,
-                  color: context.appTextSecondary,
+              if (profile == null || profile!.email.isNotEmpty)
+                Text(
+                  profile?.email.isNotEmpty == true
+                      ? profile!.email
+                      : 'jane@example.com',
+                  style: AppTextStyles.bodyMd.copyWith(
+                    fontSize: 15,
+                    color: context.appTextSecondary,
+                  ),
                 ),
-              ),
               const SizedBox(height: 4),
               Text(
                 '✓ Verified',

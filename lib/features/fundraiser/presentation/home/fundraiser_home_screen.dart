@@ -16,9 +16,12 @@ import 'package:helpfundus/features/fundraiser/presentation/home/widgets/pending
 import 'package:helpfundus/features/fundraiser/presentation/home/widgets/recent_donations_section.dart';
 import 'package:helpfundus/features/fundraiser/presentation/home/widgets/verification_badge.dart';
 import 'package:helpfundus/features/fundraiser/presentation/performance/performance_screen.dart';
+import 'package:helpfundus/features/account/data/models/user_profile.dart';
 
 class FundraiserHomeScreen extends StatelessWidget {
-  const FundraiserHomeScreen({super.key});
+  const FundraiserHomeScreen({super.key, this.profile});
+
+  final UserProfile? profile;
 
   List<FundraiserCampaign> get _campaigns =>
       FundraiserCampaignCatalog.campaigns;
@@ -60,7 +63,7 @@ class FundraiserHomeScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 26, 20, 112),
       children: [
-        const FundraiserHeader(),
+        FundraiserHeader(profile: profile),
         const SizedBox(height: 14),
         FundraiserStatusCard(
           icon: Icons.shield_outlined,

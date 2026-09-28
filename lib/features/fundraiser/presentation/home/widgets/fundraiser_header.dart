@@ -4,9 +4,12 @@ import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/core/theme/theme_provider.dart';
 import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:provider/provider.dart';
+import 'package:helpfundus/features/account/data/models/user_profile.dart';
 
 class FundraiserHeader extends StatelessWidget {
-  const FundraiserHeader({super.key});
+  const FundraiserHeader({super.key, this.profile});
+
+  final UserProfile? profile;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,7 @@ class FundraiserHeader extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Welcome back, Jane 👋',
+                'Welcome back, ${profile?.firstName.trim().isNotEmpty == true ? profile!.firstName.trim() : 'Jane'} 👋',
                 style: AppTextStyles.bodyLg.copyWith(
                   fontSize: 14,
                   color: context.appTextSecondary,
@@ -49,7 +52,7 @@ class FundraiserHeader extends StatelessWidget {
           radius: 26,
           backgroundColor: AppColors.primary,
           child: Text(
-            'JD',
+            profile?.initials.isNotEmpty == true ? profile!.initials : 'JD',
             style: AppTextStyles.h3.copyWith(color: Colors.white, fontSize: 17),
           ),
         ),

@@ -3,6 +3,7 @@ import 'core/animation/spring_page_switcher.dart';
 import 'features/app_shell/presentation/app_shell.dart';
 import 'features/auth/presentation/auth_flow.dart';
 import 'features/auth/state/auth_controller.dart';
+import 'features/account/data/models/user_profile.dart';
 import 'features/onboarding/presentation/onboarding_flow.dart';
 import 'features/onboarding/state/onboarding_controller.dart';
 
@@ -27,6 +28,7 @@ class AppRoot extends StatefulWidget {
 class _AppRootState extends State<AppRoot> {
   _AppMode _mode = _AppMode.onboarding;
   bool _isGuest = false;
+  UserProfile? _profile;
   late final _onboardingController = OnboardingController();
   late final _authController = AuthController();
 
@@ -62,6 +64,12 @@ class _AppRootState extends State<AppRoot> {
     _mode = _AppMode.appShell;
   });
 
+  void _finishSignedIn(UserProfile profile) => setState(() {
+    _profile = profile;
+    _isGuest = false;
+    _mode = _AppMode.appShell;
+  });
+
   void _enterGuest() => setState(() {
     _isGuest = true;
     _mode = _AppMode.appShell;
@@ -85,14 +93,17 @@ class _AppRootState extends State<AppRoot> {
               _AppMode.auth => AuthFlow(
                 controller: _authController,
                 onFinished: _jumpToAppShell,
+                onSignedIn: _finishSignedIn,
                 onExit: _exitAuth,
               ),
               _AppMode.appShell => AppShell(
                 isGuest: _isGuest,
+                profile: _profile,
                 onGuestSignIn: () => _jumpToAuth(AuthStep.signIn),
                 onGuestCreateAccount: () => _jumpToAuth(AuthStep.createAccount),
                 onSignOut: () => setState(() {
                   _isGuest = false;
+                  _profile = null;
                   _mode = _AppMode.onboarding;
                 }),
               ),

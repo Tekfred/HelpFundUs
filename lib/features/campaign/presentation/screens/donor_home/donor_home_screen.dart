@@ -5,8 +5,11 @@ import 'package:helpfundus/core/theme/app_dimens.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/core/theme/theme_provider.dart';
 import 'package:helpfundus/core/theme/app_theme_colors.dart';
+import 'package:helpfundus/core/network/api_client.dart';
 import 'package:provider/provider.dart';
 import 'package:helpfundus/features/campaign/data/campaign_catalog.dart';
+import 'package:helpfundus/features/campaign/data/datasources/featured_campaigns_remote_data_source.dart';
+import 'package:helpfundus/features/campaign/data/repositories/featured_campaigns_repository.dart';
 import 'package:helpfundus/features/campaign/presentation/screens/campaign_detail/campaign_detail_screen.dart';
 import 'package:helpfundus/features/campaign/presentation/screens/category_campaigns/category_campaigns_screen.dart';
 import 'package:helpfundus/features/campaign/presentation/widgets/campaign_card.dart';
@@ -15,10 +18,12 @@ class DonorHomeScreen extends StatefulWidget {
   const DonorHomeScreen({
     super.key,
     required this.onExplore,
+    this.firstName,
     this.onStartFundraiser,
     this.onDonate,
   });
   final VoidCallback onExplore;
+  final String? firstName;
   final VoidCallback? onStartFundraiser;
   final VoidCallback? onDonate;
 
@@ -31,6 +36,23 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
   final _searchFocus = FocusNode();
   Timer? _refreshTimer;
   bool _refreshing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_fetchFeaturedCampaigns());
+  }
+
+  Future<void> _fetchFeaturedCampaigns() async {
+    try {
+      await FeaturedCampaignsRepository(
+        FeaturedCampaignsRemoteDataSource(ApiClient()),
+      ).fetchFeaturedCampaigns();
+    } catch (_) {
+      // Keep the existing local cards visible until the backend campaign
+      // response contract is confirmed and mapped into the UI.
+    }
+  }
 
   @override
   void dispose() {
@@ -157,7 +179,7 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(
-        'Good morning, Jane',
+        'Good morning, ${widget.firstName?.trim().isNotEmpty == true ? widget.firstName!.trim() : 'Jane'}',
         style: AppTextStyles.h2.copyWith(
           fontSize: 25,
           color: context.appTextPrimary,

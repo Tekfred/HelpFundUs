@@ -7,6 +7,8 @@ abstract final class ApiEndpoints {
   static const String login = '$auth/login';
   static String verifyOtp(String id) => '$auth/verify-otp/$id';
   static const String resendOtp = '$auth/resend-otp';
+  static const String profile = '$apiV1/profile';
+  static const String featuredCampaigns = '$apiV1/campaign/featured';
   static const String campaigns = '/campaigns';
   static const String donations = '/donations';
   static const String payments = '/payments';

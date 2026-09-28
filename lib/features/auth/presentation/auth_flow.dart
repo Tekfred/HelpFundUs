@@ -12,6 +12,7 @@ import 'screens/session_expired_screen.dart';
 import 'screens/sign_in_screen.dart';
 import 'screens/verify_login_otp_screen.dart';
 import 'screens/verify_registration_otp_screen.dart';
+import '../../account/data/models/user_profile.dart';
 
 /// Coordinates every registration / sign-in / recovery screen (2.1–2.11).
 /// Mirrors OnboardingFlow's shape: an [AuthController] owns the history +
@@ -22,6 +23,7 @@ class AuthFlow extends StatefulWidget {
     super.key,
     required this.controller,
     this.onFinished,
+    this.onSignedIn,
     this.onExit,
   });
 
@@ -31,6 +33,7 @@ class AuthFlow extends StatefulWidget {
   /// Registration Successful's "Continue", or a normal sign-in) — wire
   /// this to hand off into the real app shell once it exists.
   final VoidCallback? onFinished;
+  final ValueChanged<UserProfile>? onSignedIn;
 
   /// Leaves authentication when the current screen has no earlier auth
   /// screen to return to.
@@ -128,7 +131,13 @@ class _AuthFlowState extends State<AuthFlow> {
       case AuthStep.signIn:
         return SignInScreen(
           onBack: _goBack,
-          onSignedIn: widget.onFinished ?? () {},
+          onSignedIn: (profile) {
+            if (widget.onSignedIn != null) {
+              widget.onSignedIn!(profile);
+            } else {
+              widget.onFinished?.call();
+            }
+          },
           onForgotPassword: () => _controller.goTo(AuthStep.forgotPassword),
           onPasswordless: () => _controller.goTo(AuthStep.passwordlessRequest),
           onCreateAccount: () => _controller.goTo(AuthStep.createAccount),

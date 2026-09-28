@@ -4,8 +4,10 @@ import 'package:helpfundus/core/network/api_endpoints.dart';
 import 'package:helpfundus/features/auth/data/models/register_request.dart';
 import 'package:helpfundus/features/auth/data/models/registration_result.dart';
 import 'package:helpfundus/features/auth/data/models/resend_otp_request.dart';
+import 'package:helpfundus/features/auth/data/models/resend_otp_result.dart';
 import 'package:helpfundus/features/auth/data/models/verify_otp_request.dart';
 import 'package:helpfundus/features/auth/data/models/login_request.dart';
+import 'package:helpfundus/features/auth/data/models/login_result.dart';
 
 /// Performs authentication HTTP requests. It deliberately contains no UI
 /// concerns, which makes it straightforward to replace with a fake in tests.
@@ -23,12 +25,13 @@ class AuthRemoteDataSource {
     return RegistrationResult.fromJson(response.data);
   }
 
-  Future<void> login(LoginRequest request) async {
-    await _client.post<dynamic>(
+  Future<LoginResult> login(LoginRequest request) async {
+    final response = await _client.post<dynamic>(
       ApiEndpoints.login,
       data: request.toJson(),
       options: Options(contentType: Headers.jsonContentType),
     );
+    return LoginResult.fromJson(response.data);
   }
 
   Future<void> verifyOtp({required String id, required String otp}) async {
@@ -39,11 +42,12 @@ class AuthRemoteDataSource {
     );
   }
 
-  Future<void> resendOtp(ResendOtpRequest request) async {
-    await _client.post<dynamic>(
+  Future<ResendOtpResult> resendOtp(ResendOtpRequest request) async {
+    final response = await _client.post<dynamic>(
       ApiEndpoints.resendOtp,
       data: request.toJson(),
       options: Options(contentType: Headers.jsonContentType),
     );
+    return ResendOtpResult.fromJson(response.data);
   }
 }

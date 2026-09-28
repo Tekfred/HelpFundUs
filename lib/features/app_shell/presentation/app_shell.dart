@@ -18,6 +18,7 @@ import 'package:helpfundus/features/fundraiser/presentation/home/fundraiser_home
 import 'package:helpfundus/features/inbox/presentation/inbox/inbox_screen.dart';
 import 'widgets/app_bottom_nav.dart';
 import 'widgets/login_gate.dart';
+import 'package:helpfundus/features/account/data/models/user_profile.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -28,6 +29,7 @@ class AppShell extends StatefulWidget {
     this.isGuest = false,
     this.onGuestSignIn,
     this.onGuestCreateAccount,
+    this.profile,
   });
   final VoidCallback onSignOut;
   final AppShellController? controller;
@@ -35,6 +37,7 @@ class AppShell extends StatefulWidget {
   final bool isGuest;
   final VoidCallback? onGuestSignIn;
   final VoidCallback? onGuestCreateAccount;
+  final UserProfile? profile;
   @override
   State<AppShell> createState() => _AppShellState();
 }
@@ -127,8 +130,11 @@ class _AppShellState extends State<AppShell> {
     return switch ((_controller.role, _controller.tabIndex)) {
       (_, 0) =>
         _controller.role == ShellRole.donor
-            ? DonorHomeScreen(onExplore: () => _controller.setTab(1))
-            : const FundraiserHomeScreen(),
+            ? DonorHomeScreen(
+                onExplore: () => _controller.setTab(1),
+                firstName: widget.profile?.firstName,
+              )
+            : FundraiserHomeScreen(profile: widget.profile),
       (ShellRole.donor, 1) => const ExploreScreen(),
       (ShellRole.fundraiser, 1) => const CampaignsScreen(),
       (_, 2) => const ActivityScreen(),
@@ -136,6 +142,7 @@ class _AppShellState extends State<AppShell> {
       (_, _) => AccountScreen(
         controller: _controller,
         onSignOut: widget.onSignOut,
+        profile: widget.profile,
       ),
     };
   }

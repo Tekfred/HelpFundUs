@@ -1,18 +1,9 @@
 /// Request payload accepted by `POST /api/v1/auth/resend-otp`.
 class ResendOtpRequest {
-  const ResendOtpRequest({
-    required this.identifier,
-    required this.email,
-    required this.phone,
-  });
+  const ResendOtpRequest({required this.identifier, required this.email});
 
   final String identifier;
   final String email;
-  final String phone;
 
-  Map<String, dynamic> toJson() => {
-    'identifier': identifier,
-    'email': email,
-    'phone': phone,
-  };
+  Map<String, dynamic> toJson() => {'identifier': identifier, 'email': email};
 }

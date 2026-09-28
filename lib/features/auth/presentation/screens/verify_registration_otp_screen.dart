@@ -47,6 +47,7 @@ class _VerifyRegistrationOtpScreenState
   final _otpKey = GlobalKey<OtpInputState>();
   String? _error;
   String _code = '';
+  String? _verificationId;
   bool _verifying = false;
   late final AuthRepository _authRepository;
 
@@ -54,12 +55,13 @@ class _VerifyRegistrationOtpScreenState
   void initState() {
     super.initState();
     _authRepository = AuthRepository(AuthRemoteDataSource(ApiClient()));
+    _verificationId = widget.verificationId;
   }
 
   Future<void> _handleSubmit(String code) async {
     if (code.length != 6 || _verifying) return;
 
-    final verificationId = widget.verificationId;
+    final verificationId = _verificationId;
     if (verificationId == null || verificationId.isEmpty) {
       setState(() {
         _error =
@@ -90,13 +92,13 @@ class _VerifyRegistrationOtpScreenState
 
   Future<bool> _resendOtp() async {
     try {
-      await _authRepository.resendOtp(
+      final result = await _authRepository.resendOtp(
         ResendOtpRequest(
           identifier: widget.destination,
           email: widget.destination,
-          phone: widget.phone,
         ),
       );
+      if (mounted) setState(() => _verificationId = result.userId);
       return true;
     } on ApiException catch (error) {
       if (mounted) setState(() => _error = error.message);
