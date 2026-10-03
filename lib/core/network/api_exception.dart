@@ -78,9 +78,10 @@ class ApiException implements Exception {
     if (statusCode != null && statusCode >= 500) {
       return ApiException(
         type: ApiErrorType.server,
-        message:
-            responseMessage ??
-            'Something went wrong on our side. Please try again.',
+        // Server responses must never expose implementation or database
+        // details to the user. The status code and raw response remain
+        // available on this exception for diagnostics.
+        message: 'Something went wrong on our end. Please try again later.',
         statusCode: statusCode,
         data: data,
       );
@@ -125,9 +126,30 @@ class ApiException implements Exception {
     if (data is! Map) return null;
     for (final key in ['message', 'error', 'detail']) {
       final value = data[key];
-      if (value is String && value.trim().isNotEmpty) return value.trim();
+      if (value is String && value.trim().isNotEmpty) {
+        final message = value.trim();
+        if (!_containsInternalDetails(message)) return message;
+      }
     }
     return null;
+  }
+
+  static bool _containsInternalDetails(String message) {
+    final normalized = message.toLowerCase();
+    const indicators = [
+      'prisma',
+      'findfirst(',
+      'public.',
+      'postgresql',
+      'sql',
+      'database schema',
+      'table ',
+      'stack trace',
+      'exception at ',
+      'lib/',
+      'file://',
+    ];
+    return indicators.any(normalized.contains);
   }
 
   @override

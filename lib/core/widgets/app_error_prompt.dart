@@ -11,6 +11,7 @@ class AppErrorPrompt extends StatefulWidget {
   const AppErrorPrompt({
     super.key,
     required this.message,
+    this.title,
     this.onDismiss,
     this.actionLabel,
     this.onAction,
@@ -18,6 +19,7 @@ class AppErrorPrompt extends StatefulWidget {
   });
 
   final String message;
+  final String? title;
   final VoidCallback? onDismiss;
   final String? actionLabel;
   final VoidCallback? onAction;
@@ -25,6 +27,27 @@ class AppErrorPrompt extends StatefulWidget {
 
   @override
   State<AppErrorPrompt> createState() => _AppErrorPromptState();
+}
+
+/// Shows the shared error prompt above the current screen instead of placing
+/// it in a page layout. This is appropriate for temporary unavailable actions.
+void showAppErrorOverlay(BuildContext context, {required String message}) {
+  final messenger = ScaffoldMessenger.of(context);
+  messenger.hideCurrentSnackBar();
+  messenger.showSnackBar(
+    SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      padding: EdgeInsets.zero,
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+      duration: const Duration(seconds: 8),
+      content: AppErrorPrompt(
+        message: message,
+        onDismiss: messenger.hideCurrentSnackBar,
+      ),
+    ),
+  );
 }
 
 class _AppErrorPromptState extends State<AppErrorPrompt> {
@@ -77,9 +100,24 @@ class _AppErrorPromptState extends State<AppErrorPrompt> {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              widget.message,
-              style: AppTextStyles.bodyMd.copyWith(color: AppColors.danger),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (widget.title != null) ...[
+                  Text(
+                    widget.title!,
+                    style: AppTextStyles.buttonMd.copyWith(
+                      color: AppColors.danger,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                ],
+                Text(
+                  widget.message,
+                  style: AppTextStyles.bodyMd.copyWith(color: AppColors.danger),
+                ),
+              ],
             ),
           ),
           if (widget.actionLabel != null && widget.onAction != null) ...[

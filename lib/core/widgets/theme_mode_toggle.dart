@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_dimens.dart';
 import '../theme/app_theme_colors.dart';
-import '../theme/theme_provider.dart';
+import '../theme/theme_mode_notifier.dart';
 
 /// Compact appearance controls for entry screens.
 ///
 /// The primary circle immediately switches between light and dark. The
 /// secondary auto-brightness circle opts back into the device's system theme
 /// and its automatic morning/evening schedule.
-class ThemeModeToggle extends StatelessWidget {
+class ThemeModeToggle extends ConsumerWidget {
   const ThemeModeToggle({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final provider = context.watch<ThemeProvider>();
-    final isSystem = provider.followsSystem;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mode = ref.watch(themeModeProvider);
+    final notifier = ref.read(themeModeProvider.notifier);
+    final isSystem = mode == ThemeMode.system;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
@@ -30,7 +31,7 @@ class ThemeModeToggle extends StatelessWidget {
           icon: isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
           iconColor: isDark ? AppColors.gold : context.appTextPrimary,
           onTap: () =>
-              provider.setThemeMode(isDark ? ThemeMode.light : ThemeMode.dark),
+              notifier.setThemeMode(isDark ? ThemeMode.light : ThemeMode.dark),
         ),
         const SizedBox(height: AppSpacing.xs),
         _RoundThemeButton(
@@ -40,7 +41,7 @@ class ThemeModeToggle extends StatelessWidget {
           icon: Icons.brightness_auto_rounded,
           iconColor: isSystem ? AppColors.primary : context.appTextSecondary,
           active: isSystem,
-          onTap: () => provider.setThemeMode(ThemeMode.system),
+          onTap: () => notifier.setThemeMode(ThemeMode.system),
         ),
       ],
     );

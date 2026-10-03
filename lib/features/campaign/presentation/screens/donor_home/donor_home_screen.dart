@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
 import 'package:helpfundus/core/theme/app_dimens.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
-import 'package:helpfundus/core/theme/theme_provider.dart';
+import 'package:helpfundus/core/theme/theme_mode_notifier.dart';
 import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/network/api_client.dart';
-import 'package:provider/provider.dart';
 import 'package:helpfundus/features/campaign/data/campaign_catalog.dart';
 import 'package:helpfundus/features/campaign/data/datasources/featured_campaigns_remote_data_source.dart';
 import 'package:helpfundus/features/campaign/data/repositories/featured_campaigns_repository.dart';
@@ -14,7 +14,7 @@ import 'package:helpfundus/features/campaign/presentation/screens/campaign_detai
 import 'package:helpfundus/features/campaign/presentation/screens/category_campaigns/category_campaigns_screen.dart';
 import 'package:helpfundus/features/campaign/presentation/widgets/campaign_card.dart';
 
-class DonorHomeScreen extends StatefulWidget {
+class DonorHomeScreen extends ConsumerStatefulWidget {
   const DonorHomeScreen({
     super.key,
     required this.onExplore,
@@ -28,10 +28,10 @@ class DonorHomeScreen extends StatefulWidget {
   final VoidCallback? onDonate;
 
   @override
-  State<DonorHomeScreen> createState() => _DonorHomeScreenState();
+  ConsumerState<DonorHomeScreen> createState() => _DonorHomeScreenState();
 }
 
-class _DonorHomeScreenState extends State<DonorHomeScreen> {
+class _DonorHomeScreenState extends ConsumerState<DonorHomeScreen> {
   final _searchController = TextEditingController();
   final _searchFocus = FocusNode();
   Timer? _refreshTimer;
@@ -191,14 +191,14 @@ class _DonorHomeScreenState extends State<DonorHomeScreen> {
           const Text('👋', style: TextStyle(fontSize: 31)),
           const Spacer(),
           Tooltip(
-            message: context.watch<ThemeProvider>().isDarkMode
+            message: Theme.of(context).brightness == Brightness.dark
                 ? 'Switch to light mode'
                 : 'Switch to dark mode',
             child: _action(
-              context.watch<ThemeProvider>().isDarkMode
+              Theme.of(context).brightness == Brightness.dark
                   ? Icons.light_mode_rounded
                   : Icons.dark_mode_outlined,
-              onTap: context.read<ThemeProvider>().toggleTheme,
+              onTap: () => ref.read(themeModeProvider.notifier).toggleTheme(),
             ),
           ),
           const SizedBox(width: 12),

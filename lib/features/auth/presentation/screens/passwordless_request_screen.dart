@@ -8,6 +8,12 @@ import '../../../../core/widgets/app_error_prompt.dart';
 import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/auth_text_field.dart';
 import '../../../../core/widgets/otp_input.dart';
+import '../../../../core/device/device_identifier.dart';
+import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_exception.dart';
+import '../../data/datasources/auth_remote_data_source.dart';
+import '../../data/models/login_otp_request.dart';
+import '../../data/repositories/auth_repository.dart';
 
 class PasswordlessRequestScreen extends StatefulWidget {
   const PasswordlessRequestScreen({
@@ -18,7 +24,7 @@ class PasswordlessRequestScreen extends StatefulWidget {
   });
 
   final VoidCallback onBack;
-  final ValueChanged<String> onCodeSent;
+  final void Function(String destination, String verificationId) onCodeSent;
   final VoidCallback onBackToPassword;
 
   @override
@@ -30,22 +36,50 @@ class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
   final _identifier = TextEditingController();
   bool _sent = false;
   String? _error;
+  bool _requesting = false;
+  String? _verificationId;
+  late final AuthRepository _authRepository;
 
-  void _send() {
+  @override
+  void initState() {
+    super.initState();
+    _authRepository = AuthRepository(AuthRemoteDataSource(ApiClient()));
+  }
+
+  Future<void> _send() async {
     if (_identifier.text.trim().isEmpty) {
       setState(
         () => _error = 'Enter the email or phone number on your account.',
       );
       return;
     }
-    if (_identifier.text.trim() == 'unknown@example.com') {
-      setState(() => _error = "We couldn't find an account matching that.");
-      return;
-    }
+    if (_requesting) return;
     setState(() {
       _error = null;
-      _sent = true;
+      _requesting = true;
     });
+    try {
+      final result = await _authRepository.requestLoginOtp(
+        LoginOtpRequest(
+          identifier: _identifier.text.trim(),
+          deviceId: await DeviceIdentifier.getOrCreate(),
+        ),
+      );
+      if (mounted) {
+        setState(() {
+          _verificationId = result.verificationId;
+          _sent = true;
+        });
+      }
+    } on ApiException catch (error) {
+      if (mounted) setState(() => _error = error.message);
+    } catch (_) {
+      if (mounted) {
+        setState(() => _error = 'Unable to request a code. Please try again.');
+      }
+    } finally {
+      if (mounted) setState(() => _requesting = false);
+    }
   }
 
   @override
@@ -107,7 +141,11 @@ class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
             },
           ),
           const SizedBox(height: AppSpacing.lg),
-          PrimaryButton(label: 'Request Code', onPressed: _send),
+          PrimaryButton(
+            label: 'Request Code',
+            onPressed: _requesting ? null : _send,
+            isLoading: _requesting,
+          ),
         ] else ...[
           const SizedBox(height: AppSpacing.sm),
           Center(
@@ -146,7 +184,9 @@ class _PasswordlessRequestScreenState extends State<PasswordlessRequestScreen> {
           const SizedBox(height: AppSpacing.lg),
           PrimaryButton(
             label: 'Continue',
-            onPressed: () => widget.onCodeSent(_identifier.text),
+            onPressed: _verificationId == null
+                ? null
+                : () => widget.onCodeSent(_identifier.text, _verificationId!),
           ),
         ],
         const SizedBox(height: AppSpacing.md),

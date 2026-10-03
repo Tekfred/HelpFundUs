@@ -22,6 +22,7 @@ class StartFundraiserScreen extends StatelessWidget {
       dotIndex: 2,
       illustration: const FundraiserTimelineIllustration(),
       contentRevealCount: FundraiserTimelineIllustration.revealCount,
+      compactIllustration: true,
       headline: 'Start making\na difference',
       body:
           'Create your campaign story, complete a quick identity check, and our team '

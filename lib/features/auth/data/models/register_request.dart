@@ -6,8 +6,8 @@ class RegisterRequest {
     required this.email,
     required this.phone,
     required this.password,
+    required this.accountType,
     this.role = 'USER',
-    this.accountType = 'INDIVIDUAL',
   });
 
   final String firstName;

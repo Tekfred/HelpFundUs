@@ -48,6 +48,7 @@ class _AuthFlowState extends State<AuthFlow> {
   String _pendingDestination = 'jane@example.com';
   String _pendingPhone = '';
   String? _pendingVerificationId;
+  String? _pendingLoginVerificationId;
   bool _allowImmediateOtpResend = false;
 
   @override
@@ -158,8 +159,9 @@ class _AuthFlowState extends State<AuthFlow> {
         return PasswordlessRequestScreen(
           onBack: _goBack,
           onBackToPassword: () => _controller.goTo(AuthStep.signIn),
-          onCodeSent: (destination) {
+          onCodeSent: (destination, verificationId) {
             _pendingDestination = destination;
+            _pendingLoginVerificationId = verificationId;
             _controller.goTo(AuthStep.verifyLoginOtp);
           },
         );
@@ -167,6 +169,7 @@ class _AuthFlowState extends State<AuthFlow> {
       case AuthStep.verifyLoginOtp:
         return VerifyLoginOtpScreen(
           destination: _mask(_pendingDestination),
+          verificationId: _pendingLoginVerificationId,
           onBack: _goBack,
           onVerified: widget.onFinished ?? () {},
           onNeedsMfa: () => _controller.goTo(AuthStep.mfaVerification),
@@ -174,11 +177,7 @@ class _AuthFlowState extends State<AuthFlow> {
         );
 
       case AuthStep.mfaVerification:
-        return MfaVerificationScreen(
-          onBack: _goBack,
-          onVerified: widget.onFinished ?? () {},
-          onUseBackupCode: widget.onFinished ?? () {},
-        );
+        return MfaVerificationScreen(onBack: _goBack);
 
       case AuthStep.forgotPassword:
         return ForgotPasswordScreen(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/animation/reveal_on_enter.dart';
+import '../../../../core/theme/app_dimens.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import 'timeline_step.dart';
 
 class FundraiserTimelineIllustration extends StatelessWidget {
@@ -24,17 +26,21 @@ class FundraiserTimelineIllustration extends StatelessWidget {
         width: constraints.maxWidth.clamp(280.0, 344.0).toDouble(),
         padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
+          color: context.appSurfaceElevated,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          border: Border.all(color: context.appBorder),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: .06),
+              color: Colors.black.withValues(
+                alpha: context.isDarkTheme ? .24 : .06,
+              ),
               blurRadius: 16,
               offset: const Offset(0, 8),
             ),
           ],
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: List.generate(_steps.length, (index) {
             final (title, description) = _steps[index];
             return RevealOnEnter(

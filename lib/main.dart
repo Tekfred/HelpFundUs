@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_root.dart';
 import 'core/scroll/helpfundus_scroll_behavior.dart';
 import 'core/theme/app_theme.dart';
-import 'core/theme/theme_provider.dart';
+import 'core/theme/theme_mode_notifier.dart';
 import 'features/app_shell/presentation/app_shell.dart';
 import 'features/app_shell/state/app_shell_controller.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final themeProvider = ThemeProvider();
-  await themeProvider.load();
+  final container = ProviderContainer();
+  await container.read(themeModeProvider.notifier).load();
   runApp(
-    ChangeNotifierProvider.value(
-      value: themeProvider,
+    UncontrolledProviderScope(
+      container: container,
       child: const HelpFundUsApp(),
     ),
   );
 }
 
-class HelpFundUsApp extends StatelessWidget {
+class HelpFundUsApp extends ConsumerWidget {
   const HelpFundUsApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeProvider>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
     return MaterialApp(
       title: 'HelpFundUs',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: themeProvider.themeMode,
+      themeMode: themeMode,
       scrollBehavior: const HelpFundUsScrollBehavior(),
       home: const AppRoot(),
       onGenerateRoute: (settings) {

@@ -27,6 +27,7 @@ class OnboardingSlideScaffold extends StatelessWidget {
     required this.dotIndex,
     required this.cta,
     this.contentRevealCount = 4,
+    this.compactIllustration = false,
   });
 
   final VoidCallback onBack;
@@ -43,6 +44,10 @@ class OnboardingSlideScaffold extends StatelessWidget {
   /// hardcoded index that might land mid-cascade for a shorter or longer
   /// illustration.
   final int contentRevealCount;
+
+  /// Lets a content-sized illustration sit immediately above its copy while
+  /// retaining the CTA at the bottom. Used by the compact timeline slide.
+  final bool compactIllustration;
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +79,13 @@ class OnboardingSlideScaffold extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
-              Expanded(child: Center(child: illustration)),
-              const SizedBox(height: AppSpacing.lg),
+              if (compactIllustration)
+                Center(child: illustration)
+              else
+                Expanded(child: Center(child: illustration)),
+              SizedBox(
+                height: compactIllustration ? AppSpacing.xxl : AppSpacing.lg,
+              ),
               RevealOnEnter(
                 index: tailIndex,
                 child: DotIndicator(count: 3, activeIndex: dotIndex),
@@ -104,6 +114,7 @@ class OnboardingSlideScaffold extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
+              if (compactIllustration) const Spacer(),
               RevealOnEnter(index: 0, child: cta),
               const SizedBox(height: AppSpacing.md),
             ],

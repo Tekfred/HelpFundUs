@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/animation/spring_page_switcher.dart';
+import 'core/auth/auth_session_provider.dart';
 import 'features/app_shell/presentation/app_shell.dart';
 import 'features/auth/presentation/auth_flow.dart';
 import 'features/auth/state/auth_controller.dart';
 import 'features/account/data/models/user_profile.dart';
+import 'features/account/state/current_user_profile_provider.dart';
 import 'features/onboarding/presentation/onboarding_flow.dart';
 import 'features/onboarding/state/onboarding_controller.dart';
 
@@ -18,17 +21,16 @@ enum _AppMode { onboarding, auth, appShell }
 /// [DevScreenNav] — the "Screens" pill — can jump straight into any
 /// screen for demoing, without any of the three flows needing to know
 /// that nav bar exists.
-class AppRoot extends StatefulWidget {
+class AppRoot extends ConsumerStatefulWidget {
   const AppRoot({super.key});
 
   @override
-  State<AppRoot> createState() => _AppRootState();
+  ConsumerState<AppRoot> createState() => _AppRootState();
 }
 
-class _AppRootState extends State<AppRoot> {
+class _AppRootState extends ConsumerState<AppRoot> {
   _AppMode _mode = _AppMode.onboarding;
   bool _isGuest = false;
-  UserProfile? _profile;
   late final _onboardingController = OnboardingController();
   late final _authController = AuthController();
 
@@ -65,7 +67,6 @@ class _AppRootState extends State<AppRoot> {
   });
 
   void _finishSignedIn(UserProfile profile) => setState(() {
-    _profile = profile;
     _isGuest = false;
     _mode = _AppMode.appShell;
   });
@@ -77,6 +78,13 @@ class _AppRootState extends State<AppRoot> {
 
   @override
   Widget build(BuildContext context) {
+    final profile = ref
+        .watch(currentUserProfileProvider)
+        .when(
+          data: (profile) => profile,
+          loading: () => null,
+          error: (_, _) => null,
+        );
     return Stack(
       children: [
         SpringPageSwitcher(
@@ -98,12 +106,13 @@ class _AppRootState extends State<AppRoot> {
               ),
               _AppMode.appShell => AppShell(
                 isGuest: _isGuest,
-                profile: _profile,
+                profile: profile,
                 onGuestSignIn: () => _jumpToAuth(AuthStep.signIn),
                 onGuestCreateAccount: () => _jumpToAuth(AuthStep.createAccount),
                 onSignOut: () => setState(() {
+                  ref.read(authSessionProvider.notifier).clear();
+                  ref.read(currentUserProfileProvider.notifier).clear();
                   _isGuest = false;
-                  _profile = null;
                   _mode = _AppMode.onboarding;
                 }),
               ),

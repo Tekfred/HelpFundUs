@@ -42,6 +42,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _phone = TextEditingController();
   final _password = TextEditingController();
   Country _country = kCountries.first;
+  _AccountType _accountType = _AccountType.individual;
   bool _agreed = false;
   String _passwordValue = '';
   late final AuthRepository _authRepository;
@@ -65,6 +66,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       _lastName.text.isNotEmpty &&
       _hasValidEmail &&
       _phone.text.isNotEmpty &&
+      _accountType.apiValue != null &&
       scorePassword(_passwordValue) != PasswordStrength.empty &&
       _agreed;
 
@@ -91,6 +93,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             '',
           ),
           password: _password.text,
+          accountType: _accountType.apiValue!,
         ),
       );
       if (mounted) {
@@ -171,6 +174,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               ),
             ),
           ],
+        ),
+        const SizedBox(height: AppSpacing.md),
+        _AccountTypeSelector(
+          selected: _accountType,
+          onChanged: (accountType) => setState(() {
+            _accountType = accountType;
+            _requestError = accountType.apiValue == null
+                ? 'Organization registration is not available yet.'
+                : null;
+          }),
         ),
         const SizedBox(height: AppSpacing.md),
         AuthTextField(
@@ -318,6 +331,143 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         ),
         const SizedBox(height: AppSpacing.lg),
       ],
+    );
+  }
+}
+
+enum _AccountType {
+  individual('Individual', 'INDIVIDUAL'),
+  // The backend contract currently documents only INDIVIDUAL. Keep this UI
+  // option ready, but do not send a guessed API value for Organization.
+  organization('Organization', null);
+
+  const _AccountType(this.label, this.apiValue);
+
+  final String label;
+  final String? apiValue;
+}
+
+class _AccountTypeSelector extends StatelessWidget {
+  const _AccountTypeSelector({required this.selected, required this.onChanged});
+
+  final _AccountType selected;
+  final ValueChanged<_AccountType> onChanged;
+
+  Future<void> _openPicker(BuildContext context) async {
+    final choice = await showModalBottomSheet<_AccountType>(
+      context: context,
+      backgroundColor: context.appSurfaceElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: AppSpacing.md),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: AppSpacing.sm),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: sheetContext.appBorder,
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'Select account type',
+                style: AppTextStyles.h3.copyWith(
+                  color: sheetContext.appTextPrimary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              for (final accountType in _AccountType.values)
+                Semantics(
+                  selected: selected == accountType,
+                  label:
+                      '${accountType.label}${selected == accountType ? ', selected' : ''}',
+                  child: ListTile(
+                    leading: Icon(
+                      selected == accountType
+                          ? Icons.check_circle_rounded
+                          : Icons.circle_outlined,
+                      color: selected == accountType
+                          ? AppColors.primary
+                          : sheetContext.appTextMuted,
+                    ),
+                    title: Text(
+                      accountType.label,
+                      style: AppTextStyles.bodyLg.copyWith(
+                        color: sheetContext.appTextPrimary,
+                        fontWeight: selected == accountType
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                      ),
+                    ),
+                    onTap: () => Navigator.of(sheetContext).pop(accountType),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (choice != null) onChanged(choice);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: 'Account type, ${selected.label}',
+      hint: 'Tap to change account type',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Account type',
+            style: AppTextStyles.buttonMd.copyWith(
+              color: context.appTextPrimary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => _openPicker(context),
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              child: Container(
+                height: 56,
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: context.appInput,
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                  border: Border.all(color: context.appBorderStrong),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        selected.label,
+                        style: AppTextStyles.bodyLg.copyWith(
+                          color: context.appTextPrimary,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: context.appTextMuted,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

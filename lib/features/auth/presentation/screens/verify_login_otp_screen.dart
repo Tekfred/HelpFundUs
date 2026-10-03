@@ -7,6 +7,11 @@ import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_error_prompt.dart';
 import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/otp_input.dart';
+import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_exception.dart';
+import '../../data/datasources/auth_remote_data_source.dart';
+import '../../data/models/login_otp_verification_request.dart';
+import '../../data/repositories/auth_repository.dart';
 
 class VerifyLoginOtpScreen extends StatefulWidget {
   const VerifyLoginOtpScreen({
@@ -16,6 +21,7 @@ class VerifyLoginOtpScreen extends StatefulWidget {
     required this.onVerified,
     required this.onNeedsMfa,
     required this.onChangeAccount,
+    this.verificationId,
   });
 
   final String destination;
@@ -23,6 +29,7 @@ class VerifyLoginOtpScreen extends StatefulWidget {
   final VoidCallback onVerified;
   final VoidCallback onNeedsMfa;
   final VoidCallback onChangeAccount;
+  final String? verificationId;
 
   @override
   State<VerifyLoginOtpScreen> createState() => _VerifyLoginOtpScreenState();
@@ -31,19 +38,44 @@ class VerifyLoginOtpScreen extends StatefulWidget {
 class _VerifyLoginOtpScreenState extends State<VerifyLoginOtpScreen> {
   final _otpKey = GlobalKey<OtpInputState>();
   String? _error;
-  bool _requireMfaDemo = false;
+  bool _verifying = false;
+  late final AuthRepository _authRepository;
 
-  void _handleSubmit(String code) {
+  @override
+  void initState() {
+    super.initState();
+    _authRepository = AuthRepository(AuthRemoteDataSource(ApiClient()));
+  }
+
+  Future<void> _handleSubmit(String code) async {
     if (code.length < 6) return;
-    if (code == '000000') {
-      setState(() => _error = 'That code has expired. Request a new one.');
+    final verificationId = widget.verificationId;
+    if (verificationId == null || verificationId.isEmpty) {
+      setState(() => _error = 'Request a new login code to continue.');
       return;
     }
-    setState(() => _error = null);
-    if (_requireMfaDemo) {
-      widget.onNeedsMfa();
-    } else {
-      widget.onVerified();
+
+    if (_verifying) return;
+    setState(() {
+      _verifying = true;
+      _error = null;
+    });
+    try {
+      await _authRepository.verifyLoginOtp(
+        verificationId,
+        LoginOtpVerificationRequest(otp: code, trustedDevice: false),
+      );
+      if (mounted) widget.onVerified();
+    } on ApiException catch (error) {
+      if (mounted) setState(() => _error = error.message);
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => _error = 'Unable to verify this code. Please try again.',
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _verifying = false);
     }
   }
 
@@ -79,7 +111,10 @@ class _VerifyLoginOtpScreenState extends State<VerifyLoginOtpScreen> {
         const SizedBox(height: AppSpacing.lg),
         PrimaryButton(
           label: 'Verify',
-          onPressed: () => _handleSubmit(_otpKey.currentState?.value ?? ''),
+          onPressed: _verifying
+              ? null
+              : () => _handleSubmit(_otpKey.currentState?.value ?? ''),
+          isLoading: _verifying,
         ),
         const SizedBox(height: AppSpacing.lg),
         Center(
@@ -92,19 +127,6 @@ class _VerifyLoginOtpScreenState extends State<VerifyLoginOtpScreen> {
             child: Text(
               'Not you? Switch account',
               style: AppTextStyles.buttonMd.copyWith(color: AppColors.primary),
-            ),
-          ),
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        Center(
-          child: GestureDetector(
-            // Demo affordance for previewing the MFA-required redirect.
-            onTap: () => setState(() => _requireMfaDemo = !_requireMfaDemo),
-            child: Text(
-              _requireMfaDemo
-                  ? 'Demo: will redirect to MFA next'
-                  : 'This account requires extra verification?',
-              style: AppTextStyles.bodySm.copyWith(color: context.appTextMuted),
             ),
           ),
         ),

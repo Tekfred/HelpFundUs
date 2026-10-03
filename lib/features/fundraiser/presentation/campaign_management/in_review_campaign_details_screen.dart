@@ -4,8 +4,8 @@ import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/core/widgets/animated_progress_bar.dart';
 import 'package:helpfundus/core/widgets/app_share_sheet.dart';
+import 'package:helpfundus/core/widgets/app_error_prompt.dart';
 import 'package:helpfundus/features/fundraiser/domain/entities/fundraiser_campaign.dart';
-import 'package:helpfundus/features/fundraiser/presentation/campaign_management/campaign_management_options_screen.dart';
 import 'package:helpfundus/features/fundraiser/presentation/performance/performance_screen.dart';
 
 /// Read-only detail page for campaigns awaiting review.
@@ -297,21 +297,6 @@ class InReviewCampaignDetailsScreen extends StatelessWidget {
           color: context.appTextPrimary,
         ),
       ),
-      const Spacer(),
-      TextButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => CampaignManagementOptionsScreen(campaign: campaign),
-          ),
-        ),
-        child: Text(
-          'More tools  ›',
-          style: AppTextStyles.buttonMd.copyWith(
-            fontSize: 14,
-            color: AppColors.primary,
-          ),
-        ),
-      ),
     ],
   );
 
@@ -338,7 +323,10 @@ class InReviewCampaignDetailsScreen extends StatelessWidget {
           iconColor: context.appTextSecondary,
           title: 'Documents',
           subtitle: 'Upload supporting documents',
-          onTap: () => _unavailable(context, 'Document management'),
+          onTap: () => showAppErrorOverlay(
+            context,
+            message: 'Document management will be available soon.',
+          ),
         ),
         Divider(height: 1, color: context.appDivider),
         _tool(

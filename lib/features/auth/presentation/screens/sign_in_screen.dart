@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/device/device_identifier.dart';
+import '../../../../core/auth/auth_session_provider.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_exception.dart';
 import '../../../../core/widgets/app_button.dart';
@@ -11,14 +13,13 @@ import '../../../../core/widgets/app_error_prompt.dart';
 import '../../../../core/widgets/auth_scaffold.dart';
 import '../../../../core/widgets/auth_text_field.dart';
 import '../../../../core/widgets/google_auth_button.dart';
-import '../../../account/data/datasources/profile_remote_data_source.dart';
 import '../../../account/data/models/user_profile.dart';
-import '../../../account/data/repositories/profile_repository.dart';
+import '../../../account/state/current_user_profile_provider.dart';
 import '../../data/datasources/auth_remote_data_source.dart';
 import '../../data/models/login_request.dart';
 import '../../data/repositories/auth_repository.dart';
 
-class SignInScreen extends StatefulWidget {
+class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({
     super.key,
     required this.onBack,
@@ -41,10 +42,10 @@ class SignInScreen extends StatefulWidget {
   final AuthRepository? authRepository;
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  ConsumerState<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignInScreenState extends ConsumerState<SignInScreen> {
   final _identifier = TextEditingController();
   final _password = TextEditingController();
   _SignInPrompt? _prompt;
@@ -90,11 +91,15 @@ class _SignInScreenState extends State<SignInScreen> {
           deviceId: await DeviceIdentifier.getOrCreate(),
         ),
       );
-      final profile = await ProfileRepository(
-        ProfileRemoteDataSource(
-          ApiClient(tokenProvider: () => loginResult.accessToken),
-        ),
-      ).fetchProfile();
+      ref
+          .read(authSessionProvider.notifier)
+          .establish(
+            accessToken: loginResult.accessToken,
+            refreshToken: loginResult.refreshToken,
+          );
+      final profile = await ref
+          .read(currentUserProfileProvider.notifier)
+          .fetchProfile();
       if (mounted) widget.onSignedIn(profile);
     } on ApiException catch (error) {
       if (mounted) {
@@ -104,8 +109,10 @@ class _SignInScreenState extends State<SignInScreen> {
       if (mounted) {
         _showPrompt(
           const _SignInPrompt(
-            type: _SignInFailureType.unknown,
-            message: 'Unable to sign in. Please try again.',
+            type: _SignInFailureType.serverFailure,
+            title: 'Something went wrong on our end',
+            message:
+                "We couldn't complete your request right now. Please try again in a moment.",
           ),
         );
       }
@@ -129,9 +136,17 @@ class _SignInScreenState extends State<SignInScreen> {
         message: 'Please verify your account first.',
       );
     }
-    return _SignInPrompt(
-      type: _SignInFailureType.requestFailed,
-      message: error.message,
+    if (_isConnectivityFailure(error)) {
+      return _SignInPrompt(
+        type: _SignInFailureType.requestFailed,
+        message: error.message,
+      );
+    }
+    return const _SignInPrompt(
+      type: _SignInFailureType.serverFailure,
+      title: 'Something went wrong on our end',
+      message:
+          "We couldn't complete your request right now. Please try again in a moment.",
     );
   }
 
@@ -151,6 +166,14 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   bool _isInvalidCredentials(ApiException error) => error.statusCode == 401;
+
+  bool _isConnectivityFailure(ApiException error) => switch (error.type) {
+    ApiErrorType.connectionTimeout ||
+    ApiErrorType.sendTimeout ||
+    ApiErrorType.receiveTimeout ||
+    ApiErrorType.noConnection => true,
+    _ => false,
+  };
 
   String _normalize(String value) =>
       value.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
@@ -196,15 +219,19 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             );
           },
-          child: _prompt != null
-              ? Padding(
+          child: _prompt == null
+              ? const SizedBox(key: ValueKey('no-credentials-prompt'))
+              : Padding(
                   key: const ValueKey('login-error-prompt'),
                   padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                   child: AppErrorPrompt(
+                    title: _prompt!.title,
                     message: _prompt!.message,
                     actionLabel:
                         _prompt!.type == _SignInFailureType.verificationRequired
                         ? 'Verify'
+                        : _prompt!.type == _SignInFailureType.serverFailure
+                        ? 'Try Again'
                         : null,
                     onAction:
                         _prompt!.type == _SignInFailureType.verificationRequired
@@ -213,11 +240,12 @@ class _SignInScreenState extends State<SignInScreen> {
                             _clearPrompt();
                             widget.onVerifyAccount?.call(identifier);
                           }
+                        : _prompt!.type == _SignInFailureType.serverFailure
+                        ? _submit
                         : null,
                     onDismiss: _clearPrompt,
                   ),
-                )
-              : const SizedBox(key: ValueKey('no-credentials-prompt')),
+                ),
         ),
         AuthTextField(
           label: 'Email or phone number',
@@ -302,12 +330,13 @@ enum _SignInFailureType {
   invalidCredentials,
   verificationRequired,
   requestFailed,
-  unknown,
+  serverFailure,
 }
 
 class _SignInPrompt {
-  const _SignInPrompt({required this.type, required this.message});
+  const _SignInPrompt({required this.type, required this.message, this.title});
 
   final _SignInFailureType type;
   final String message;
+  final String? title;
 }
