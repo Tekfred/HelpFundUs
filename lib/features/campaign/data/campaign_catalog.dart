@@ -63,6 +63,7 @@ class CampaignData {
     required this.milestones,
     required this.updates,
     this.organisation = false,
+    this.verified = true,
     this.status = CampaignStatus.active,
   });
 
@@ -83,6 +84,7 @@ class CampaignData {
   final List<CampaignMilestone> milestones;
   final List<CampaignUpdate> updates;
   final bool organisation;
+  final bool verified;
   final CampaignStatus status;
 
   List<String> get gallery => [icon, '🛠️', '🤝', '📍'];

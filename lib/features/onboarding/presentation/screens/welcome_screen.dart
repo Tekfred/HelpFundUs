@@ -5,7 +5,6 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/brand_logo.dart';
-import '../../../../core/widgets/theme_mode_toggle.dart';
 import '../widgets/campaign_card_illustration.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -22,15 +21,15 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: context.appBackground,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-          child: Column(
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  child: Column(
             children: [
-              const SizedBox(height: AppSpacing.sm),
-              const Align(
-                alignment: Alignment.centerRight,
-                child: ThemeModeToggle(),
-              ),
               const SizedBox(height: AppSpacing.sm),
               TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0, end: 1),
@@ -95,7 +94,9 @@ class WelcomeScreen extends StatelessWidget {
                   'Discover verified campaigns, donate securely, or launch your own fundraiser in minutes.',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.bodyMd.copyWith(
-                    color: context.appTextSecondary,
+                    color: context.isDarkTheme
+                        ? const Color(0xFFAAB5C6)
+                        : const Color(0xFF65717A),
                   ),
                 ),
               ),
@@ -104,12 +105,20 @@ class WelcomeScreen extends StatelessWidget {
                 index: 5,
                 child: Column(
                   children: [
-                    PrimaryButton(
+                    Semantics(
+                      button: true,
                       label: 'Get Started',
-                      onPressed: onGetStarted,
+                      child: PrimaryButton(
+                        label: 'Get Started',
+                        onPressed: onGetStarted,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    SecondaryButton(label: 'Sign In', onPressed: onSignIn),
+                    Semantics(
+                      button: true,
+                      label: 'Sign In',
+                      child: SecondaryButton(label: 'Sign In', onPressed: onSignIn),
+                    ),
                   ],
                 ),
               ),
@@ -126,6 +135,10 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ),
             ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

@@ -38,9 +38,14 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
     return Scaffold(
       backgroundColor: context.appBackground,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-          child: Column(
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: AppSpacing.sm),
@@ -182,6 +187,10 @@ class _ChooseJourneyScreenState extends State<ChooseJourneyScreen> {
               ),
               const SizedBox(height: AppSpacing.md),
             ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

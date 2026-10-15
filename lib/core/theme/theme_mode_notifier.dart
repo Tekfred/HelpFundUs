@@ -7,24 +7,28 @@ final themeModeProvider = NotifierProvider<ThemeModeNotifier, ThemeMode>(
   ThemeModeNotifier.new,
 );
 
+final sharedPrefsProvider = Provider<SharedPreferences>(
+  (ref) => throw StateError('SharedPreferences must be initialized in main()'),
+);
+
 class ThemeModeNotifier extends Notifier<ThemeMode> {
-  static const _storageKey = 'helpfundus_theme_mode';
+  static const _storageKey = 'theme_mode';
 
   @override
-  ThemeMode build() => ThemeMode.light;
+  ThemeMode build() {
+    final savedMode = ref.read(sharedPrefsProvider).getString(_storageKey);
+    return switch (savedMode) {
+      'dark' => ThemeMode.dark,
+      'light' => ThemeMode.light,
+      _ => ThemeMode.system,
+    };
+  }
 
   bool get isDarkMode => state == ThemeMode.dark;
   bool get followsSystem => state == ThemeMode.system;
 
   Future<void> load() async {
-    final preferences = await SharedPreferences.getInstance();
-    final savedMode = preferences.getString(_storageKey);
-    if (savedMode == null) return;
-    state = switch (savedMode) {
-      'dark' => ThemeMode.dark,
-      'system' => ThemeMode.system,
-      _ => ThemeMode.light,
-    };
+    state = build();
   }
 
   Future<void> toggleTheme() =>
@@ -33,7 +37,7 @@ class ThemeModeNotifier extends Notifier<ThemeMode> {
   Future<void> setThemeMode(ThemeMode mode) async {
     if (state == mode) return;
     state = mode;
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = ref.read(sharedPrefsProvider);
     await preferences.setString(_storageKey, mode.name);
   }
 }

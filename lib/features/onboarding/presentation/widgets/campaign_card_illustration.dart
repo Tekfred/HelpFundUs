@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimens.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme_colors.dart';
 import '../../../../core/widgets/pill_badge.dart';
 
 /// The tilted campaign preview card on the Welcome screen: gradient
@@ -11,7 +12,8 @@ class CampaignCardIllustration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return ExcludeSemantics(
+      child: SizedBox(
       height: 190,
       child: Stack(
         clipBehavior: Clip.none,
@@ -61,6 +63,7 @@ class CampaignCardIllustration extends StatelessWidget {
           ),
         ],
       ),
+      ),
     );
   }
 
@@ -87,9 +90,9 @@ class _MainCard extends StatelessWidget {
       width: 270,
       height: 176,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.appSurface,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: AppColors.borderStrong, width: 1.2),
+        border: Border.all(color: context.appBorderStrong, width: 1.2),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.10),
@@ -131,7 +134,10 @@ class _MainCard extends StatelessWidget {
                     'Help rebuild our community center',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.buttonMd.copyWith(fontSize: 14),
+                    style: AppTextStyles.buttonMd.copyWith(
+                      fontSize: 14,
+                      color: context.appTextPrimary,
+                    ),
                   ),
                   const SizedBox(height: 7),
                   _AnimatedProgressBar(progress: 0.72),
@@ -146,7 +152,12 @@ class _MainCard extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      Text('72%', style: AppTextStyles.bodySm),
+                      Text(
+                        '72%',
+                        style: AppTextStyles.bodySm.copyWith(
+                          color: context.appTextSecondary,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -176,7 +187,7 @@ class _AvatarStack extends StatelessWidget {
               decoration: BoxDecoration(
                 color: _colors[i],
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.surface, width: 2),
+                  border: Border.all(color: context.appSurface, width: 2),
               ),
             ),
           );

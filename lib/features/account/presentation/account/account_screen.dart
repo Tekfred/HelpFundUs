@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:helpfundus/core/theme/app_colors.dart';
 import 'package:helpfundus/core/theme/app_dimens.dart';
 import 'package:helpfundus/core/theme/app_text_styles.dart';
 import 'package:helpfundus/core/theme/app_theme_colors.dart';
 import 'package:helpfundus/features/app_shell/state/app_shell_controller.dart';
 import 'package:helpfundus/features/account/data/models/user_profile.dart';
+import 'package:helpfundus/core/theme/theme_mode_notifier.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({
@@ -168,18 +170,8 @@ class AccountScreen extends StatelessWidget {
             ),
             _Setting(
               Icons.notifications_none,
-              'Notifications',
-              'Push, email, digest',
-            ),
-            _Setting(
-              Icons.receipt_long_outlined,
-              'Tax receipts',
-              'Download donation receipts',
-            ),
-            _Setting(
-              Icons.trending_up,
-              'Impact report',
-              'Your giving history & stats',
+              'Personalisation',
+              'Campaign updates and appearance',
             ),
             _Setting(
               Icons.help_outline,
@@ -249,6 +241,72 @@ class _Setting extends StatelessWidget {
         ),
       ),
       trailing: Icon(Icons.chevron_right, color: context.appTextMuted),
+      onTap: title == 'Personalisation'
+          ? () => showModalBottomSheet<void>(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (_) => const _PersonalisationSheet(),
+            )
+          : null,
     ),
   );
+}
+
+class _PersonalisationSheet extends ConsumerStatefulWidget {
+  const _PersonalisationSheet();
+
+  @override
+  ConsumerState<_PersonalisationSheet> createState() =>
+      _PersonalisationSheetState();
+}
+
+class _PersonalisationSheetState extends ConsumerState<_PersonalisationSheet> {
+  bool _campaignUpdates = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final mode = ref.watch(themeModeProvider);
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(24, 12, 24, 28),
+        decoration: BoxDecoration(
+          color: context.appSurface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(child: Container(width: 42, height: 4, color: context.appBorder)),
+            const SizedBox(height: 20),
+            Text('Personalisation', style: AppTextStyles.h2.copyWith(color: context.appTextPrimary)),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text('Campaign updates', style: TextStyle(color: context.appTextPrimary)),
+              subtitle: Text('Get notified about campaigns you follow', style: TextStyle(color: context.appTextSecondary)),
+              value: _campaignUpdates,
+              onChanged: (value) => setState(() => _campaignUpdates = value),
+            ),
+            const SizedBox(height: 12),
+            Text('Appearance', style: AppTextStyles.buttonMd.copyWith(color: context.appTextPrimary)),
+            for (final option in [
+              (ThemeMode.system, 'System'),
+              (ThemeMode.light, 'Light'),
+              (ThemeMode.dark, 'Dark'),
+            ])
+              RadioListTile<ThemeMode>(
+                contentPadding: EdgeInsets.zero,
+                title: Text(option.$2, style: TextStyle(color: context.appTextPrimary)),
+                value: option.$1,
+                groupValue: mode,
+                onChanged: (value) {
+                  if (value != null) ref.read(themeModeProvider.notifier).setThemeMode(value);
+                },
+              ),
+          ],
+        ),
+      ),
+    );
+  }
 }

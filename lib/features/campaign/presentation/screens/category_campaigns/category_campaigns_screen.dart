@@ -21,6 +21,17 @@ class CategoryCampaignsScreen extends StatefulWidget {
 
 class _CategoryCampaignsScreenState extends State<CategoryCampaignsScreen> {
   final _searchController = TextEditingController();
+  String _categoryFilter = '';
+  String _goalFilter = 'Any goal';
+  String _sortBy = 'Recommended';
+  bool _verifiedOnly = false;
+  bool _fundingProgress = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _categoryFilter = widget.category.name;
+  }
   @override
   void dispose() {
     _searchController.dispose();
@@ -30,7 +41,7 @@ class _CategoryCampaignsScreenState extends State<CategoryCampaignsScreen> {
   @override
   Widget build(BuildContext context) {
     final query = _searchController.text.trim().toLowerCase();
-    final campaigns = CampaignCatalog.forCategory(widget.category)
+    final campaigns = CampaignCatalog.all
         .where(
           (campaign) =>
               query.isEmpty ||
@@ -38,6 +49,29 @@ class _CategoryCampaignsScreenState extends State<CategoryCampaignsScreen> {
               campaign.location.toLowerCase().contains(query),
         )
         .toList();
+    campaigns.removeWhere((campaign) {
+      final goal = double.tryParse(campaign.goal.replaceAll(RegExp(r'[^0-9.]'), '')) ?? 0;
+      final inGoalRange = switch (_goalFilter) {
+        'Under \$10,000' => goal < 10000,
+        '\$10,000–\$25,000' => goal >= 10000 && goal <= 25000,
+        'Over \$25,000' => goal > 25000,
+        _ => true,
+      };
+      return (_categoryFilter.isNotEmpty && campaign.categoryKey != _categoryFilter) ||
+          (_verifiedOnly && !campaign.verified) ||
+          (_fundingProgress && campaign.progress < .5) ||
+          !inGoalRange;
+    });
+    switch (_sortBy) {
+      case 'Funding progress':
+        campaigns.sort((a, b) => b.progress.compareTo(a.progress));
+        break;
+      case 'Goal: low to high':
+        campaigns.sort((a, b) =>
+            (double.tryParse(a.goal.replaceAll(RegExp(r'[^0-9.]'), '')) ?? 0)
+                .compareTo(double.tryParse(b.goal.replaceAll(RegExp(r'[^0-9.]'), '')) ?? 0));
+        break;
+    }
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -128,11 +162,7 @@ class _CategoryCampaignsScreenState extends State<CategoryCampaignsScreen> {
             ),
             _heroButton(
               Icons.tune_rounded,
-              () => ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('More filters will be available soon.'),
-                ),
-              ),
+              _showFilters,
             ),
           ],
         ),
@@ -170,6 +200,28 @@ class _CategoryCampaignsScreenState extends State<CategoryCampaignsScreen> {
       ],
     ),
   );
+
+  Future<void> _showFilters() async {
+    final result = await showModalBottomSheet<_CampaignFilters>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => _CampaignFilterSheet(
+        category: _categoryFilter.isEmpty ? 'All categories' : _categoryFilter,
+        goal: _goalFilter,
+        sortBy: _sortBy,
+        verifiedOnly: _verifiedOnly,
+        fundingProgress: _fundingProgress,
+      ),
+    );
+    if (result == null || !mounted) return;
+    setState(() {
+      _categoryFilter = result.category == 'All categories' ? '' : result.category;
+      _goalFilter = result.goal;
+      _sortBy = result.sortBy;
+      _verifiedOnly = result.verifiedOnly;
+      _fundingProgress = result.fundingProgress;
+    });
+  }
   Widget _heroButton(IconData icon, VoidCallback onTap) => Material(
     color: Colors.white.withValues(alpha: .22),
     shape: const CircleBorder(),
@@ -206,5 +258,58 @@ class _CategoryCampaignsScreenState extends State<CategoryCampaignsScreen> {
   String _formatCount(int value) => value.toString().replaceFirstMapped(
     RegExp(r'^(\d+)(\d{3})$'),
     (match) => '${match.group(1)},${match.group(2)}',
+  );
+}
+
+class _CampaignFilters {
+  const _CampaignFilters(this.category, this.goal, this.sortBy,
+      this.verifiedOnly, this.fundingProgress);
+  final String category, goal, sortBy;
+  final bool verifiedOnly, fundingProgress;
+}
+
+class _CampaignFilterSheet extends StatefulWidget {
+  const _CampaignFilterSheet({required this.category, required this.goal,
+    required this.sortBy, required this.verifiedOnly, required this.fundingProgress});
+  final String category, goal, sortBy;
+  final bool verifiedOnly, fundingProgress;
+  @override
+  State<_CampaignFilterSheet> createState() => _CampaignFilterSheetState();
+}
+
+class _CampaignFilterSheetState extends State<_CampaignFilterSheet> {
+  late String category = widget.category;
+  late String goal = widget.goal;
+  late String sortBy = widget.sortBy;
+  late bool verifiedOnly = widget.verifiedOnly;
+  late bool fundingProgress = widget.fundingProgress;
+
+  @override
+  Widget build(BuildContext context) => SafeArea(
+    child: Padding(
+      padding: EdgeInsets.fromLTRB(24, 20, 24, 20 + MediaQuery.viewInsetsOf(context).bottom),
+      child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('Filter campaigns', style: Theme.of(context).textTheme.headlineSmall),
+          const SizedBox(height: 16),
+          _dropdown('Category', category, ['All categories', ...CampaignCatalog.categories.map((e) => e.name)], (v) => setState(() => category = v)),
+          _dropdown('Goal range', goal, ['Any goal', 'Under \$10,000', '\$10,000–\$25,000', 'Over \$25,000'], (v) => setState(() => goal = v)),
+          _dropdown('Sort by', sortBy, ['Recommended', 'Funding progress', 'Goal: low to high'], (v) => setState(() => sortBy = v)),
+          SwitchListTile(contentPadding: EdgeInsets.zero, title: const Text('Verified campaigns only'), value: verifiedOnly, onChanged: (v) => setState(() => verifiedOnly = v)),
+          SwitchListTile(contentPadding: EdgeInsets.zero, title: const Text('Funding progress above 50%'), value: fundingProgress, onChanged: (v) => setState(() => fundingProgress = v)),
+          const SizedBox(height: 12),
+          SizedBox(width: double.infinity, child: FilledButton(onPressed: () => Navigator.pop(context, _CampaignFilters(category, goal, sortBy, verifiedOnly, fundingProgress)), child: const Text('Apply filters'))),
+        ])),
+    ),
+  );
+
+  Widget _dropdown(String label, String value, List<String> values, ValueChanged<String> onChanged) => Padding(
+    padding: const EdgeInsets.only(bottom: 12),
+    child: DropdownButtonFormField<String>(
+      initialValue: value,
+      decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
+      items: values.map((v) => DropdownMenuItem(value: v, child: Text(v))).toList(),
+      onChanged: (v) { if (v != null) onChanged(v); },
+    ),
   );
 }
